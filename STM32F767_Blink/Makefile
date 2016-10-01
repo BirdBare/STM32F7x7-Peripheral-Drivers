@@ -67,7 +67,7 @@ CFLAGS = \
   -fdata-sections -ffunction-sections -ffast-math \
   -fomit-frame-pointer \
   -DSTM32F767xx \
-  -mthumb -mtune=arm7m\
+  -mthumb -mtune=cortex-m7\
   -Wno-unused-function \
   -IInc \
   $(DRIVER_INC)\
@@ -76,7 +76,8 @@ CFLAGS = \
 LDFLAGS = \
   -mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
   -fdata-sections -ffunction-sections -ffast-math \
-  -specs=nano.specs -Wl,-T,STM32F767ZI_FLASH.ld -Wl,--gc-sections,-Map=map.txt \
+  -specs=nano.specs -Wl,-T,STM32F767ZI_FLASH.ld \
+  -Wl,--gc-sections,-Map=map.txt \
   -lc -lm -lnosys
 
 OBJDUMPFLAGS = \
