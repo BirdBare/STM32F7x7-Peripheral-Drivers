@@ -1,24 +1,24 @@
 TARGET = main
 #our final binary file
 
-DRIVER_INC = -I ../driver/core \
-             -I ../driver/st \
+DRIVER_INC = -I../driver/core \
+             -I../driver/st \
              
-vpath %.c /src
-vpath %.s /src
+vpath %.c src
+vpath %.s src
 DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
   STM32F767_PERIPH.o \
 
 CORE_INC = \
-  -I ../bare/CORE/inc \
-  -I ../bare/EXTERNAL/inc \
-  -I ../bare/GUI/inc \
-  -I ../bare/KERNEL/inc \
-  -I ../bare/LCD/inc \
-  -I ../bare/MATH/inc \
-  -I ../bare/UTILITIES/inc \
+  -I../bare/CORE/inc \
+  -I../bare/EXTERNAL/inc \
+  -I../bare/GUI/inc \
+  -I../bare/KERNEL/inc \
+  -I../bare/LCD/inc \
+  -I../bare/MATH/inc \
+  -I../bare/UTILITIES/inc \
 
 vpath %.c ../bare/CORE/src
 vpath %.s ../bare/CORE/src
