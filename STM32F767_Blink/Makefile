@@ -1,50 +1,53 @@
 TARGET = main
 #our final binary file
 
-MUST_BE_INCLUDED_OBJECTS = \
+DRIVER_INC = -I ../driver/core \
+             -I ../driver/st \
+             
+vpath %.c /src
+vpath %.s /src
+DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
   STM32F767_PERIPH.o \
 
+CORE_INC = \
+  -I ../bare/CORE/inc \
+  -I ../bare/EXTERNAL/inc \
+  -I ../bare/GUI/inc \
+  -I ../bare/KERNEL/inc \
+  -I ../bare/LCD/inc \
+  -I ../bare/MATH/inc \
+  -I ../bare/UTILITIES/inc \
+
+vpath %.c ../bare/CORE/src
+vpath %.s ../bare/CORE/src
+vpath %.c ../bare/EXTERNAL/src
+vpath %.s ../bare/EXTERNAL/src
+vpath %.c ../bare/GUI/src
+vpath %.s ../bare/GUI/src
+vpath %.c ../bare/KERNEL/src
+vpath %.s ../bare/KERNEL/src
+vpath %.c ../bare/LCD/src
+vpath %.s ../bare/LCD/src
+vpath %.c ../bare/MATH/src
+vpath %.s ../bare/MATH/src
+vpath %.c ../bare/UTILITIES/src
+vpath %.s ../bare/UTILITIES/src
 CORE_OBJECTS = \
   STM32F767_GPIO.o \
   STM32F767_SPI.o \
   STM32F767_I2C.o \
   STM32F767_SYSTICK.o \
   
-SYSTEM_KERNEL_OBJECT = STM32F767_KERNEL.o
+SYSTEM_KERNEL_OBJECT = STM32F767_NO_KERNEL.o
 
 MAIN = main.o
 
 OBJECTS = \
-  $(CORE_OBJECTS) \
-  $(SYSTEM_KERNEL_OBJECT) \
-  $(MUST_BE_INCLUDED_OBJECTS) \
-  STM32F767_BALLOC.o \
-  STM32F767_XPT2046.o \
-  STM32F767_HTU21D.o \
+  $(DRIVER_OBJECTS) \
   $(MAIN) \
 #object files that we will compile to
-
-vpath %.c Src
-vpath %.s Src
-vpath %.c ../bare_include/
-vpath %.s ../bare_include/
-vpath %.c ../bare_include/Source/KERNEL
-vpath %.s ../bare_include/Source/KERNEL
-vpath %.c ../bare_include/Source/CORE
-vpath %.s ../bare_include/Source/CORE
-vpath %.c ../bare_include/Source/EXTERNAL 
-vpath %.c ../bare_include/Source/EXTERNAL 
-vpath %.c ../bare_include/Source/MATH
-vpath %.s ../bare_include/Source/MATH
-vpath %.c ../bare_include/Source/GUI
-vpath %.s ../bare_include/Source/GUI
-vpath %.c ../bare_include/Source/LCD
-vpath %.s ../bare_include/Source/LCD
-vpath %.c ../bare_include/Source/UTILITIES
-vpath %.s ../bare_include/Source/UTILITIES
-#set a prefix folder to the %.c variable
 
 CC = arm-none-eabi-gcc
 LD = arm-none-eabi-gcc
@@ -61,14 +64,8 @@ CFLAGS = \
   -IDrivers/Core \
   -IInc \
   -Wno-unused-function \
-  -I../bare_include/ \
-  -I../bare_include/Header/KERNEL \
-  -I../bare_include/Header/CORE \
-  -I../bare_include/Header/EXTERNAL\ DEVICES \
-  -I../bare_include/Header/MATH \
-  -I../bare_include/Header/GUI \
-  -I../bare_include/Header/LCD \
-  -I../bare_include/Header/UTILITIES \
+  $(Driver_INC)\
+  $(CORE_INC) \
 
 LDFLAGS = \
   -mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
