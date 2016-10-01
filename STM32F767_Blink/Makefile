@@ -3,13 +3,15 @@ TARGET = main
 
 DRIVER_INC = -I../driver/core \
              -I../driver/st \
-             
+#included header files directory for running microcontroller
 vpath %.c src
 vpath %.s src
+#set path for c and s files. For finding main.c in src.
 DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
   STM32F767_PERIPH.o \
+#object files required to be compiled to run microcontroller
 
 CORE_INC = \
   -I../bare/CORE/inc \
@@ -19,7 +21,7 @@ CORE_INC = \
   -I../bare/LCD/inc \
   -I../bare/MATH/inc \
   -I../bare/UTILITIES/inc \
-
+#included header files directory to find general peripheral header files
 vpath %.c ../bare/CORE/src
 vpath %.s ../bare/CORE/src
 vpath %.c ../bare/EXTERNAL/src
@@ -34,18 +36,23 @@ vpath %.c ../bare/MATH/src
 vpath %.s ../bare/MATH/src
 vpath %.c ../bare/UTILITIES/src
 vpath %.s ../bare/UTILITIES/src
+#set path so we can find c and s files for peripherals
 CORE_OBJECTS = \
   STM32F767_GPIO.o \
   STM32F767_SPI.o \
   STM32F767_I2C.o \
   STM32F767_SYSTICK.o \
+#peripheral object files that we are going to use
   
 SYSTEM_KERNEL_OBJECT = STM32F767_NO_KERNEL.o
+#Kernel Object file. Either KERNEL.o or NO_KERNEL.o
 
 MAIN = main.o
 
 OBJECTS = \
   $(DRIVER_OBJECTS) \
+  $(CORE_OBJECTS) \
+  $(SYSTEM_KERNEL_OBJECT) \
   $(MAIN) \
 #object files that we will compile to
 
@@ -61,10 +68,9 @@ CFLAGS = \
   -fomit-frame-pointer \
   -DSTM32F767xx \
   -mthumb -mtune=arm7m\
-  -IDrivers/Core \
-  -IInc \
   -Wno-unused-function \
-  $(Driver_INC)\
+  -IInc \
+  $(DRIVER_INC)\
   $(CORE_INC) \
 
 LDFLAGS = \
