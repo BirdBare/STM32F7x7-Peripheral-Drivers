@@ -132,6 +132,7 @@ __attribute__((section(".ITCM.SCHEDULING")))
 extern void KERNEL_Scheduler(struct NEW_SCHEDULER *sched, struct NEW_THREAD
 *current);
 
+__attribute__((section(".ITCM.SCHEDULING")))
 struct NEW_THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
 
 /*

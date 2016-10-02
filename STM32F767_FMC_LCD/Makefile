@@ -46,7 +46,7 @@ CORE_OBJECTS = \
   STM32F767_SYSTICK.o \
 #peripheral object files that we are going to use
   
-SYSTEM_KERNEL_OBJECT = STM32F767_NO_KERNEL.o
+SYSTEM_KERNEL_OBJECT = STM32F767_KERNEL.o
 #Kernel Object file. Either KERNEL.o or NO_KERNEL.o
 
 MAIN = main.o

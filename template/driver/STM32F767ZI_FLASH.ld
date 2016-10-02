@@ -1,9 +1,4 @@
 /*
-
-
-
-
-
 */
 
 /* Entry Point */
@@ -112,18 +107,18 @@ SECTIONS
   } >DTCM
 
   /* section for ITCM RAM for running code */
-  _siITCM = LOADADDR(._ITCM_RAM);
-  ._ITCM_RAM :
+  _siITCM = LOADADDR(.ITCM);
+  .ITCM :
   {
     . = ALIGN(4);
     _sITCM = .;
-    *(._ITCM_RAM*)
-    *(._ITCM_RAM)
+    *(.ITCM*)
+    *(.ITCM)
     . = ALIGN(4);
     _eITCM = .;
   } >ITCM AT> FLASH
 
-  /* section for LCD buffer if we need it*/
+  /* section for LCD buffer */
   ._frame_buf (NOLOAD):
   {
     . = ALIGN(4);
