@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  * @file    system_stm32f7xx.h
+  * @file    Templates/Inc/stm32f7xx_it.h
   * @author  MCD Application Team
-  * @version V1.1.0
+  * @version V1.0.0
   * @date    22-April-2016
-  * @brief   CMSIS Cortex-M7 Device System Source File for STM32F7xx devices.       
-  ******************************************************************************  
+  * @brief   This file contains the headers of the interrupt handlers.
+  ******************************************************************************
   * @attention
   *
   * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
@@ -32,94 +32,37 @@
   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
-  ******************************************************************************  
+  ******************************************************************************
   */
 
-/** @addtogroup CMSIS
-  * @{
-  */
-
-/** @addtogroup stm32f7xx_system
-  * @{
-  */  
-  
-/**
-  * @brief Define to prevent recursive inclusion
-  */
-#ifndef __SYSTEM_STM32F7XX_H
-#define __SYSTEM_STM32F7XX_H
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __STM32F7xx_IT_H
+#define __STM32F7xx_IT_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif 
 
-/** @addtogroup STM32F7xx_System_Includes
-  * @{
-  */
+/* Includes ------------------------------------------------------------------*/
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions ------------------------------------------------------- */
 
-/**
-  * @}
-  */
-
-
-/** @addtogroup STM32F7xx_System_Exported_Variables
-  * @{
-  */
-  /* The SystemCoreClock variable is updated in three ways:
-      1) by calling CMSIS function SystemCoreClockUpdate()
-      2) by calling HAL API function HAL_RCC_GetSysClockFreq()
-      3) each time HAL_RCC_ClockConfig() is called to configure the system clock frequency 
-         Note: If you use this function to configure the system clock; then there
-               is no need to call the 2 first functions listed above, since SystemCoreClock
-               variable is updated automatically.
-    */
-extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Clock) */
-
-extern const uint8_t  AHBPrescTable[16];    /*!< AHB prescalers table values */
-extern const uint8_t  APBPrescTable[8];     /*!< APB prescalers table values */
-
-
-/**
-  * @}
-  */
-
-/** @addtogroup STM32F7xx_System_Exported_Constants
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @addtogroup STM32F7xx_System_Exported_Macros
-  * @{
-  */
-
-/**
-  * @}
-  */
-
-/** @addtogroup STM32F7xx_System_Exported_Functions
-  * @{
-  */
-  
-extern void SystemInit(void);
-extern void SystemCoreClockUpdate(void);
-/**
-  * @}
-  */
+void NMI_Handler(void);
+void HardFault_Handler(void);
+void MemManage_Handler(void);
+void BusFault_Handler(void);
+void UsageFault_Handler(void);
+void SVC_Handler(void);
+void DebugMon_Handler(void);
+void PendSV_Handler(void);
+void SysTick_Handler(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*__SYSTEM_STM32F7XX_H */
+#endif /* __STM32F7xx_IT_H */
 
-/**
-  * @}
-  */
-  
-/**
-  * @}
-  */  
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1,11 +1,13 @@
 TARGET = main
 #our final binary file
 
-DRIVER_INC = -I../driver/core \
-             -I../driver/st \
+DRIVER_INC = -I../core/arm \
+             -I../core/st \
 #included header files directory for running microcontroller
 vpath %.c src
 vpath %.s src
+vpath %.c driver
+vpath %.s driver
 #set path for c and s files. For finding main.c in src.
 DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
@@ -76,7 +78,7 @@ CFLAGS = \
 LDFLAGS = \
   -mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
   -fdata-sections -ffunction-sections -ffast-math \
-  -specs=nano.specs -Wl,-T,STM32F767ZI_FLASH.ld \
+  -specs=nano.specs -Wl,-T,driver/STM32F767ZI_FLASH.ld \
   -Wl,--gc-sections,-Map=map.txt \
   -lc -lm -lnosys
 
@@ -88,17 +90,15 @@ all: clean $(TARGET).bin tidy
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 	$(OBJDUMP) $(OBJDUMPFLAGS) $@ > $@.txt
-	@echo 
-  
-#compile all .c files in SRC/ to .o in current directory
+	@echo  
+#compile all .c files to .o
 #dissassemble each file for debugging
 
 %.o: %.s
 	$(CC) -c $(CFLAGS) $< -o $@
 	$(OBJDUMP) $(OBJDUMPFLAGS) $@ > $@.txt
 	@echo 
-#compile all .s files in current directory to .o
-
+#compile all .s files to .o
 
 $(TARGET).elf: $(OBJECTS)
 	$(LD) $(OBJECTS) $(LDFLAGS) -o $@
@@ -119,3 +119,12 @@ clean:
 	rm -rf $(TARGET).elf $(TARGET).bin $(TARGET).o *.o.txt map.txt
 	rm -rf Object\ Files/
 	rm -rf Debug//
+
+flash:
+	st-flash write main.bin 0x8000000
+
+
+
+
+
+

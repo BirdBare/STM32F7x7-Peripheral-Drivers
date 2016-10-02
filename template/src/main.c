@@ -6,19 +6,19 @@
 
 #include "stm32f7xx.h"
 #include "STM32F767_SYSTICK.h"
-//Utilities
 
 int main(void)
 {
 
+  SysTick_EnableTimer();
   //Init Code
 
 
+
+
+
 loop:
-
  // Microcontroller Repeat Code
-
-
 
 
 
