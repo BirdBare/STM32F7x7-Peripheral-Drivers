@@ -12,6 +12,7 @@ vpath %.s driver
 DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
+  stm32f7xx_it.o \
   STM32F767_PERIPH.o \
 #object files required to be compiled to run microcontroller
 
@@ -74,7 +75,7 @@ CFLAGS = \
   -DSTM32F767xx \
   -mthumb -mtune=cortex-m7\
   -Wno-unused-function \
-  -IInc \
+  -Iinc \
   $(DRIVER_INC)\
   $(CORE_INC) \
 

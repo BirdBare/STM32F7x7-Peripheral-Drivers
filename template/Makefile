@@ -8,11 +8,11 @@ vpath %.c src
 vpath %.s src
 vpath %.c driver
 vpath %.s driver
-
 #set path for c and s files. For finding main.c in src.
 DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
+  stm32f7xx_it.o \
   STM32F767_PERIPH.o \
 #object files required to be compiled to run microcontroller
 
@@ -56,6 +56,9 @@ OBJECTS = \
   $(DRIVER_OBJECTS) \
   $(CORE_OBJECTS) \
   $(SYSTEM_KERNEL_OBJECT) \
+  STM32F767_BALLOC.o \
+  STM32F767_XPT2046.o \
+  STM32F767_HTU21D.o \
   $(MAIN) \
 #object files that we will compile to
 
@@ -72,7 +75,7 @@ CFLAGS = \
   -DSTM32F767xx \
   -mthumb -mtune=cortex-m7\
   -Wno-unused-function \
-  -IInc \
+  -Iinc \
   $(DRIVER_INC)\
   $(CORE_INC) \
 
