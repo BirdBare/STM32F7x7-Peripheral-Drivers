@@ -1,3 +1,8 @@
+CHANGE_DIR()
+{
+cd $1
+}
+
 if [ -z $1 ]
 then
   
@@ -37,6 +42,11 @@ else
 
 
 " > STM32F767_$val.s
+    if [ -d "../inc" ]
+    then
+      CHANGE_DIR ../inc
+      inc.sh $val
+    fi
   else
 
     echo "Assembly File Exists! Not Created. Choose New Assembly Name"

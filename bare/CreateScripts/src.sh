@@ -1,3 +1,8 @@
+CHANGE_DIR()
+{
+cd $1
+}
+
 if [ -z $1 ]
 then
   
@@ -29,6 +34,11 @@ else
 
 
 " > STM32F767_$val.c
+    if [ -d "../inc" ]
+    then
+      CHANGE_DIR ../inc
+      inc.sh $val
+    fi
   else
 
     echo "C Source File Exists! Not Created. Choose New Source Name"
