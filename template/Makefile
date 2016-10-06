@@ -13,7 +13,7 @@ DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
   stm32f7xx_it.o \
-  STM32F767_PERIPH.o \
+  STM32F767_CORE_FUNC.o \
 #object files required to be compiled to run microcontroller
 
 CORE_INC = \
@@ -69,7 +69,7 @@ OBJDUMP = arm-none-eabi-objdump
 #create variables to use with compilers
 
 CFLAGS = \
-  -Wall -g -O2  -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
+  -Wall -g -O2  -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard \
   -fdata-sections -ffunction-sections -ffast-math \
   -fomit-frame-pointer \
   -DSTM32F767xx \
@@ -80,7 +80,7 @@ CFLAGS = \
   $(CORE_INC) \
 
 LDFLAGS = \
-  -mthumb -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard \
+  -mthumb -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard \
   -fdata-sections -ffunction-sections -ffast-math \
   -specs=nano.specs -Wl,-T,driver/STM32F767ZI_FLASH.ld \
   -Wl,--gc-sections,-Map=map.txt \

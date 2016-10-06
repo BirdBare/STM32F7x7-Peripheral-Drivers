@@ -2,7 +2,7 @@
 
 .syntax unified
 .cpu cortex-m7
-.fpu softvfp
+.fpu fpv5-d16
 .thumb
 
     .section .text.SPI
