@@ -16,6 +16,7 @@
 #include "STM32F767_MATH.h"
 #include "STM32F767_FMC_LCD.h"
 
+volatile uint16_t LCD_BUFFER[240*320] __attribute__((section("._frame_buf")));
 
 #define DMA_ClearFlags(void)  DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0
 
