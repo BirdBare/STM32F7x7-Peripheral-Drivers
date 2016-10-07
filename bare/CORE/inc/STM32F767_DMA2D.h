@@ -47,5 +47,6 @@ void DMA2D_LoadCLUT(void);
 void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h);
 
+void DMA2D_UpdateScreen(void);
 
 #endif

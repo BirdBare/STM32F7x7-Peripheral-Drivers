@@ -438,5 +438,27 @@ w, uint16_t h)
   //enable register to memory mode. No need to clear bits because both are set.
 }
 
+void DMA2D_UpdateScreen(void)
+{
+  while((DMA2D->CR & DMA2D_CR_START) != 0)
+    asm("");
 
+  DMA2D->FGPFCCR = LCD_COLORMODE;
+  //color format DMA2D_OPFCCR
+
+  //DMA2D->FGMAR = (uint32_t)&map[0];
+  DMA2D->FGMAR = (uint32_t)&LCD_BUFFER[0];
+  DMA2D->OMAR = (uint32_t)LCD_Data;
+  //Set starting memory address location
+
+  DMA2D->FGOR = 0; // 0 because map should be continuous array.
+  DMA2D->OOR = 0;
+  //offset OOR
+
+  DMA2D->NLR = ((uint32_t)240 << 16) | 320;
+  //NUM LINES AND PIXELS NLR
+
+  DMA2D->CR = DMA2D_CR_START;
+  //enable register to memory mode. No need to clear bits because both are set.
+}
 
