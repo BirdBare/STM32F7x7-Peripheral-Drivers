@@ -26,16 +26,16 @@ extern volatile uint16_t LCD_BUFFER[240*320] __attribute__ ((section ("._frame_b
 
 #define DMA2D_Start(void) DMA2D->CR |= DMA2D_CR_START
 
- void DMA2D_DrawVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t
+ void DMA2D_DrawVLine(uint32_t x, uint32_t y, uint32_t h, uint32_t
  color);
 
-void DMA2D_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color);
+void DMA2D_DrawHLine(uint32_t x, uint32_t y, uint32_t w, uint32_t color);
 
-void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
-  uint16_t color);
+void DMA2D_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+  uint32_t color);
 
-void DMA2D_CopyPixelMap(const uint16_t map[], uint16_t x, uint16_t y, uint16_t
-w, uint16_t h);
+void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
+w, uint32_t h);
 
 //void DMA2D_WaitTransfer(void);
 #define DMA2D_WaitTransfer(void) \
@@ -72,8 +72,8 @@ OOR    LINE OFFSET
 */
 
 
-void DMA2D_Mem2Mem(uint32_t OMAR, uint32_t OPFCCR, uint32_t OCOLR,
-  uint32_t NLR, uint32_t OOR);
+void DMA2D_Mem2Mem(uint32_t FGMAR, uint32_t OMAR, uint32_t FGPFCCR, 
+  uint32_t NLR, uint32_t FGOR, uint32_t OOR);
 
 
 

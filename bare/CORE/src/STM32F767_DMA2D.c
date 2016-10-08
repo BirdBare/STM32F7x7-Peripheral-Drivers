@@ -269,7 +269,7 @@ const uint32_t DMA2D_CLUT [256] =
 4294967295, //  11111111 
 };
 
- void DMA2D_DrawVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t color)
+ void DMA2D_DrawVLine(uint32_t x, uint32_t y, uint32_t h, uint32_t color)
 {
   if(LCD_XYOOR(x,y))
     return;
@@ -305,7 +305,7 @@ const uint32_t DMA2D_CLUT [256] =
   */
 } 
 
-void DMA2D_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
+void DMA2D_DrawHLine(uint32_t x, uint32_t y, uint32_t w, uint32_t color)
 { 
   if(LCD_XYOOR(x,y))
     return;
@@ -339,8 +339,8 @@ void DMA2D_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
   */
 }
 
-void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
-  uint16_t color)
+void DMA2D_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+  uint32_t color)
 {
   if(LCD_XYOOR(x,y))
     return;
@@ -377,9 +377,13 @@ void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
   */
 }
 
-void DMA2D_CopyPixelMap(const uint16_t map[], uint16_t x, uint16_t y, uint16_t
-w, uint16_t h)
+void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
+w, uint32_t h)
 {
+
+  DMA2D_Mem2Mem((uint32_t)&map[0], (uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)], LCD_COLORMODE,
+    (w << 16) | h, 0, LCD_WIDTH - w);
+/*
 
   DMA2D->FGPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
@@ -398,6 +402,7 @@ w, uint16_t h)
 
   DMA2D->CR = DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
+  */
 }
 
 //void DMA2D_WaitTransfer(void)
@@ -456,6 +461,10 @@ w, uint16_t h)
 void DMA2D_UpdateScreen(void)
 {
 
+  DMA2D_Mem2Mem((uint32_t)&LCD_BUFFER[0], (uint32_t)LCD_Data, LCD_COLORMODE,
+    (240 << 16) | 320, 0, 0);
+
+/*
   DMA2D->FGPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
 
@@ -475,6 +484,8 @@ void DMA2D_UpdateScreen(void)
 
   DMA2D->CR = DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
+*/
+
 }
 
 /*void DMA2D_Reg2Mem(uint32_t OPFCCR, uint32_t OCOLR, uint32_t OMAR,
