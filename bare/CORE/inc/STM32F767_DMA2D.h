@@ -11,7 +11,7 @@
 
 #include "stm32f7xx.h"
 #include "STM32F767_FMC_LCD.h"
-
+#include "STM32F767_PERIPH.h"
 
 #define LCD_COLORMODE DMA2D_COLORMODE_RGB565
 extern volatile uint16_t LCD_BUFFER[240*320] __attribute__ ((section ("._frame_buf")));
@@ -37,7 +37,9 @@ void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 void DMA2D_CopyPixelMap(const uint16_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h);
 
-void DMA2D_WaitTransfer(void);
+//void DMA2D_WaitTransfer(void);
+#define DMA2D_WaitTransfer(void) \
+  PERIPH_WaitTillFlagReset((uint32_t *)0x4002B000,1)
 
 #define RGB565 0b010
 #define RGB332 0b101
@@ -48,5 +50,38 @@ void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h);
 
 void DMA2D_UpdateScreen(void);
+
+/*
+OPFCCR Colorformat
+OCOLR  Color to write
+OMAR   Write Address
+NLR    NUMBER LINES and pixels
+OOR    LINE OFFSET
+*/
+
+void DMA2D_Reg2Mem(uint32_t OMAR, uint32_t OPFCCR, uint32_t OCOLR,
+  uint32_t NLR, uint32_t OOR);
+
+/*
+FGPFCCR Colorformat
+OCOLR  Color to write
+OMAR   Write Address
+FGMAR  Input address
+NLR    NUMBER LINES and pixels
+OOR    LINE OFFSET
+*/
+
+
+void DMA2D_Mem2Mem(uint32_t OMAR, uint32_t OPFCCR, uint32_t OCOLR,
+  uint32_t NLR, uint32_t OOR);
+
+
+
+
+
+
+
+
+
 
 #endif

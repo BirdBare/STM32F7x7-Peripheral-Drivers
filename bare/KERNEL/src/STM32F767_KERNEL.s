@@ -5,7 +5,7 @@
 .fpu fpv5-d16
 .thumb
 
-      .section .ITCM.SCHEDULING
+      .section ._ITCM.SCHEDULING
 
 
 

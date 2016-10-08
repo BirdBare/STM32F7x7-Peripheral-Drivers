@@ -1,3 +1,5 @@
+SHELL = /bin/bash
+
 TARGET = main
 #our final binary file
 
@@ -13,7 +15,6 @@ DRIVER_OBJECTS = \
   startup_stm32f767xx.o \
   system_stm32f7xx.o \
   stm32f7xx_it.o \
-  STM32F767_CORE_FUNC.o \
 #object files required to be compiled to run microcontroller
 
 CORE_INC = \
@@ -47,7 +48,8 @@ CORE_OBJECTS = \
   STM32F767_SYSTICK.o \
 #peripheral object files that we are going to use
   
-SYSTEM_KERNEL_OBJECT = STM32F767_NO_KERNEL.o
+SYSTEM_KERNEL_OBJECT = STM32F767_NO_KERNEL.o \
+                       STM32F767_PERIPH_NO_KERNEL.o \
 #Kernel Object file. Either KERNEL.o or NO_KERNEL.o
 
 MAIN = main.o
@@ -59,6 +61,10 @@ OBJECTS = \
   STM32F767_BALLOC.o \
   STM32F767_XPT2046.o \
   STM32F767_HTU21D.o \
+  STM32F767_DMA2D.o \
+  STM32F767_FMC_LCD.o \
+  STM32F767_FMC.o \
+  STM32F767_LCD.o \
   $(MAIN) \
 #object files that we will compile to
 
@@ -83,7 +89,7 @@ LDFLAGS = \
   -mthumb -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard \
   -fdata-sections -ffunction-sections -ffast-math \
   -specs=nano.specs -Wl,-T,driver/STM32F767ZI_FLASH.ld \
-  -Wl,--gc-sections,-Map=map.txt \
+  -Wl,--gc-sections,-Map=map.debug \
   -lc -lm -lnosys
 
 OBJDUMPFLAGS = \
@@ -92,20 +98,26 @@ OBJDUMPFLAGS = \
 all: clean $(TARGET).bin tidy
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@
-	$(OBJDUMP) $(OBJDUMPFLAGS) $@ > $@.txt
+	$(CC) -c $(CFLAGS) $< -o C_$(basename $@).o
+	$(OBJDUMP) $(OBJDUMPFLAGS) C_$(basename $@).o > C_$(basename $@).debug
+	
+	@if [ -f $(basename $<).s ]; then\
+	  $(CC) -c $(CFLAGS) $(basename $<).s -o S_$(basename $@).o;\
+	  $(OBJDUMP) $(OBJDUMPFLAGS) S_$(basename $@).o > S_$(basename $@).debug;\
+	fi; 
+	 
 	@echo  
 #compile all .c files to .o
 #dissassemble each file for debugging
 
 %.o: %.s
-	$(CC) -c $(CFLAGS) $< -o $@
-	$(OBJDUMP) $(OBJDUMPFLAGS) $@ > $@.txt
+	$(CC) -c $(CFLAGS) $< -o S_$(basename $@).o
+	$(OBJDUMP) $(OBJDUMPFLAGS) S_$(basename $@).o > S_$(basename $@).debug
 	@echo 
 #compile all .s files to .o
 
 $(TARGET).elf: $(OBJECTS)
-	$(LD) $(OBJECTS) $(LDFLAGS) -o $@
+	$(LD) *.o $(LDFLAGS) -o $@
 #link objects together into a symbolic elf file
 
 %.bin: %.elf
@@ -114,13 +126,12 @@ $(TARGET).elf: $(OBJECTS)
 
 tidy:
 	mkdir Debug/
-	mv map.txt Debug/ 
-	mv *.o.txt Debug/ 
+	mv *.debug Debug/ 
 	mkdir Object\ Files/
 	mv *.o Object\ Files/ 
      
 clean:
-	rm -rf $(TARGET).elf $(TARGET).bin $(TARGET).o *.o.txt map.txt
+	rm -rf $(TARGET).elf $(TARGET).bin *.o *.o.txt map.txt
 	rm -rf Object\ Files/
 	rm -rf Debug//
 

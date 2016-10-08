@@ -11,7 +11,7 @@
 #include "STM32F767_SPI.h"
 #include "STM32F767_MATH.h"
 #include "STM32F767_NUMBERS.h"
-#include "STM32F767_CORE_FUNC.h"
+#include "STM32F767_PERIPH.h"
 
 #define XPT2046_CS GPIO_PIN_11
 #define XPT2046_MOSI GPIO_PIN_7

@@ -13,7 +13,7 @@
 #include "STM32F767_GPIO.h"
 #include "STM32F767_I2C.h"
 #include "STM32F767_SYSTICK.h"
-#include "STM32F767_CORE_FUNC.h"
+#include "STM32F767_PERIPH.h"
 
 #define HTU21D_TEMP 0xE3
 #define HTU21D_HUM 0xE5

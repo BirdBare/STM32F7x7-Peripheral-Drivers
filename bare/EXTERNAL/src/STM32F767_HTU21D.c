@@ -27,7 +27,7 @@ void HTU21D_Reset(void)
   if(I2C_Start(HTU21D_I2Cx, I2C_CR2_AUTOEND | I2C_CR2_WRITE | I2C_CR2_START,
     HTU21D_ADDRESS,1))
   {
-    PERIPH_LoopTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
+    PERIPH_WaitTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
     I2C_Send(HTU21D_I2Cx,HTU21D_RST);
     DelayMilli(15);
   }
@@ -38,9 +38,9 @@ void HTU21D_SetUserReg(uint8_t HTU21D_MESRES, uint8_t HTU21D_HEATER)
   if(I2C_Start(HTU21D_I2Cx, I2C_CR2_AUTOEND | I2C_CR2_WRITE | I2C_CR2_START,
     HTU21D_ADDRESS,2))
   {
-    PERIPH_LoopTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
+    PERIPH_WaitTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
     I2C_Send(HTU21D_I2Cx,HTU21D_WRUSER);
-    PERIPH_LoopTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
+    PERIPH_WaitTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
     I2C_Send(HTU21D_I2Cx,HTU21D_MESRES | HTU21D_HEATER);
   }
 }
@@ -52,16 +52,16 @@ uint16_t HTU21D_GetData(uint8_t HTU21D_TEMPHUM)
   if(I2C_Start(HTU21D_I2Cx, I2C_CR2_AUTOEND | I2C_CR2_WRITE | I2C_CR2_START,
     HTU21D_ADDRESS,1))
   {
-    PERIPH_LoopTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
+    PERIPH_WaitTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_TXE);
     I2C_Send(HTU21D_I2Cx,HTU21D_TEMPHUM);
     
   if(I2C_Start(HTU21D_I2Cx, I2C_CR2_AUTOEND | I2C_CR2_READ | I2C_CR2_START,
     HTU21D_ADDRESS,2))
     {
-      PERIPH_LoopTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_RXNE);
+      PERIPH_WaitTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_RXNE);
       data = I2C_Receive(HTU21D_I2Cx);
       data <<= 8;
-      PERIPH_LoopTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_RXNE);
+      PERIPH_WaitTillFlagSet(&HTU21D_I2Cx->ISR, I2C_ISR_RXNE);
       data |= (uint16_t)I2C_Receive(HTU21D_I2Cx);
     }
   }

@@ -102,7 +102,7 @@ volatile struct NEW_SCHEDULER
 
 
 // FOR DEBUGGING A NO THREADS SITUATION. OR IT CAN RESTART THE MAIN TASK.
-__attribute__((section(".ITCM.SCHEDULING")))
+__attribute__((section("._ITCM.SCHEDULING")))
 void KERNEL_NoThreads(void)
 {
 LOOP
@@ -113,7 +113,7 @@ LOOP
 
 
 // THE THREAD SWITCH FUNCTION.
-__attribute__((section(".ITCM.SCHEDULING")))
+__attribute__((section("._ITCM.SCHEDULING")))
   void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,
     volatile struct NEW_THREAD *current, uint32_t currentthreadflags, 
     volatile struct NEW_THREAD *next)
@@ -132,7 +132,7 @@ __attribute__((section(".ITCM.SCHEDULING")))
 extern void KERNEL_Scheduler(struct NEW_SCHEDULER *sched, struct NEW_THREAD
 *current);
 
-__attribute__((section(".ITCM.SCHEDULING")))
+__attribute__((section("._ITCM.SCHEDULING")))
 struct NEW_THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
 
 /*

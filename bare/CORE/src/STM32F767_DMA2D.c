@@ -277,9 +277,11 @@ const uint32_t DMA2D_CLUT [256] =
 
   if(y + h > 320)
     h = 320-y;
-  
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
+
+  DMA2D_Reg2Mem((uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)],
+    LCD_COLORMODE, color, 1 << 16 | h, LCD_WIDTH -1);
+
+  /*
 
   DMA2D->OPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
@@ -296,8 +298,11 @@ const uint32_t DMA2D_CLUT [256] =
   DMA2D->NLR = ((uint32_t)1 << 16) | h;
   //NUM LINES AND PIXELS NLR
 
+  DMA2D_WaitTransfer();
+
   DMA2D->CR |= DMA2D_CR_MODE | DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
+  */
 } 
 
 void DMA2D_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
@@ -308,9 +313,10 @@ void DMA2D_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
   if(x + w > 240)
     w = 240-x;  
 
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
+  DMA2D_Reg2Mem((uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)],
+    LCD_COLORMODE, color, w << 16 | 1, LCD_WIDTH -1);
 
+/*
   DMA2D->OPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
 
@@ -326,8 +332,11 @@ void DMA2D_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
   DMA2D->NLR = ((uint32_t)w << 16) | 1;
   //NUM LINES AND PIXELS NLR
 
+  DMA2D_WaitTransfer();
+
   DMA2D->CR |= DMA2D_CR_MODE | DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
+  */
 }
 
 void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
@@ -341,9 +350,11 @@ void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
   if(x + w > 240)
     w = 240-x;
 
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
 
+  DMA2D_Reg2Mem((uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)],
+    LCD_COLORMODE, color, w << 16 | h, LCD_WIDTH - w);
+
+/*
   DMA2D->OPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
 
@@ -359,15 +370,16 @@ void DMA2D_FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
   DMA2D->NLR = ((uint32_t)w << 16) | h;
   //NUM LINES AND PIXELS NLR
 
+  DMA2D_WaitTransfer();
+
   DMA2D->CR |= DMA2D_CR_MODE | DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
+  */
 }
 
 void DMA2D_CopyPixelMap(const uint16_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h)
 {
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
 
   DMA2D->FGPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
@@ -382,16 +394,17 @@ w, uint16_t h)
 
   DMA2D->NLR = ((uint32_t)w << 16) | h;
   //NUM LINES AND PIXELS NLR
+  DMA2D_WaitTransfer();
 
   DMA2D->CR = DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
 }
 
-void DMA2D_WaitTransfer(void)
-{
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
-}
+//void DMA2D_WaitTransfer(void)
+//{
+  //while((DMA2D->CR & DMA2D_CR_START) != 0)
+    //asm("");
+//}
 
 void DMA2D_LoadCLUT(void)
 {
@@ -400,6 +413,8 @@ void DMA2D_LoadCLUT(void)
 
   DMA2D->FGPFCCR = 255 << 8;
   DMA2D->BGPFCCR = 255 << 8;
+
+  DMA2D_WaitTransfer();
 
   DMA2D->FGPFCCR |= DMA2D_FGPFCCR_START;
   while((DMA2D->FGPFCCR & DMA2D_FGPFCCR_START) != 0)
@@ -416,8 +431,6 @@ void DMA2D_LoadCLUT(void)
 void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h)
 {
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
 
   DMA2D->FGPFCCR = 0b0101;
   DMA2D->OPFCCR = 0b010;
@@ -434,14 +447,14 @@ w, uint16_t h)
   DMA2D->NLR = ((uint32_t)w << 16) | h;
   //NUM LINES AND PIXELS NLR
 
+  DMA2D_WaitTransfer();
+
   DMA2D->CR = (0b01 << 16) |DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
 }
 
 void DMA2D_UpdateScreen(void)
 {
-  while((DMA2D->CR & DMA2D_CR_START) != 0)
-    asm("");
 
   DMA2D->FGPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
@@ -458,7 +471,18 @@ void DMA2D_UpdateScreen(void)
   DMA2D->NLR = ((uint32_t)240 << 16) | 320;
   //NUM LINES AND PIXELS NLR
 
+  DMA2D_WaitTransfer();
+
   DMA2D->CR = DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
 }
 
+/*void DMA2D_Reg2Mem(uint32_t OPFCCR, uint32_t OCOLR, uint32_t OMAR,
+  uint32_t NLR, uint32_t OOR)
+{
+
+
+
+
+
+}*/

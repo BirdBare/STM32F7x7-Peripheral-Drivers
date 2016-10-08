@@ -107,13 +107,13 @@ SECTIONS
   } >DTCM
 
   /* section for ITCM RAM for running code */
-  _siITCM = LOADADDR(.ITCM);
-  .ITCM :
+  _siITCM = LOADADDR(._ITCM);
+  ._ITCM :
   {
     . = ALIGN(4);
     _sITCM = .;
-    *(.ITCM*)
-    *(.ITCM)
+    *(._ITCM*)
+    *(._ITCM)
     . = ALIGN(4);
     _eITCM = .;
   } >ITCM AT> FLASH

@@ -34,8 +34,7 @@ struct ALLOC_TABLE
 
 */
 
-
-__attribute__((section(".ITCM.balloc"))) extern void InitHeap(void);
+void InitHeap(void);
 /*{
   extern void *start asm("_end"); //start of heap section of memory
     FIRSTSPACEFREEHEAP = start = (uint8_t *)&start + 4; 
@@ -47,7 +46,7 @@ __attribute__((section(".ITCM.balloc"))) extern void InitHeap(void);
     ((struct ALLOC_TABLE *)start)->next = 0; 
 }*/
 
-__attribute__((section(".ITCM.balloc"))) extern void* balloc(uint32_t size);
+void* balloc(uint32_t size);
 /*{
   if((uint32_t)FIRSTSPACEFREEHEAP < HEAPMINBOUNDRY)
     return 0;
@@ -123,7 +122,7 @@ size);
 return 0;
 }*/
 
-__attribute__((section(".ITCM.balloc"))) extern void bree(void *blockaddress);
+void bree(void *blockaddress);
 /*{
   blockaddress = (struct ALLOC_TABLE *)blockaddress - 1;
   //decrement to get to beginning of ALLOC_TABLE
