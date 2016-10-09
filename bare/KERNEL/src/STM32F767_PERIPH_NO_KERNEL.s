@@ -7,25 +7,25 @@
 
     .section .text.PERIPH
 
-  .type  PERIPH_WaitTillFlagReset, %function
-  .global PERIPH_WaitTillFlagReset
-PERIPH_WaitTillFlagReset:
+  .type  PERIPH_WaitTillReset, %function
+  .global PERIPH_WaitTillReset
+PERIPH_WaitTillReset:
   ldr r2, [r0]
   ands r2, r1
-bne PERIPH_WaitTillFlagReset
+bne PERIPH_WaitTillReset
 bx lr
 
-  .type  PERIPH_WaitTillFlagSet, %function
-  .global PERIPH_WaitTillFlagSet
-PERIPH_WaitTillFlagSet:
+  .type  PERIPH_WaitTillSet, %function
+  .global PERIPH_WaitTillSet
+PERIPH_WaitTillSet:
   ldr r2, [r0]
   ands r2, r1
-beq PERIPH_WaitTillFlagSet
+beq PERIPH_WaitTillSet
 bx lr
 
-  .type  PERIPH_CheckFlag, %function
-  .global PERIPH_CheckFlag
-PERIPH_CheckFlag:
+  .type  PERIPH_GetStatus, %function
+  .global PERIPH_GetStatus
+PERIPH_GetStatus:
   ldr r0, [r0]
   ands r0, r1
 bx lr

@@ -39,7 +39,7 @@ w, uint32_t h);
 
 //void DMA2D_WaitTransfer(void);
 #define DMA2D_WaitTransfer(void) \
-  PERIPH_WaitTillFlagReset((uint32_t *)0x4002B000,1)
+  PERIPH_WaitTillReset((uint32_t *)0x4002B000,1)
 
 #define RGB565 0b010
 #define RGB332 0b101

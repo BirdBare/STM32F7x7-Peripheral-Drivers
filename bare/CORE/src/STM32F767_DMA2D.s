@@ -22,7 +22,7 @@ DMA2D_Reg2Mem:
   ldr r0, =0x4002B000 //Load DMA2D CR Reg address
   mov r1, #1
   //Set Registers for function
-  bl PERIPH_WaitTillFlagReset //check if flag is reset and act accordingly
+  bl PERIPH_WaitTillReset //check if flag is reset and act accordingly
                               //depending on NO_KERNEL vs KERNEL
   //OLD LOOP TO WAIT FOR DMA2D TRANSACTION TO FINISH
   //Reg2MemWaitStart:
@@ -67,7 +67,7 @@ DMA2D_Mem2Mem:
   ldr r0, =0x4002B000 //Load DMA2D CR Reg address
   mov r1, #1
   //Set Registers for function
-  bl PERIPH_WaitTillFlagReset
+  bl PERIPH_WaitTillReset
   //wait for DMA2D to finish previous transaction
 
   pop {r1-r4}

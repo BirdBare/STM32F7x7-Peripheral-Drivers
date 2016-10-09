@@ -14,9 +14,9 @@
 EXIT:
 bx lr
 
-  .type  PERIPH_WaitTillFlagReset, %function
-  .global PERIPH_WaitTillFlagReset
-PERIPH_WaitTillFlagReset:
+  .type  PERIPH_WaitTillReset, %function
+  .global PERIPH_WaitTillReset
+PERIPH_WaitTillReset:
   ldr r2, [r0]
   ands r2, r1
   ldr r2, =0xE000ED04
@@ -24,11 +24,11 @@ beq EXIT //if reset then exit
   ldr r3, [r2]
   orr r3, #1 << 26
   str r3, [r2]
-b PERIPH_WaitTillFlagReset
+b PERIPH_WaitTillReset
 
-  .type  PERIPH_WaitTillFlagSet, %function
-  .global PERIPH_WaitTillFlagSet
-PERIPH_WaitTillFlagSet:
+  .type  PERIPH_WaitTillSet, %function
+  .global PERIPH_WaitTillSet
+PERIPH_WaitTillSet:
   ldr r2, [r0]
   ands r2, r1
   ldr r2, =0xE000ED04
@@ -36,11 +36,11 @@ bne EXIT //if set then exit
   ldr r3, [r2]
   orr r3, #1 << 26
   str r3, [r2]
-b PERIPH_WaitTillFlagSet
+b PERIPH_WaitTillSet
 
-  .type  PERIPH_CheckFlag, %function
-  .global PERIPH_CheckFlag
-PERIPH_CheckFlag:
+  .type  PERIPH_GetStatus, %function
+  .global PERIPH_GetStatus
+PERIPH_GetStatus:
   ldr r0, [r0]
   ands r0, r1
 bx lr

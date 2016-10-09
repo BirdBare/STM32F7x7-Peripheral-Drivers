@@ -78,7 +78,7 @@ volatile struct NEW_THREAD
   struct NEW_THREAD volatile *prev; //prev thread that was just executed
   
   uint32_t flags;
-} MAIN = {(uint32_t *)20,&MAIN,&MAIN,0};
+} MAIN = {(uint32_t *)!0,&MAIN,&MAIN,0};
 
 /* SCHEDULER FLAGS 
 
@@ -97,7 +97,7 @@ volatile struct NEW_SCHEDULER
   uint32_t flags;
 
 
-} SCHEDULER = {&MAIN,SCHEDULER_HOLD};
+} SCHEDULER = {&MAIN,0};
 
 
 

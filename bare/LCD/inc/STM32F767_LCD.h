@@ -16,6 +16,9 @@
 #include "STM32F767_MATH.h"
 #include "STM32F767_FMC_LCD.h"
 
+#define FONT_ROCKWELL_18PT
+#include "LCD_FONT.h"
+
 extern volatile uint16_t LCD_BUFFER[240*320] __attribute__((section("._frame_buf")));
 
 #define DMA_ClearFlags(void)  DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0
@@ -94,8 +97,6 @@ void LCD_DrawXBitmap(uint16_t x, uint16_t y,
 
 
 
-#define FONT_ROCKWELL_18PT
-#include "LCD_FONT.h"
 
 uint32_t LCD_DrawChar3(uint16_t x, uint16_t y, uint16_t c, uint16_t color,
 uint8_t size);

@@ -46,17 +46,17 @@ uint32_t dataavg = 0;
 
     SPI_Send8(SPI1,XPT2046_StartBit |  XPT2046_PDBITS | 
       XPT2046_AXIS);
-    PERIPH_WaitTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
     data |= SPI_Receive8(SPI1) >> 3;
     
     SPI_Send8(SPI1,0b0);
     dataavg += data;
-    PERIPH_WaitTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
     data = SPI_Receive8(SPI1) << 5;
   }
 
   dataavg /= numavg;
-  PERIPH_WaitTillFlagReset(&SPI1->SR,SPI_SR_BSY);
+  PERIPH_WaitTillReset(&SPI1->SR,SPI_SR_BSY);
   
   GPIO_ToggleOutput(GPIOC,XPT2046_CS);
 
@@ -77,17 +77,17 @@ uint16_t XPT2046_GetAxis(uint8_t XPT2046_AXIS, uint8_t numavg)
   {
     SPI_Send8(SPI1,XPT2046_StartBit |  XPT2046_PDBITS | 
       XPT2046_AXIS);
-    PERIPH_WaitTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
     data |= SPI_Receive8(SPI1) >> 3;
     
     SPI_Send8(SPI1,0b0);
-    PERIPH_WaitTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
     data = SPI_Receive8(SPI1) << 5;
   
     if(count == numavg - 1)
     {
       SPI_Send8(SPI1,0b01);
-      PERIPH_WaitTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
+      PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
       data |= SPI_Receive8(SPI1) >> 3;
     }
     //get last bit of data without starting new conversion
@@ -105,7 +105,7 @@ uint16_t XPT2046_GetAxis(uint8_t XPT2046_AXIS, uint8_t numavg)
 void XPT2046_Begin(void)
 {
   GPIO_ToggleOutput(GPIOC,XPT2046_CS);
-  PERIPH_WaitTillFlagSet(&SPI1->SR,SPI_SR_TXE);
+  PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_TXE);
   SPI_Send8(SPI1,XPT2046_StartBit | 0b0000 | XPT2046_PDBITS);
   GPIO_ToggleOutput(GPIOC,XPT2046_CS);
 }
