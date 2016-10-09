@@ -151,7 +151,7 @@ extern uint32_t SPI_Receive16(SPI_TypeDef *SPIx);
 //extern uint32_t PERIPH_CheckFlag(volatile void *FlagRegAddress, uint32_t flag);
 
 #define SPI_WaitTransfer(SPIx) \
-  PERIPH_WaitTillReset(SPIx->SR, SPI_SR_BSY)
+  PERIPH_WaitTillReset(&(SPIx->SR), SPI_SR_BSY)
 /*
 static void SPI_WaitTransfer(SPI_TypeDef *SPIx)
 { 

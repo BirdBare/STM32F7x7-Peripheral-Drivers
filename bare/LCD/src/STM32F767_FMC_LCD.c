@@ -14,10 +14,10 @@ volatile uint16_t *LCD_Command = (volatile uint16_t *)0x60000000;
 volatile uint16_t *LCD_Data = 
   (volatile uint16_t*)0b01100000000100000000000000000000;
 
-void LCD_EnablePins(GPIO_TypeDef *LCD_GPIOx, uint32_t LCD_Pins)
+void LCD_WriteSetting(uint16_t LCD_SETTINGREG, uint16_t LCD_DATA)
 {
-  GPIO_SetPins(LCD_GPIOx, LCD_Pins, GPIO_MODE_ALTERNATE, GPIO_OUTTYPE_PUSHPULL,
-    GPIO_OUTSPEED_VHIGH, GPIO_PUPD_OFF, GPIO_ALTFUNCTION_12); 
+  *LCD_Command = (uint16_t)LCD_SETTINGREG;
+  *LCD_Data = (uint16_t)LCD_DATA;
 }
 
 /*
@@ -47,19 +47,14 @@ NOE = PD4
 NWE = PD5
 */
 
-void LCD_EnableMemoryRegion(void)
+void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
+  uint32_t FMC_DataSetup, uint32_t FMC_AddSetup)
 {
-  __DSB();
+   __DSB();
   MPU_Enable();
   MPU_SetRegion(7,0x60000000,1,0b11,0b010000,27);
   MPU_EnableRegion(7);
   __DSB();
-}
-
-void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
-  uint32_t FMC_DataSetup, uint32_t FMC_AddSetup)
-{
-  LCD_EnableMemoryRegion();
   //Makes Bank1 a device so all commands and data will be sent.  
 
   FMC_EnableClock();
@@ -74,22 +69,6 @@ void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
 
   FMC_EnableSubBank(FMC_SubBank_1);
 
-}
-
-void LCD_WriteSetting(uint16_t LCD_SETTINGREG, uint16_t LCD_DATA)
-{
-  *LCD_Command = (uint16_t)LCD_SETTINGREG;
-  *LCD_Data = (uint16_t)LCD_DATA;
-}
-
-
-
-
-
-void LCD_EnableDMA(void)
-{
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
-  NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 }
 
 void LCD_InitLCD(void)
@@ -159,6 +138,7 @@ LCD_WriteCommand(0xF2);    // 3GAMMA CONTROL
     LCD_WriteData(0x0F);    // 15.
 
 }
+
 void LCD_SetWindow(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
 {
 
@@ -178,32 +158,6 @@ LCD_WriteCommand(0x2A);
 
 
 
-
-
-void DMA_EnableMem2Mem(DMA_Stream_TypeDef *DMAx_Streamx,
-  uint32_t SourceAdd, uint32_t DestAdd, uint16_t DMA_DATAWIDTH, uint16_t numdata, 
-  uint32_t DMA_PRIORITY, uint16_t DMA_INCREMENT)
-{
-
-  DMAx_Streamx->CR &= ~0b1;
-
-  while((DMAx_Streamx->CR & DMA_SxCR_EN) != 0)
-    asm("");
-
-  DMAx_Streamx->NDTR = numdata;
-
-  DMAx_Streamx->PAR = SourceAdd;
-  DMAx_Streamx->M0AR = DestAdd;
-
-
-  DMAx_Streamx->CR = (uint32_t)DMA_PRIORITY | (DMA_DATAWIDTH << 13) | 
-    (DMA_DATAWIDTH << 11) | (DMA_INCREMENT << 10) | (DMA_INCREMENT << 9) | 
-    DMA_SxCR_DIR_1;
-
-  DMAx_Streamx->CR |= DMA_SxCR_EN;
-}
-
-#define DMA_EnableTranferCompleteInt(DMA_Stream_x) DMA_Stream_x |= DMA_SxCR_TCIE
 
 
 

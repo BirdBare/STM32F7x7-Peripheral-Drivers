@@ -52,6 +52,8 @@ __attribute__((section("._ITCM.balloc"))) void* balloc(uint32_t size)
 {
   if((uint32_t)FIRSTSPACEFREEHEAP < HEAPMINBOUNDRY)
     return 0;
+  //check if HEAP has been initialized.
+  //maybe get rid of this. MAYBE
 
   size += sizeof(struct ALLOC_TABLE); //add size of allocation table to data
 

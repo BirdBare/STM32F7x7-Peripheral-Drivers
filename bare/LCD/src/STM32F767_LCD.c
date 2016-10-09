@@ -12,58 +12,14 @@
 volatile uint16_t LCD_BUFFER[240*320] __attribute__((section("._frame_buf")));
 
 
-void DMA_WaitTransfer(DMA_Stream_TypeDef *DMAx_Streamx)
-{
-  while((DMAx_Streamx->CR & DMA_SxCR_EN) != 0)
-    asm("");
-}
-
 /*  Start LCD_UpdateScreen  */
-uint8_t LCD_UpdateScreen(void)
+void LCD_UpdateScreen(void)
 {
-  if((DMA2_Stream0->CR & DMA_SxCR_EN) == 0)
-  {
-    LCD_WriteCommand(0x2C);
-
-    DMA_ClearFlags();
-
-    DMA2_Stream0->CR = 0b00000000000000110010101010000000;
+  LCD_WriteCommand(0x2C);
   
-    DMA2_Stream0->PAR = (uint32_t)&LCD_BUFFER[0];
-  
-    DMA2_Stream0->M0AR = (uint32_t)LCD_Data;
-  
-    DMA2_Stream0->NDTR = 240*160;
-  
-    DMA2_Stream0->FCR = 0b11;
-  
-    DMA2_Stream0->CR |= DMA_SxCR_EN;
-    
-    DMA_WaitTransfer(DMA2_Stream0);
-
-    DMA_ClearFlags();
-  
-    DMA2_Stream0->PAR = (uint32_t)&LCD_BUFFER[240*160];
-
-    DMA2_Stream0->CR = (DMA2_Stream0->CR & ~DMA_SxCR_TCIE) | DMA_SxCR_EN;
-
-    return 1;
-  }
-  return 0;
+  DMA2D_Mem2Mem((uint32_t)&LCD_BUFFER[0], (uint32_t)LCD_Data, LCD_COLORMODE,
+    (240 << 16) | 320, 0, 0);
 }
-/*void DMA2_Stream0_IRQHandler()
-{
-
-  DMA_ClearFlags();
-  //Clear Interrupt flags, otherwise it wont run, it will interrupt.
-
-  DMA2_Stream0->PAR = (uint32_t)&LCD_BUFFER[240*160];
-  //Set address at base + number of data transferred last.
-
-  DMA2_Stream0->CR = (DMA2_Stream0->CR & ~DMA_SxCR_TCIE) | DMA_SxCR_EN;
-  //Disable further interrupts and Enable DMA.
-}
-*/
 /*  End LCD_UpdateScreen  */
 
 
@@ -101,6 +57,30 @@ NIGGO",100,character,font    );
 
 */
 
+
+void LCD_DrawVLine(uint32_t x, uint32_t y, uint32_t h, uint32_t color)
+{
+  if(LCD_XYOOR(x,y))
+    return;
+
+  if(y + h > 320)
+    h = 320-y;
+
+  DMA2D_Reg2Mem((uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)],
+    LCD_COLORMODE, color, 1 << 16 | h, LCD_WIDTH -1);
+}
+
+void LCD_DrawHLine(uint32_t x, uint32_t y, uint32_t w, uint32_t color)
+{ 
+  if(LCD_XYOOR(x,y))
+    return;
+
+  if(x + w > 240)
+    w = 240-x;  
+
+  DMA2D_Reg2Mem((uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)],
+    LCD_COLORMODE, color, w << 16 | 1, LCD_WIDTH -1);
+}
 
 void LCD_DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
   uint16_t color)
@@ -176,6 +156,22 @@ void LCD_DrawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
   LCD_DrawHLine(x, y + h, w, color);
   LCD_DrawVLine(x, y, h, color);
   LCD_DrawVLine(x + w, y, h, color);
+}
+
+void LCD_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+  uint32_t color)
+{
+  if(LCD_XYOOR(x,y))
+    return;
+
+  if(y + h > 320)
+    h = 320-y;
+  
+  if(x + w > 240)
+    w = 240-x;
+
+  DMA2D_Reg2Mem((uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)],
+    LCD_COLORMODE, color, w << 16 | h, LCD_WIDTH - w);
 }
 
 void LCD_FillCircle(uint16_t x, uint16_t y, uint16_t r, uint16_t color)

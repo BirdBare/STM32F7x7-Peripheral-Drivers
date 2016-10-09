@@ -19,21 +19,17 @@
 #define FONT_ROCKWELL_18PT
 #include "LCD_FONT.h"
 
-extern volatile uint16_t LCD_BUFFER[240*320] __attribute__((section("._frame_buf")));
+extern volatile uint16_t LCD_BUFFER[240*320];
 
 #define DMA_ClearFlags(void)  DMA2->LIFCR |= DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0
 
-void DMA_WaitTransfer(DMA_Stream_TypeDef *DMAx_Streamx);
-
 /*  Start LCD_UpdateScreen  */
-uint8_t LCD_UpdateScreen(void);
-
-
+void LCD_UpdateScreen(void);
 /*  End LCD_UpdateScreen  */
 
-#define LCD_DrawVLine(x, y, h, color) DMA2D_DrawVLine(x, y, h, color)
-#define LCD_DrawHLine(x, y, w, color) DMA2D_DrawHLine(x, y, w, color)
-#define LCD_FillRect(x, y, w, h, color) DMA2D_FillRect(x, y, w, h, color)
+
+#define LCD_XYOOR(x, y) ((x) > 239 || (y) > 319)
+
 #define LCD_DrawPixel(x, y, color) if(!LCD_XYOOR(x,y)) LCD_BUFFER[(x) + (LCD_WIDTH * (y))] = color
  
 #define swap(a,b) \
@@ -48,8 +44,15 @@ uint8_t LCD_UpdateScreen(void);
 void LCD_DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
   uint16_t color);
 
-void LCD_DrawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
+void LCD_DrawVLine(uint32_t x, uint32_t y, uint32_t h, uint32_t color);
+
+void LCD_DrawHLine(uint32_t x, uint32_t y, uint32_t w, uint32_t color);
+
+void LCD_DrawRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
   uint16_t color);
+
+void LCD_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+  uint32_t color);
 
 void LCD_FillCircle(uint16_t x, uint16_t y, uint16_t r, uint16_t color);
 
