@@ -11,16 +11,18 @@
   .global PERIPH_WaitTillReset
 PERIPH_WaitTillReset:
   ldr r2, [r0]
-  ands r2, r1
-bne PERIPH_WaitTillReset
+  and r2, r1
+  cmp r2, r1
+beq PERIPH_WaitTillReset
 bx lr
 
   .type  PERIPH_WaitTillSet, %function
   .global PERIPH_WaitTillSet
 PERIPH_WaitTillSet:
   ldr r2, [r0]
-  ands r2, r1
-beq PERIPH_WaitTillSet
+  and r2, r1
+  cmp r2, r1
+bne PERIPH_WaitTillSet
 bx lr
 
   .type  PERIPH_GetStatus, %function
