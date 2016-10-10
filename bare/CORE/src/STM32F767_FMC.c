@@ -51,13 +51,19 @@ void FMC_SetTimingSRAM(uint8_t FMC_SubBank, uint32_t FMC_AccessMode,
 }
 
 
-void LCD_IncAddress(volatile uint16_t **add)
-{
-  if(((uint32_t)(*add) & (uint16_t)0xffff) > 65000)
-    (*add) = (volatile uint16_t *)((uint32_t)(*add) - 65000);
-  (*add)++;
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

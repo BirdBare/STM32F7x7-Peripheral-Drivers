@@ -13,6 +13,7 @@
 #include "STM32F767_GPIO.h"
 #include "STM32F767_FMC.h"
 #include "STM32F767_MPU.h"
+#include "STM32F767_SYSTICK.h"
 
 #define LCD_WIDTH 240
 #define LCD_HEIGHT 320

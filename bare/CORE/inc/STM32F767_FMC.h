@@ -99,9 +99,4 @@ void FMC_SetTimingSRAM(uint8_t FMC_SubBank, uint32_t FMC_AccessMode,
   uint32_t FMC_BusTurn, uint32_t FMC_DataSetup, uint32_t FMC_AddSetup);
 
 
-void LCD_IncAddress(volatile uint16_t **add);
-
-
-
-
 #endif

@@ -464,7 +464,7 @@ void LCD_DrawXBitmap(uint16_t x, uint16_t y,
  const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
+  uint8_t byte = 0;
 
   for(j=0; j<h; j++) 
   {
