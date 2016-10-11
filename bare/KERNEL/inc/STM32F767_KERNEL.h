@@ -8,7 +8,6 @@
 
 #ifndef STM32F767_NEWKERNEL_H
 #define STM32F767_NEWKERNEL_H
-#define __asm asm volatile
 #define LOOP while(1) asm("");
 
 
@@ -70,7 +69,7 @@ Choose next thread to execute regaurdless of thread order
 #define THREAD_PAUSE ((uint32_t)1)
 #define THREAD_LABEL ((uint32_t)0b111 << 1)
 
-volatile struct NEW_THREAD
+struct NEW_THREAD
 {
   void *sp; //current location of stack pointer 
 
@@ -78,7 +77,9 @@ volatile struct NEW_THREAD
   struct NEW_THREAD volatile *prev; //prev thread that was just executed
   
   uint32_t flags;
-} MAIN = {(uint32_t *)!0,&MAIN,&MAIN,0};
+};
+
+extern volatile struct NEW_THREAD MAIN;
 
 /* SCHEDULER FLAGS 
 
@@ -91,48 +92,32 @@ volatile struct NEW_THREAD
 #define SCHEDULER_SWH ((uint32_t)1 << 30)
 #define SCHEDULER_HOLD ((uint32_t)1 << 31)
 
-volatile struct NEW_SCHEDULER
+struct NEW_SCHEDULER
 {
   struct NEW_THREAD volatile *thread; //points to current running thread.
   uint32_t flags;
 
 
-} SCHEDULER = {&MAIN,0};
+};
+
+extern volatile struct NEW_SCHEDULER SCHEDULER;
 
 
 
 // FOR DEBUGGING A NO THREADS SITUATION. OR IT CAN RESTART THE MAIN TASK.
-__attribute__((section("._ITCM.SCHEDULING")))
-void KERNEL_NoThreads(void)
-{
-LOOP
-}
-
+void KERNEL_NoThreads(void);
 
 
 
 
 // THE THREAD SWITCH FUNCTION.
-__attribute__((section("._ITCM.SCHEDULING")))
   void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,
     volatile struct NEW_THREAD *current, uint32_t currentthreadflags, 
-    volatile struct NEW_THREAD *next)
-{
-  if(!(current->sp))
-    bree((uint32_t *)current);
+    volatile struct NEW_THREAD *next);
 
-  current = current->next;
-  sched->flags &= ~SCHEDULER_HOLD;
-  sched->thread = current;
-  SCB_InvalidateICache();
-  
-  return current->sp;
-}
-
-extern void KERNEL_Scheduler(struct NEW_SCHEDULER *sched, struct NEW_THREAD
+void KERNEL_Scheduler(struct NEW_SCHEDULER *sched, struct NEW_THREAD
 *current);
 
-__attribute__((section("._ITCM.SCHEDULING")))
 struct NEW_THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
 
 /*

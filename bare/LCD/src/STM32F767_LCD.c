@@ -791,24 +791,6 @@ struct MATH_POINT LCD_PrintfString(uint16_t x, uint16_t y, uint16_t w,
 }
 
 
-/*
-
-
-        START STREAM CODE
-
-
-*/
- 
-struct STREAM 
-{
-  
-
-
-
-
-
-};
-
 
 
 

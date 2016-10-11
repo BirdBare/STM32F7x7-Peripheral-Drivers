@@ -277,6 +277,7 @@ SysTick_Handler:
     ldr r2, [r1, #12] //get current thread flags for function call
 
     push {ip,lr} //push lr for function return
+    
   
     bl KERNEL_Switch
 
