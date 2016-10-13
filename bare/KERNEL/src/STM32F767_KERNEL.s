@@ -83,6 +83,15 @@ mov r11, r11, lsl #24 //set PSR to default value
 stmdb r1!, {r4-r11} // push vital peices to new stack 
 stmdb r1!, {r4-r11} // push rest of dont care registers to fill stack 
 
+vstmdb r1!, {d0-d15} //push FPU registers to stack
+
+ldr r12, =0xfffffffD
+mov r11, #0
+stmdb r1!, {r11 - r12}
+//sets link register from expection return to start this task
+//Use thread mode, PSP, NO FPU because task just started
+
+
 str r1, [r0] //store stack pointer in sp of new thread
 
 _NoSpace:
@@ -111,61 +120,6 @@ str r6, [r4] //officially Call Scheduler for the switch and delete
 lop: //never end because we need to kill it with the SCHEDULER
 b lop
 
-
-/*    INLINED IN SYSTICK HANDLER
-
-    .section ._ITCM_RAM.SCHEDULING //(struct NEW_SCHEDULER *sched,
-                         //   struct NEW_Thread *current) *
-  .global KERNEL_Scheduler
-  .type  KERNEL_Scheduler, %function
-KERNEL_Scheduler:
-  
-  ldr r3, [r1, #4] //load current->next
-  
-  ldr r2, [r1] //get saved value of sp
-  
-  cmp r3, r1 //compare current and next to see if they are the same
-
-  cbnz r2, _KNoDel //if sp is not zero then dont delete the thread and thread to run
-  
-  ldr r2, [r1, #8]          // load current->prev for possible delete  
-  
-  bne _KTestSafe
-  
-    b KERNEL_NoThreads // if sp is zero and next and current are same then all threads
-                        //are gone so we need to do something about that 
-  _KTestSafe:
-    
-    str r2, [r3, #8] //set next->prev=current->prev
-    str r3, [r2, #4] //set prev->next=current->next
-    
-  b _KDeleted
-    
-  _KNoDel:
-  
-    mrs r12, psp //get current thread sp memory address
-  
-    it eq
-    bxeq lr       //if current and next are same then quit since we dont need to switch
-  
-    stmdb r12!, {r4-r11}     // save the context of the rest of the registers 
-    str r12, [r1]            // save the address of the stack pointer to the sp variable
-  
-  _KDeleted:  
-
-   //branch to kernel switch 
-   //assumes the new sp is in r0 
-  
-  push {ip,lr}
-    ldr r1, [r1, #12]
-  bl KERNEL_Switch
-
-  ldmia r0!, {r4-r11}
-  pop {ip,lr}
-  msr psp, r0
-  
-bx lr
-*/
 
 /*  MEMORY USAGE STRUCTURE
 
@@ -241,9 +195,6 @@ SysTick_Handler:
  // bxne lr      //return if not equal to zero. Which means disable bit is set
 
   // START INLINE KERNEL_Scheduler function 
-
-    push {ip,lr} //push lr for function return
-
     ldr r3, [r1] //load current thread stack pointer address
 
     ldr r12, [r1, #8]          // load current->prev for possible delete  
@@ -257,15 +208,20 @@ SysTick_Handler:
     
     _KNoDel:
 
-//      ldr r2, =0xE000EF38 //get float point context address register
+//CONDITIONAL FPU STACKING      mrs r2, CONTROL //get current thread sp memory address
 
       mrs r12, psp //get current thread sp memory address
   
-//      str r12, [r2] //set FPCAR to current psp value. Task Stack.
-
-//      and r2, lr, #
+//CONDITIONAL FPU STACKING      ands r2, #0b100
 
       stmdb r12!, {r4-r11}     // save the context of the rest of the registers 
+//CONDITIONAL FPU STACKING      beq NOFLOATS
+      vmrs r4, FPSCR          //get FPSCR
+      vstmdb r12!, {d0-d15}   //store floating point registers
+      NOFLOATS:
+
+      stmdb r12!, {r4, lr}    //store fpscr and current lr value for task
+
       str r12, [r1]            // save the address of the stack pointer to the sp variable
   
     _KDeleted:  
@@ -275,16 +231,18 @@ SysTick_Handler:
    
     ldr r2, [r1, #12] //get current thread flags for function call
 
-    
-  
-    bl KERNEL_Switch
+    bl KERNEL_Switch  //loads new thread values of threads stack
 
-    //loads new thread values of threads stack
+    ldmia r0!, {r2, lr}  //load FPSCR and link register for task
+
+ //CONDITIONAL FPU STACKING   cbz r2, NOFLOAT
+    vldmia r0!, {d0-d15}
+    vmsr FPSCR, r2 //store FPSCR
+    NOFLOAT:
+
 
     ldmia r0!, {r4-r11} // load thread values
-    
-    pop {ip,lr} 
-    
+ 
     msr psp, r0 //store new stack pointer address into process stack pointer
 
   // END INLINE 
