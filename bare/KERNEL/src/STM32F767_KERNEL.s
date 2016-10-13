@@ -83,13 +83,13 @@ mov r11, r11, lsl #24 //set PSR to default value
 stmdb r1!, {r4-r11} // push vital peices to new stack 
 stmdb r1!, {r4-r11} // push rest of dont care registers to fill stack 
 
+ldr r12, =0xfffffffD  //Generic Exception return. Would be used by starting task
+
 vstmdb r1!, {d0-d15} //push FPU registers to stack
 
-ldr r12, =0xfffffffD
-mov r11, #0
 stmdb r1!, {r11 - r12}
 //sets link register from expection return to start this task
-//Use thread mode, PSP, NO FPU because task just started
+//Use thread mode, PSP, FPU value doesnt matter because task just started
 
 
 str r1, [r0] //store stack pointer in sp of new thread
@@ -208,19 +208,14 @@ SysTick_Handler:
     
     _KNoDel:
 
-//CONDITIONAL FPU STACKING      mrs r2, CONTROL //get current thread sp memory address
-
       mrs r12, psp //get current thread sp memory address
-  
-//CONDITIONAL FPU STACKING      ands r2, #0b100
+
+      vmrs r2, FPSCR          //get FPSCR
 
       stmdb r12!, {r4-r11}     // save the context of the rest of the registers 
-//CONDITIONAL FPU STACKING      beq NOFLOATS
-      vmrs r4, FPSCR          //get FPSCR
       vstmdb r12!, {d0-d15}   //store floating point registers
-      NOFLOATS:
 
-      stmdb r12!, {r4, lr}    //store fpscr and current lr value for task
+      stmdb r12!, {r2, lr}    //store fpscr and current lr value for task
 
       str r12, [r1]            // save the address of the stack pointer to the sp variable
   
@@ -231,15 +226,17 @@ SysTick_Handler:
    
     ldr r2, [r1, #12] //get current thread flags for function call
 
+
+
     bl KERNEL_Switch  //loads new thread values of threads stack
+
+
 
     ldmia r0!, {r2, lr}  //load FPSCR and link register for task
 
- //CONDITIONAL FPU STACKING   cbz r2, NOFLOAT
-    vldmia r0!, {d0-d15}
-    vmsr FPSCR, r2 //store FPSCR
-    NOFLOAT:
+    vldmia r0!, {d0-d15}  //load floating point registers
 
+    vmsr FPSCR, r2 //store FPSCR
 
     ldmia r0!, {r4-r11} // load thread values
  
