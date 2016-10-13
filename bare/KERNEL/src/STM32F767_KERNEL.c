@@ -12,6 +12,7 @@ volatile struct NEW_THREAD MAIN = {(uint32_t *)!0,&MAIN,&MAIN,0};
 
 volatile struct NEW_SCHEDULER SCHEDULER = {&MAIN,0};
 
+volatile uint32_t *FPCARREG = &(FPU->FPCAR);
 
 
 // FOR DEBUGGING A NO THREADS SITUATION. OR IT CAN RESTART THE MAIN TASK.
