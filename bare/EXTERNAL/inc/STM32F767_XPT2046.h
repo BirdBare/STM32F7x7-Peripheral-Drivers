@@ -52,34 +52,37 @@ extern void XPT2046_EnableGeneral(void);
 #define XPT2046_PDBITS 0b00000000
 
 extern uint32_t GetAxis(uint32_t XPT2046_AXIS, uint32_t numavg);
-/*{
+
+
+
+
+static uint32_t GetAxis2(uint32_t XPT2046_AXIS)
+{
   GPIO_ToggleOutput(GPIOC,XPT2046_CS);
 
   //!!!!  16 CLOCK PER CONVERSION  !!!!!!
 
-uint32_t dataavg = 0;
-    uint32_t data = 0;
-  for(uint32_t count = numavg + 1; count != 0; count--)
-  { 
+uint32_t data=0;
 
     SPI_Send8(SPI1,XPT2046_StartBit |  XPT2046_PDBITS | 
       XPT2046_AXIS);
-    PERIPH_LoopTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
-    data |= SPI_Receive8(SPI1) >> 3;
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
+    SPI_Receive8(SPI1);
     
     SPI_Send8(SPI1,0b0);
-    dataavg += data;
-    PERIPH_LoopTillFlagSet(&SPI1->SR,SPI_SR_RXNE);
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
     data = SPI_Receive8(SPI1) << 5;
-  }
 
-  dataavg /= numavg;
-  PERIPH_LoopTillFlagReset(&SPI1->SR,SPI_SR_BSY);
+    SPI_Send8(SPI1,0b0);
+    PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
+    data |= SPI_Receive8(SPI1) >> 3;
+
+  PERIPH_WaitTillReset(&SPI1->SR,SPI_SR_BSY);
   
   GPIO_ToggleOutput(GPIOC,XPT2046_CS);
 
-  return dataavg; 
-}*/
+  return data; 
+}
 
 /*
 static uint16_t XPT2046_GetAxis(uint8_t XPT2046_AXIS, uint8_t numavg)
