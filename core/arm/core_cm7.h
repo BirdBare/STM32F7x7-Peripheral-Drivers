@@ -2275,7 +2275,7 @@ __STATIC_INLINE void SCB_CleanInvalidateDCache (void)
     SCB->CSSELR = (0U << 1U) | 0U;          /* Level 1 data cache */
     __DSB();
 
-    ccsidr = SCB->CCSIDR;
+
 
                                             /* clean & invalidate D-Cache */
     sets = (uint32_t)(CCSIDR_SETS(ccsidr));

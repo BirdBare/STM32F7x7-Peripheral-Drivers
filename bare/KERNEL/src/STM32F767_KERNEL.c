@@ -15,17 +15,6 @@ volatile struct NEW_SCHEDULER SCHEDULER = {&MAIN,0};
 volatile uint32_t *FPCARREG = &(FPU->FPCAR);
 
 
-// FOR DEBUGGING A NO THREADS SITUATION. OR IT CAN RESTART THE MAIN TASK.
-__attribute__((section("._ITCM.SCHEDULING")))
-void KERNEL_NoThreads(void)
-{
-LOOP
-}
-
-
-
-
-
 // THE THREAD SWITCH FUNCTION.
 __attribute__((section("._ITCM.SCHEDULING")))
   void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,
@@ -38,7 +27,7 @@ __attribute__((section("._ITCM.SCHEDULING")))
   current = current->next;
   sched->flags &= ~SCHEDULER_HOLD;
   sched->thread = current;
-  //SCB_InvalidateICache();
+  SCB_InvalidateICache();
   
   return sched->thread->sp;
 }

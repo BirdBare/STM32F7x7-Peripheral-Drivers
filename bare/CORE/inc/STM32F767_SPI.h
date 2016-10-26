@@ -22,7 +22,51 @@
 #ifndef STM32F767_SPI_H
 #define STM32F767_SPI_H
 
-#include "stm32f7xx.h"
+#include "BARE_STM32F767.h"
+
+//  PROTOTYPES FOR SIMPLE REGISTER FUNCTIONS
+//  ALL FORCED INLINE SO THEY DO NOT USE FLASH SPACE
+ALWAYS_INLINE void SPI_SetCR1(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetCR1(SPI_TypeDef *SPIx);
+ALWAYS_INLINE void SPI_SetBitsCR1(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE void SPI_ResetBitsCR1(SPI_TypeDef *SPIx, uint32_t Data);
+
+ALWAYS_INLINE void SPI_SetCR2(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetCR2(SPI_TypeDef *SPIx);
+ALWAYS_INLINE void SPI_SetBitsCR2(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE void SPI_ResetBitsCR2(SPI_TypeDef *SPIx, uint32_t Data);
+
+ALWAYS_INLINE void SPI_SetSR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetSR(SPI_TypeDef *SPIx);
+
+ALWAYS_INLINE void SPI_SetDR8(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE void SPI_SetDR16(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetDR8(SPI_TypeDef *SPIx);
+ALWAYS_INLINE uint32_t SPI_GetDR16(SPI_TypeDef *SPIx);
+
+ALWAYS_INLINE void SPI_SetCRCPR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetCRCPR(SPI_TypeDef *SPIx);
+ALWAYS_INLINE void SPI_SetBitsCRCPR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE void SPI_ResetBitsCRCPR(SPI_TypeDef *SPIx, uint32_t Data);
+
+ALWAYS_INLINE uint32_t SPI_GetRXCRCR(SPI_TypeDef *SPIx);
+
+ALWAYS_INLINE uint32_t SPI_GetTXCRCR(SPI_TypeDef *SPIx);
+
+ALWAYS_INLINE void SPI_SetI2SCFGR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetI2SCFGR(SPI_TypeDef *SPIx);
+ALWAYS_INLINE void SPI_SetBitsI2SCFGR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE void SPI_ResetBitsI2SCFGR(SPI_TypeDef *SPIx, uint32_t Data);
+
+ALWAYS_INLINE void SPI_SetI2SPR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE uint32_t SPI_GetI2SPR(SPI_TypeDef *SPIx);
+ALWAYS_INLINE void SPI_SetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data);
+ALWAYS_INLINE void SPI_ResetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data);
+
+
+
+
+
 
 #define SPI_CLOCK_SPI1 RCC_APB2ENR_SPI1EN 
 #define SPI_CLOCK_SPI4 RCC_APB2ENR_SPI4EN 
@@ -158,6 +202,198 @@ static void SPI_WaitTransfer(SPI_TypeDef *SPIx)
   while((SPIx->SR & SPI_SR_BSY) != 0) 
     asm(""); 
 }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  SPIx->CR1 functions
+ALWAYS_INLINE void SPI_SetCR1(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CR1 = Data;
+}
+ALWAYS_INLINE uint32_t SPI_GetCR1(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+ALWAYS_INLINE void SPI_SetBitsCR1(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CR1 |= Data;
+}
+ALWAYS_INLINE void SPI_ResetBitsCR1(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CR1 &= Data;
+}
+
+
+//  SPIx->CR2 functions
+ALWAYS_INLINE void SPI_SetCR2(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CR2 = Data;
+}
+ALWAYS_INLINE uint32_t SPI_GetCR2(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #4]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+ALWAYS_INLINE void SPI_SetBitsCR2(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CR2 |= Data;
+}
+ALWAYS_INLINE void SPI_ResetBitsCR2(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CR2 &= Data;
+}
+
+
+
+//  SPIx->SR functions
+ALWAYS_INLINE void SPI_SetSR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->SR = Data;
+}
+ALWAYS_INLINE uint32_t SPI_GetSR(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #8]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+
+
+
+//  SPIx->DR functions
+ALWAYS_INLINE void SPI_SetDR8(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  ASM(" strb %1, [%0, #0xc]" : : "r" (SPIx), "r" (Data));
+}
+ALWAYS_INLINE void SPI_SetDR16(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  ASM(" strh %1, [%0, #0xc]" : : "r" (SPIx), "r" (Data));
+}
+ALWAYS_INLINE uint32_t SPI_GetDR8(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldrb %0, [%1, #0xc]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+ALWAYS_INLINE uint32_t SPI_GetDR16(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldrh %0, [%1, #0xc]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+
+//  SPIx->CRCPR functions
+ALWAYS_INLINE void SPI_SetCRCPR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CRCPR = Data;
+}
+ALWAYS_INLINE uint32_t SPI_GetCRCPR(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x10]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+ALWAYS_INLINE void SPI_SetBitsCRCPR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CRCPR |= Data;
+}
+ALWAYS_INLINE void SPI_ResetBitsCRCPR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->CRCPR &= Data;
+}
+
+
+
+//  SPIx->RXCRCR functions
+ALWAYS_INLINE uint32_t SPI_GetRXCRCR(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x14]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+
+
+
+//  SPIx->TXCRCR functions
+ALWAYS_INLINE uint32_t SPI_GetTXCRCR(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x18]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+
+
+
+
+//  SPIx->I2SCFGR functions
+ALWAYS_INLINE void SPI_SetI2SCFGR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->I2SCFGR = Data;
+}
+ALWAYS_INLINE uint32_t SPI_GetI2SCFGR(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x1c]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+ALWAYS_INLINE void SPI_SetBitsI2SCFGR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->I2SCFGR |= Data;
+}
+ALWAYS_INLINE void SPI_ResetBitsI2SCFGR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->I2SCFGR &= Data;
+}
+
+
+
+
+//  SPIx->I2SPR functions
+ALWAYS_INLINE void SPI_SetI2SPR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->I2SPR = Data;
+}
+ALWAYS_INLINE uint32_t SPI_GetI2SPR(SPI_TypeDef *SPIx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x20]" :"=r" (ret) : "r" (SPIx));
+  return ret;
+}
+ALWAYS_INLINE void SPI_SetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->I2SPR |= Data;
+}
+ALWAYS_INLINE void SPI_ResetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data)
+{
+  SPIx->I2SPR &= Data;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

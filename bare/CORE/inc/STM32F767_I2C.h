@@ -9,7 +9,51 @@
 #ifndef STM32F767_I2C_H
 #define STM32F767_I2C_H
 
-#include "stm32f7xx.h"
+#include "BARE_STM32F767.h"
+
+//  PROTOTYPES FOR SIMPLE REGISTER FUNCTIONS
+//  ALL FORCED INLINE SO THEY DO NOT USE FLASH SPACE
+ALWAYS_INLINE void I2C_SetCR1(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE uint32_t I2C_GetCR1(I2C_TypeDef *I2Cx);
+ALWAYS_INLINE void I2C_SetBitsCR1(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE void I2C_ResetBitsCR1(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE void I2C_SetCR2(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE uint32_t I2C_GetCR2(I2C_TypeDef *I2Cx);
+ALWAYS_INLINE void I2C_SetBitsCR2(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE void I2C_ResetBitsCR2(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE void I2C_SetOAR1(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE uint32_t I2C_GetOAR1(I2C_TypeDef *I2Cx);
+ALWAYS_INLINE void I2C_SetBitsOAR1(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE void I2C_ResetBitsOAR1(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE void I2C_SetOAR2(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE uint32_t I2C_GetOAR2(I2C_TypeDef *I2Cx);
+ALWAYS_INLINE void I2C_SetBitsOAR2(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE void I2C_ResetBitsOAR2(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE void I2C_SetTIMINGR(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE uint32_t I2C_GetTIMINGR(I2C_TypeDef *I2Cx);
+ALWAYS_INLINE void I2C_SetBitsTIMINGR(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE void I2C_ResetBitsTIMINGR(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE void I2C_SetTIMEOUTR(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE uint32_t I2C_GetTIMEOUTR(I2C_TypeDef *I2Cx);
+ALWAYS_INLINE void I2C_SetBitsTIMEOUTR(I2C_TypeDef *I2Cx, uint32_t Data);
+ALWAYS_INLINE void I2C_ResetBitsTIMEOUTR(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE uint32_t I2C_GetISR(I2C_TypeDef *I2Cx);
+
+ALWAYS_INLINE void I2C_SetICR(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE uint32_t I2C_GetPECR(I2C_TypeDef *I2Cx);
+
+ALWAYS_INLINE void I2C_SetTXDR(I2C_TypeDef *I2Cx, uint32_t Data);
+
+ALWAYS_INLINE uint32_t I2C_GetRXDR(I2C_TypeDef *I2Cx);
+
+
 
 
 #define I2C_CLOCK_I2C1 RCC_APB1ENR_I2C1EN
@@ -158,6 +202,246 @@ extern uint32_t I2C_Receive(I2C_TypeDef *I2Cx);
     asm("");
   return (uint8_t)(I2Cx->RXDR);
 }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  I2Cx->CR1 functions
+ALWAYS_INLINE void I2C_SetCR1(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->CR1 = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetCR1(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+ALWAYS_INLINE void I2C_SetBitsCR1(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->CR1 |= Data;
+}
+ALWAYS_INLINE void I2C_ResetBitsCR1(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->CR1 &= Data;
+}
+
+
+
+
+
+//  I2Cx->CR2 functions
+ALWAYS_INLINE void I2C_SetCR2(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->CR2 = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetCR2(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #4]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+ALWAYS_INLINE void I2C_SetBitsCR2(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->CR2 |= Data;
+}
+ALWAYS_INLINE void I2C_ResetBitsCR2(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->CR2 &= Data;
+}
+
+
+
+
+
+//  I2Cx->OAR1 functions
+ALWAYS_INLINE void I2C_SetOAR1(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->OAR1 = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetOAR1(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #8]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+ALWAYS_INLINE void I2C_SetBitsOAR1(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->OAR1 |= Data;
+}
+ALWAYS_INLINE void I2C_ResetBitsOAR1(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->OAR1 &= Data;
+}
+
+
+
+
+
+//  I2Cx->OAR2 functions
+ALWAYS_INLINE void I2C_SetOAR2(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->OAR2 = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetOAR2(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0xc]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+ALWAYS_INLINE void I2C_SetBitsOAR2(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->OAR2 |= Data;
+}
+ALWAYS_INLINE void I2C_ResetBitsOAR2(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->OAR2 &= Data;
+}
+
+
+
+
+
+//  I2Cx->TIMINGR functions
+ALWAYS_INLINE void I2C_SetTIMINGR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TIMINGR = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetTIMINGR(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x10]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+ALWAYS_INLINE void I2C_SetBitsTIMINGR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TIMINGR |= Data;
+}
+ALWAYS_INLINE void I2C_ResetBitsTIMINGR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TIMINGR &= Data;
+}
+
+
+
+
+
+//  I2Cx->TIMEOUTR functions
+ALWAYS_INLINE void I2C_SetTIMEOUTR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TIMEOUTR = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetTIMEOUTR(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, 0x14]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+ALWAYS_INLINE void I2C_SetBitsTIMEOUTR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TIMEOUTR |= Data;
+}
+ALWAYS_INLINE void I2C_ResetBitsTIMEOUTR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TIMEOUTR &= Data;
+}
+
+
+
+
+
+//  I2Cx->ISR functions
+ALWAYS_INLINE void I2C_SetISR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->ISR = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetISR(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x18]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+
+
+
+//  I2Cx->ICR functions
+ALWAYS_INLINE void I2C_SetICR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->ICR = Data;
+}
+
+
+
+
+//  I2Cx->PECR functions
+ALWAYS_INLINE uint32_t I2C_GetPECR(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x20]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+
+
+
+
+
+//  I2Cx->TXDR AND I2Cx->RXDR functions
+ALWAYS_INLINE void I2C_SetTXDR(I2C_TypeDef *I2Cx, uint32_t Data)
+{
+  I2Cx->TXDR = Data;
+}
+ALWAYS_INLINE uint32_t I2C_GetRXDR(I2C_TypeDef *I2Cx)
+{
+  uint32_t ret;
+  ASM(" ldr %0, [%1, #0x24]" :"=r" (ret) : "r" (I2Cx));
+  return ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

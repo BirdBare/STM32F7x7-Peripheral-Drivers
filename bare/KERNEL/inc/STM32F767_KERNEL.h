@@ -13,18 +13,17 @@
 
 
 #include "stm32f7xx.h"
-#define NOHANDLER
 #include "STM32F767_SYSTICK.h"
 #include "STM32F767_BALLOC.h"
 
 
 
 #define SVCall(void) __asm("svc 0")
-#define PENDSV(void) SCB->ICSR |= 0b1 << 28
-#define SYSTICK(void) SCB->ICSR |= 0b1 << 26
+#define PENDSV(void) SCB->ICSR = 0b1 << 28
+#define SYSTICK(void) SCB->ICSR = 0b1 << 26
 
-#define PENDSV_PENDING(void) SCB->ICSR &= 0b1 << 28
-#define SYSTICK_PENDING(void) SCB->ICSR &= 0b1 << 26
+#define PENDSV_PENDING(void) SCB->ICSR = 0b1 << 28
+#define SYSTICK_PENDING(void) SCB->ICSR = 0b1 << 26
 
 
 
@@ -77,9 +76,7 @@ struct NEW_THREAD
   struct NEW_THREAD volatile *prev; //prev thread that was just executed
   
   uint32_t flags;
-};
-
-extern volatile struct NEW_THREAD MAIN;
+} extern volatile MAIN;
 
 /* SCHEDULER FLAGS 
 
@@ -98,15 +95,7 @@ struct NEW_SCHEDULER
   uint32_t flags;
 
 
-};
-
-extern volatile struct NEW_SCHEDULER SCHEDULER;
-
-
-
-// FOR DEBUGGING A NO THREADS SITUATION. OR IT CAN RESTART THE MAIN TASK.
-void KERNEL_NoThreads(void);
-
+} extern volatile SCHEDULER;
 
 
 
@@ -114,9 +103,6 @@ void KERNEL_NoThreads(void);
   void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,
     volatile struct NEW_THREAD *current, uint32_t currentthreadflags, 
     volatile struct NEW_THREAD *next);
-
-void KERNEL_Scheduler(struct NEW_SCHEDULER *sched, struct NEW_THREAD
-*current);
 
 struct NEW_THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
 

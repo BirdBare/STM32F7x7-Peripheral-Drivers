@@ -7,6 +7,33 @@
 
       .section ._ITCM.SCHEDULING
 
+  .type  DelayMilli, %function
+  .global DelayMilli
+DelayMilli:
+  
+  ldr r1, =SysTick_MilliSec
+
+  ldr r12, =0xE000ED04
+
+  ldr r2, [r1] //get ref
+
+  Loop:
+
+    mov r3, #1 << 26
+
+    str r3, [r12]  //set systick pending bit
+
+    ldr r3, [r1] //get millisec
+
+    sub r3, r2  //get MilliSec - ref
+
+    cmp r0, r3  //check if millisec is less than milli r0
+
+  bhi Loop
+
+bx lr
+
+
 
 
   .type  CreateT, %function
