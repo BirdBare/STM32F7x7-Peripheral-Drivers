@@ -108,25 +108,12 @@ ALWAYS_INLINE uint32_t I2C_GetRXDR(I2C_TypeDef *I2Cx);
 //#define I2C_CR1_PE  I2C_CR1_PE
 
 
-static uint32_t I2C_CalculateTimingReg(uint32_t FreqHz)
-{
-  uint32_t timing = 48000000 / FreqHz;
+uint32_t I2C_CalculateTimingReg(uint32_t FreqHz);
 
-  uint32_t prescale = 1;
-  do
-  {
-    prescale++;
-  }
-  while(timing/prescale > 510);
+#define GetPreScaler(FreqHz) (((48000000 / (FreqHz)) / 510) + 1)
+#define GetTiming(FreqHz) \
+  ((((48000000/ (FreqHz)) / GetPreScaler(FreqHz)) - 25 ) >> 1)
 
-  timing /= prescale;
-
-  timing -= 25;
-  
-  timing >>= 1;
-
-  return( timing | timing << 8 | (prescale-2) << 28); 
-}
 
 #define I2C_EnableMaster(I2Cx,I2C_CR1,FreqHz,Timeout_reg) \
 do \
@@ -134,6 +121,8 @@ do \
   I2C_SetTIMEOUTR(I2Cx,Timeout_reg); \
   I2C_SetOAR1(I2Cx,0); \
   I2C_SetOAR2(I2Cx,0); \
+  /*I2C_SetTIMINGR(I2Cx,GetTiming(FreqHz) | (GetTiming(FreqHz) << 8) | \
+    (GetPreScaler(FreqHz) << 28));*/ \
   I2C_SetTIMINGR(I2Cx,I2C_CalculateTimingReg(FreqHz)); \
   I2C_SetCR1(I2Cx,I2C_CR1); \
 } while(0)
@@ -180,24 +169,19 @@ static void I2C_EnableMaster(I2C_TypeDef *I2Cx,
 #define I2C_CR2_WRITE  0
 #define I2C_CR2_READ  I2C_CR2_RD_WRN
 
-uint32_t I2C_Start(I2C_TypeDef *I2Cx, uint32_t I2C_CR2, uint32_t SlaveAddress, uint32_t NumData)
-;
-
-/*{
+ALWAYS_INLINE uint32_t I2C_Start(I2C_TypeDef *I2Cx, uint32_t I2C_CR2, uint32_t SlaveAddress, uint32_t NumData)
+{
   I2C_SetCR2(I2Cx,I2C_CR2 | SlaveAddress | (NumData << 16)); 
-  PERIPH_WaitTillReset(&(I2Cx->ISR), I2C_CR2_START); 
-  if(PERIPH_GetStatus(&(I2Cx->ISR), 0b1000) != 0)  
+
+  PERIPH_WaitTillReset(&(I2Cx->CR2), I2C_CR2_START); 
+
+  if(PERIPH_GetStatus(&(I2Cx->ISR), I2C_ISR_NACKF) != 0)  
   { 
-    I2C_SetICR(I2Cx, 0b1000); 
+    I2C_SetICR(I2Cx, I2C_ICR_NACKCF); 
     return 0;
   } 
   return 1;
 }
-*/
-
-
-
-
 
 
 
