@@ -155,21 +155,34 @@ void DMA2D_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t col
 void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
 w, uint32_t h);
 
-//void DMA2D_WaitTransfer(void);
 #define DMA2D_WaitTransfer(void) \
-  PERIPH_WaitTillReset((uint32_t *)0x4002B000,1)
+  PERIPH_WaitTillReset(&DMA2D->CR,DMA2D_CR_START)
 
 #define RGB565 0b010
 #define RGB332 0b101
 
-void DMA2D_LoadCLUT(void);
+
+
+
+
+
+#define DMA2D_LoadCLUT(void) \
+do \
+{ \
+  DMA2D_SetFGCMAR(DMA2D, (uint32_t)&DMA2D_CLUT[0]); \
+  DMA2D_SetBGCMAR(DMA2D, (uint32_t)&DMA2D_CLUT[0]); \
+  DMA2D_WaitTransfer(); \
+  DMA2D_SetFGPFCCR(DMA2D, DMA2D_FGPFCCR_START | (255 << 8)); \
+  PERIPH_WaitTillReset(&DMA2D->FGPFCCR, DMA2D_FGPFCCR_START); \
+  DMA2D_SetBGPFCCR(DMA2D, DMA2D_BGPFCCR_START | (255 << 8)); \
+  PERIPH_WaitTillReset(&DMA2D->BGPFCCR, DMA2D_BGPFCCR_START); \
+} while(0)
+
+
 
 void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h);
 
-void DMA2D_UpdateScreen(void);
-
-void DMA2D_WaitTransfer2(void);
 /*
 OPFCCR Colorformat
 OCOLR  Color to write
@@ -178,8 +191,17 @@ NLR    NUMBER LINES and pixels
 OOR    LINE OFFSET
 */
 
-void DMA2D_Reg2Mem(uint32_t OMAR, uint32_t OPFCCR, uint32_t OCOLR,
-  uint32_t NLR, uint32_t OOR);
+#define DMA2D_Reg2Mem(OMAR, OPFCCR, OCOLR, NLR, OOR) \
+do{ \
+  DMA2D_WaitTransfer(); \
+  DMA2D_SetOMAR(DMA2D,OMAR); \
+  DMA2D_SetOPFCCR(DMA2D,OPFCCR); \
+  DMA2D_SetOCOLR(DMA2D,OCOLR); \
+  DMA2D_SetNLR(DMA2D,NLR); \
+  DMA2D_SetOOR(DMA2D,OOR); \
+  DMA2D_SetBitsCR(DMA2D,0b110000000000000001); \
+} while(0)
+
 
 /*
 FGPFCCR Colorformat
@@ -192,8 +214,18 @@ FGOR    LINE OFFSET
 */
 
 
-void DMA2D_Mem2Mem(uint32_t FGMAR, uint32_t OMAR, uint32_t FGPFCCR, 
-  uint32_t NLR, uint32_t FGOR, uint32_t OOR);
+#define DMA2D_Mem2Mem(FGMAR, OMAR, FGPFCCR, NLR, FGOR, OOR) \
+do{ \
+  DMA2D_WaitTransfer(); \
+  DMA2D_SetFGMAR(DMA2D,FGMAR); \
+  DMA2D_SetOMAR(DMA2D,OMAR); \
+  DMA2D_SetFGPFCCR(DMA2D,FGPFCCR); \
+  DMA2D_SetNLR(DMA2D,NLR); \
+  DMA2D_SetFGOR(DMA2D,FGOR); \
+  DMA2D_SetOOR(DMA2D,OOR); \
+  DMA2D_ResetBitsCR(DMA2D,~0b110000000000000000); \
+  DMA2D_SetBitsCR(DMA2D,0b1); \
+} while(0)
 
 
 /*
@@ -207,8 +239,20 @@ OOR    LINE OFFSET
 FGOR    LINE OFFSET
 */
 
-void DMA2D_Mem2MemPFC(uint32_t FGMAR, uint32_t OMAR, uint32_t FGPFCCR,
-  uint32_t OPFCCR, uint32_t NLR, uint32_t FGOR, uint32_t OOR);
+#define DMA2D_Mem2MemPFC(FGMAR, OMAR, FGPFCCR, OPFCCR, NLR, FGOR, OOR) \
+do{ \
+  DMA2D_WaitTransfer(); \
+  DMA2D_SetFGMAR(DMA2D,FGMAR); \
+  DMA2D_SetOMAR(DMA2D,OMAR); \
+  DMA2D_SetFGPFCCR(DMA2D,FGPFCCR); \
+  DMA2D_SetOPFCCR(DMA2D,OPFCCR); \
+  DMA2D_SetNLR(DMA2D,NLR); \
+  DMA2D_SetFGOR(DMA2D,FGOR); \
+  DMA2D_SetOOR(DMA2D,OOR); \
+  DMA2D_ResetBitsCR(DMA2D,~0b110000000000000000); \
+  DMA2D_SetBitsCR(DMA2D,0b10000000000000001); \
+} while(0)
+
 
 
 

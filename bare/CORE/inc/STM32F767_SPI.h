@@ -23,6 +23,7 @@
 #define STM32F767_SPI_H
 
 #include "BARE_STM32F767.h"
+#include "STM32F767_RCC.h"
 
 //  PROTOTYPES FOR SIMPLE REGISTER FUNCTIONS
 //  ALL FORCED INLINE SO THEY DO NOT USE FLASH SPACE
@@ -79,16 +80,16 @@ ALWAYS_INLINE void SPI_ResetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data);
 /* APB1 */
 
 #define SPI_EnableClockAPB2(SPI_CLOCK) \
-    RCC->APB2ENR |= (SPI_CLOCK)
+  RCC_SetBitsAPB2ENR(RCC, SPI_CLOCK)
 
 #define SPI_EnableClockAPB1(SPI_CLOCK) \
-    RCC->APB1ENR |= (SPI_CLOCK)
+  RCC_SetBitsAPB1ENR(RCC, SPI_CLOCK)
   
 #define SPI_DisableClockAPB2(SPI_CLOCK) \
-    RCC->APB2RSTR |= (SPI_CLOCK)
+  RCC_SetBitsAPB2RSTR(RCC, SPI_CLOCK)
     
 #define SPI_DisableClockAPB1(SPI_CLOCK) \
-    RCC->APB1RSTR |= (SPI_CLOCK)
+  RCC_SetBitsAPB1RSTR(RCC, SPI_CLOCK)
 
 
 /* SPI CR1 OPTIONS 
@@ -185,7 +186,7 @@ do \
 } while(0)
 
 #define SPI_Disable(SPIx) \
-  SPI_ResetBitsCR1(SPIx,!0b1) 
+  SPI_ResetBitsCR1(SPIx,~0b1) 
 
 #define SPI_Send8(SPIx, SPI_DATA) \
 SPI_SetDR8(SPIx, SPI_DATA)

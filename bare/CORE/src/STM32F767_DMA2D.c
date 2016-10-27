@@ -153,7 +153,7 @@ w, uint32_t h)
     //asm("");
 //}
 
-void DMA2D_LoadCLUT(void)
+/*void DMA2D_LoadCLUT(void)
 {
   DMA2D->FGCMAR = (uint32_t)&DMA2D_CLUT[0];
   DMA2D->BGCMAR = (uint32_t)&DMA2D_CLUT[0];
@@ -173,7 +173,7 @@ void DMA2D_LoadCLUT(void)
 
   while(DMA2D->ISR & DMA2D_ISR_CAEIF)
     asm("");
-}
+}*/
 
 void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h)
