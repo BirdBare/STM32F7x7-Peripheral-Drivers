@@ -10,22 +10,7 @@
 #define STM32F767_RCC_H
 
 #include "BARE_STM32F767.h"
-//#include "STM32F767_xxx.h"
 
-
-#define RCC_EnableClockAHB1(RCC_x) RCC->AHB1ENR |= RCC_x 
-#define RCC_EnableClockAHB2(RCC_x) RCC->AHB2ENR |= RCC_x
-#define RCC_EnableClockAHB3(RCC_x) RCC->AHB3ENR |= RCC_x
-#define RCC_EnableClockAPB1(RCC_x) RCC->APB1ENR |= RCC_x
-#define RCC_EnableClockAPB2(RCC_x) RCC->APB2ENR |= RCC_x
-//Enable
-
-#define RCC_DisableClockAHB1(RCC_x) RCC->AHB1RSTR |= RCC_x
-#define RCC_DisableClockAHB2(RCC_x) RCC->AHB2RSTR |= RCC_x
-#define RCC_DisableClockAHB3(RCC_x) RCC->AHB3RSTR |= RCC_x
-#define RCC_DisableClockAPB1(RCC_x) RCC->APB1RSTR |= RCC_x
-#define RCC_DisableClockAPB2(RCC_x) RCC->APB2RSTR |= RCC_x
-//Disable
 
 
 //  RCCx->CR functions

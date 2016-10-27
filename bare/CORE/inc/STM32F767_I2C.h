@@ -10,6 +10,7 @@
 #define STM32F767_I2C_H
 
 #include "BARE_STM32F767.h"
+#include "STM32F767_PERIPH.h"
 
 //  PROTOTYPES FOR SIMPLE REGISTER FUNCTIONS
 //  ALL FORCED INLINE SO THEY DO NOT USE FLASH SPACE
@@ -106,9 +107,36 @@ ALWAYS_INLINE uint32_t I2C_GetRXDR(I2C_TypeDef *I2Cx);
 //#define I2C_CR1_TXIE  I2C_CR1_TXIE
 //#define I2C_CR1_PE  I2C_CR1_PE
 
-extern void I2C_EnableMaster(I2C_TypeDef *I2Cx,uint32_t I2C_CR1,uint32_t Timing,
-  uint32_t Timeout_reg);
 
+static uint32_t I2C_CalculateTimingReg(uint32_t FreqHz)
+{
+  uint32_t timing = 48000000 / FreqHz;
+
+  uint32_t prescale = 1;
+  do
+  {
+    prescale++;
+  }
+  while(timing/prescale > 510);
+
+  timing /= prescale;
+
+  timing -= 25;
+  
+  timing >>= 1;
+
+  return( timing | timing << 8 | (prescale-2) << 28); 
+}
+
+#define I2C_EnableMaster(I2Cx,I2C_CR1,FreqHz,Timeout_reg) \
+do \
+{ \
+  I2C_SetTIMEOUTR(I2Cx,Timeout_reg); \
+  I2C_SetOAR1(I2Cx,0); \
+  I2C_SetOAR2(I2Cx,0); \
+  I2C_SetTIMINGR(I2Cx,I2C_CalculateTimingReg(FreqHz)); \
+  I2C_SetCR1(I2Cx,I2C_CR1); \
+} while(0)
 
 
 /*__attribute__((optimize("O0")))
@@ -152,8 +180,25 @@ static void I2C_EnableMaster(I2C_TypeDef *I2Cx,
 #define I2C_CR2_WRITE  0
 #define I2C_CR2_READ  I2C_CR2_RD_WRN
 
-extern uint32_t I2C_Start(I2C_TypeDef *I2Cx, uint32_t I2C_CR2, uint32_t SlaveAdd,
-  uint32_t NumData);
+uint32_t I2C_Start(I2C_TypeDef *I2Cx, uint32_t I2C_CR2, uint32_t SlaveAddress, uint32_t NumData)
+;
+
+/*{
+  I2C_SetCR2(I2Cx,I2C_CR2 | SlaveAddress | (NumData << 16)); 
+  PERIPH_WaitTillReset(&(I2Cx->ISR), I2C_CR2_START); 
+  if(PERIPH_GetStatus(&(I2Cx->ISR), 0b1000) != 0)  
+  { 
+    I2C_SetICR(I2Cx, 0b1000); 
+    return 0;
+  } 
+  return 1;
+}
+*/
+
+
+
+
+
 
 
 /*#define I2C_AUTOEND_ON I2C_CR2_AUTOEND
@@ -189,14 +234,17 @@ static uint8_t I2C_Start(I2C_TypeDef *I2Cx, uint32_t I2C_SLAVE_ADDRESS_RW,
   return 1;
 }*/
 
-extern void I2C_Send(I2C_TypeDef *I2Cx, uint32_t I2C_DATA);
+#define I2C_Send(I2Cx, I2C_DATA) \
+  I2C_SetTXDR(I2Cx, I2C_DATA)
+
 /* WHILE REMOVED IN ASM{
   while((I2Cx->ISR & I2C_ISR_TXE) == 0)
     asm("");
   I2Cx->TXDR = I2C_DATA;
 }*/
 
-extern uint32_t I2C_Receive(I2C_TypeDef *I2Cx);
+#define I2C_Receive(I2Cx) \
+  I2C_GetRXDR(I2Cx)
 /* WHILE REMOVED IN ASM{
   while((I2Cx->ISR & I2C_ISR_RXNE) == 0)
     asm("");

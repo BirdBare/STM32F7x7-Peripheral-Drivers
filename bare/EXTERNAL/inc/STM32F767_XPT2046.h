@@ -71,7 +71,7 @@ uint32_t data=0;
     
     SPI_Send8(SPI1,0b0);
     PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);
-    data = SPI_Receive8(SPI1) << 5;
+    data = (uint32_t)(SPI_Receive8(SPI1)) << 5;
 
     SPI_Send8(SPI1,0b0);
     PERIPH_WaitTillSet(&SPI1->SR,SPI_SR_RXNE);

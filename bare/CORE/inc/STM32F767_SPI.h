@@ -175,36 +175,33 @@ ALWAYS_INLINE void SPI_ResetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data);
 //Enable DMA REQUESTS
 
 
-extern void SPI_EnableMaster(SPI_TypeDef *SPIx, uint32_t SPI_CR1, 
-  uint32_t SPI_CR2, uint32_t SPI_CRC_Polynomial);
+#define SPI_EnableMaster(SPIx, SPI_CR1, SPI_CR2, SPI_CRC_Polynomial) \
+do \
+{ \
+  SPI_SetCRCPR(SPIx,SPI_CRC_Polynomial); \
+  SPI_SetCR2(SPIx,(SPI_CR2) | 0b100); \
+  SPI_SetI2SCFGR(SPIx, 0); \
+  SPI_SetCR1(SPIx,SPI_CR1); \
+} while(0)
 
-extern void SPI_Disable(SPI_TypeDef *SPIx);
+#define SPI_Disable(SPIx) \
+  SPI_ResetBitsCR1(SPIx,!0b1) 
 
-extern void SPI_Send8(SPI_TypeDef *SPIx, uint32_t SPI_DATA);
+#define SPI_Send8(SPIx, SPI_DATA) \
+SPI_SetDR8(SPIx, SPI_DATA)
+  
+#define SPI_Receive8(SPIx) \
+  SPI_GetDR8(SPIx)
 
-extern uint32_t SPI_Receive8(SPI_TypeDef *SPIx);
+#define SPI_Send16(SPIx, SPI_DATA) \
+  SPI_SetDR16(SPIx, SPI_DATA)
 
-extern void SPI_Send16(SPI_TypeDef *SPIx, uint32_t SPI_DATA);
+#define SPI_Receive16(SPIx) \
+  SPI_GetDR16(SPIx)
 
-extern uint32_t SPI_Receive16(SPI_TypeDef *SPIx);
-
-//extern void PERIPH_LoopTillFlagSet(volatile void *FlagRegAddress, uint32_t flag);
-
-//extern void PERIPH_LoopTillFlagReset(volatile void *FlagRegAddress, uint32_t flag);
-
-//extern uint32_t PERIPH_CheckFlag(volatile void *FlagRegAddress, uint32_t flag);
 
 #define SPI_WaitTransfer(SPIx) \
   PERIPH_WaitTillReset(&(SPIx->SR), SPI_SR_BSY)
-/*
-static void SPI_WaitTransfer(SPI_TypeDef *SPIx)
-{ 
-  while((SPIx->SR & SPI_SR_BSY) != 0) 
-    asm(""); 
-}*/
-
-
-
 
 
 

@@ -59,7 +59,7 @@ I2C_Start:
     ldr r1, [r0, #4]
     ands r1, #1 << 13
   bne STARTLOOP
-  //loop until start bit is set
+  //loop until start bit is reset
 
   ldr r1, [r0, #24] //load status reg
   mov r2, #1 << 4 

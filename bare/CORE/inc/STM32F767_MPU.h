@@ -12,6 +12,7 @@
 #include "BARE_STM32F767.h"
 
 
+ALWAYS_INLINE uint32_t MPU_GetType(MPU_Type *MPUx);
 ALWAYS_INLINE void MPU_SetCTRL(MPU_Type *MPUx, uint32_t Data);
 ALWAYS_INLINE uint32_t MPU_GetCTRL(MPU_Type *MPUx);
 ALWAYS_INLINE void MPU_SetBitsCTRL(MPU_Type *MPUx, uint32_t Data);

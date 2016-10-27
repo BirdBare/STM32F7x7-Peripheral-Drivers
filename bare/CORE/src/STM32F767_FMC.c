@@ -22,7 +22,6 @@
 
 
 */
-
 void FMC_EnableSubBank(uint8_t FMC_SubBank)
 {
   FMC_Bank1->BTCR[FMC_SubBank << 1] |= FMC_BCR1_MBKEN;
