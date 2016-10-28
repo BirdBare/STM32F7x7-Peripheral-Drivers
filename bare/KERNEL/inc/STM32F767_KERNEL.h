@@ -70,11 +70,12 @@ Choose next thread to execute regaurdless of thread order
 
 struct NEW_THREAD
 {
-  void *sp; //current location of stack pointer 
 
   struct NEW_THREAD volatile *next; //next thread to be executed after this thread
   struct NEW_THREAD volatile *prev; //prev thread that was just executed
   
+  void *sp; //current location of stack pointer 
+
   uint32_t flags;
 } extern volatile MAIN;
 

@@ -49,7 +49,7 @@ b _NoSpace
 
 _SpaceAvailable:
 
-ands r5, #1 //and compare to see if before bit is set
+ands r2, #1 //and compare to see if before bit is set
 
 ldr r5, =SCHEDULER //load NSCHEDULER address
 
@@ -62,34 +62,34 @@ ldr r3, [r5] //get address of current running thread
 str r2, [r0, #12] //store flags into flag variable
 
 
-ldr r6, [r3, #4] //get current->next address
+ldr r6, [r3, #0] //get current->next address
 
-ldr r7, [r3, #8] //get current->prev address
+ldr r7, [r3, #4] //get current->prev address
 
 
 // ADD BEFORE 
 beq _After
 
-str r6, [r0, #4] //store address of current->next into new next 
+str r6, [r0, #0] //store address of current->next into new next 
 
-str r3, [r0, #8] //store address of current thread in new->prev 
+str r3, [r0, #4] //store address of current thread in new->prev 
 
-str r0, [r6, #8] //store address of new thread in current->next->prev
+str r0, [r6, #4] //store address of new thread in current->next->prev
 
-str r0, [r3, #4] //store address of new thread in current->next
+str r0, [r3, #0] //store address of new thread in current->next
 
 bne _Before //if flags is 1 then branch
 
 _After:
 
   // ADD AFTER 
-  str r3, [r0, #4] //store address of current thread in new->next 
+  str r3, [r0, #0] //store address of current thread in new->next 
 
-  str r7, [r0, #8] //store address of current->prev into new prev 
+  str r7, [r0, #4] //store address of current->prev into new prev 
 
-  str r0, [r7, #4] //store address of newthread in current->prev->next
+  str r0, [r7, #0] //store address of newthread in current->prev->next
 
-  str r0, [r3, #8] //store address of new thread in current->prev
+  str r0, [r3, #4] //store address of new thread in current->prev
 
 
 _Before:
@@ -119,7 +119,7 @@ stmdb r1!, {r11 - r12}
 //Use thread mode, PSP, FPU value doesnt matter because task just started
 
 
-str r1, [r0] //store stack pointer in sp of new thread
+str r1, [r0, #8] //store stack pointer in sp of new thread
 
 _NoSpace:
 
@@ -137,7 +137,7 @@ mov r5, #0 //mov zero for setting the sp to zero
 
 ldr r6, [r4] //get ICSR value
 
-str r5, [r7] //set thread sp zero
+str r5, [r7, #8] //set thread sp zero
 
 orr r6, #1 << 26       //Set SystickInterrupt bit. in callee save so it will be
                       //here after calling bree so we can officially load it.
@@ -190,7 +190,7 @@ SysTick_Handler:
  
   ldr r12, [r3] //load value of SysTick_MilliSec
 
-  ldr r2, [r1, #4] //load next thread to see if same
+  ldr r2, [r1, #0] //load next thread to see if same
    
   add r12, #1 //increment systick_MilliSec by 1 
   
@@ -222,14 +222,14 @@ SysTick_Handler:
  // bxne lr      //return if not equal to zero. Which means disable bit is set
 
   // START INLINE KERNEL_Scheduler function 
-    ldr r3, [r1] //load current thread stack pointer address
+    ldr r3, [r1, #8] //load current thread stack pointer address
 
-    ldr r12, [r1, #8]          // load current->prev for possible delete  
+    ldr r12, [r1, #4]          // load current->prev for possible delete  
 
     cbnz r3, _KNoDel //if sp is not zero then dont delete the thread and thread to run
    
-      str r12, [r2, #8] //set current->next->prev=current->prev
-      str r2, [r12, #4] //set current->prev->next=current->next
+      str r12, [r2, #4] //set current->next->prev=current->prev
+      str r2, [r12, #0] //set current->prev->next=current->next
     
     b _KDeleted
     
@@ -244,7 +244,7 @@ SysTick_Handler:
 
       stmdb r12!, {r2, lr}    //store fpscr and current lr value for task
 
-      str r12, [r1]            // save the address of the stack pointer to the sp variable
+      str r12, [r1, #8]            // save the address of the stack pointer to the sp variable
   
     _KDeleted:  
 
