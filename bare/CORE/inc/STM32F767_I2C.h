@@ -110,7 +110,25 @@ ALWAYS_INLINE uint32_t I2C_GetRXDR(I2C_TypeDef *I2Cx);
 //#define I2C_CR1_PE  I2C_CR1_PE
 
 
-uint32_t I2C_CalculateTimingReg(uint32_t FreqHz);
+static uint32_t I2C_CalculateTimingReg(uint32_t FreqHz)
+{
+  uint32_t timing = 48000000 / FreqHz;
+
+  uint32_t prescale = 1;
+  do
+  {
+    prescale++;
+  }
+  while(timing/prescale > 510);
+
+  timing /= prescale;
+
+  timing -= 25;
+  
+  timing >>= 1;
+
+  return( timing | timing << 8 | (prescale-2) << 28); 
+}
 
 #define GetPreScaler(FreqHz) (((48000000 / (FreqHz)) / 510) + 1)
 #define GetTiming(FreqHz) \

@@ -15,6 +15,7 @@
 #include "STM32F767_DMA2D.h"
 #include "STM32F767_MATH.h"
 #include "STM32F767_FMC_LCD.h"
+#include "STM32F767_FMC_LCD_ILI9341.h"
 
 #define FONT_ROCKWELL_18PT
 #include "LCD_FONT.h"

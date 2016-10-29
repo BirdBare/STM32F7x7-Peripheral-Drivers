@@ -14,8 +14,8 @@
 EXIT:
 bx lr
 
-  .type  PERIPH_WaitTillReset, %function
-  .global PERIPH_WaitTillReset
+//  .type  PERIPH_WaitTillReset, %function
+  //.global PERIPH_WaitTillReset
 PERIPH_WaitTillReset:
   ldr r2, [r0]
   ldr r12, =0xE000ED04
@@ -26,8 +26,8 @@ bne EXIT //if reset then exit. otherwise call the scheduler
   str r3, [r12]
 b PERIPH_WaitTillReset
 
-  .type  PERIPH_WaitTillSet, %function
-  .global PERIPH_WaitTillSet
+ // .type  PERIPH_WaitTillSet, %function
+ // .global PERIPH_WaitTillSet
 PERIPH_WaitTillSet:
   ldr r2, [r0]
   ldr r12, =0xE000ED04
@@ -38,8 +38,8 @@ beq EXIT //if set then exit
   str r3, [r12]
 b PERIPH_WaitTillSet
 
-  .type  PERIPH_GetStatus, %function
-  .global PERIPH_GetStatus
+//  .type  PERIPH_GetStatus, %function
+//  .global PERIPH_GetStatus
 PERIPH_GetStatus:
   ldr r0, [r0]
   ands r0, r1

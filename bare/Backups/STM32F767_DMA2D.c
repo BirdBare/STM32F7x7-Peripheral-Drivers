@@ -119,13 +119,13 @@ void DMA2D_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
 
 }*/
 
-void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
+/*void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
 w, uint32_t h)
 {
 
   DMA2D_Mem2Mem((uint32_t)&map[0], (uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)], LCD_COLORMODE,
     (w << 16) | h, 0, LCD_WIDTH - w);
-/*
+
 
   DMA2D->FGPFCCR = LCD_COLORMODE;
   //color format DMA2D_OPFCCR
@@ -144,8 +144,9 @@ w, uint32_t h)
 
   DMA2D->CR = DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
-  */
 }
+*/
+
 
 //void DMA2D_WaitTransfer(void)
 //{
@@ -175,6 +176,7 @@ w, uint32_t h)
     asm("");
 }*/
 
+/*
 void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
 w, uint16_t h)
 {
@@ -199,6 +201,8 @@ w, uint16_t h)
   DMA2D->CR = (0b01 << 16) |DMA2D_CR_START;
   //enable register to memory mode. No need to clear bits because both are set.
 }
+*/
+
 
 /*
 void DMA2D_UpdateScreen(void)

@@ -8,6 +8,8 @@
 
 #include "STM32F767_KERNEL.h"
 
+volatile uint32_t SysTick_MilliSec = 0;
+
 volatile struct NEW_THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0,0};
 
 volatile struct NEW_SCHEDULER SCHEDULER = {&MAIN,0};

@@ -9,7 +9,45 @@
 
 #include "STM32F767_LCD.h"
 
+
 volatile uint16_t LCD_BUFFER[240*320] __attribute__((section("._frame_buf")));
+
+
+
+void DMA2D_CopyPixelMapPFC(const uint8_t map[], uint16_t x, uint16_t y, uint16_t
+w, uint16_t h)
+{
+
+  DMA2D->FGPFCCR = 0b0101;
+  DMA2D->OPFCCR = 0b010;
+  //color format DMA2D_OPFCCR
+
+  DMA2D->FGMAR = (uint32_t)&map[0];
+  DMA2D->OMAR = (uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)];
+  //Set starting memory address location
+
+  DMA2D->FGOR = 0; // 0 because map should be continuous array.
+  DMA2D->OOR = LCD_WIDTH - w;
+  //offset OOR
+
+  DMA2D->NLR = ((uint32_t)w << 16) | h;
+  //NUM LINES AND PIXELS NLR
+
+  DMA2D_WaitTransfer();
+
+  DMA2D->CR = (0b01 << 16) |DMA2D_CR_START;
+  //enable register to memory mode. No need to clear bits because both are set.
+}
+
+
+void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
+w, uint32_t h)
+{
+
+  DMA2D_Mem2Mem((uint32_t)&map[0], (uint32_t)&LCD_BUFFER[x + (LCD_WIDTH * y)], LCD_COLORMODE,
+    (w << 16) | h, 0, LCD_WIDTH - w);
+}
+
 
 
 /*  Start LCD_UpdateScreen  */

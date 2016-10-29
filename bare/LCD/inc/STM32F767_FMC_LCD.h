@@ -15,8 +15,6 @@
 #include "STM32F767_MPU.h"
 #include "STM32F767_SYSTICK.h"
 
-#define LCD_WIDTH 240
-#define LCD_HEIGHT 320
 
 #define LCD_RSTPIN GPIO_PIN_5
 
@@ -27,7 +25,12 @@ extern volatile uint16_t *LCD_Data;
 #define LCD_WriteCommand(Command) *LCD_Command = (Command)
 #define LCD_WriteData(Data) *LCD_Data = (Data)
 #define LCD_ReadData(void) *LCD_Data
-void LCD_WriteSetting(uint16_t LCD_SETTINGREG, uint16_t LCD_DATA);
+#define LCD_WriteSetting(LCD_SETTINGREG, LCD_DATA) \
+  do \
+  { \
+    LCD_WriteCommand(LCD_SETTINGREG); \
+    LCD_WriteData(LCD_DATA); \
+  } while(0)
 
 /*
   LCD_EnableGeneralPins(); 
@@ -75,17 +78,20 @@ NWE = PD5
     GPIO_OUTSPEED_VHIGH, GPIO_PUPD_OFF, GPIO_NO_USE); \
 }
 
-#define LCD_Reset(void) \
-  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
-  GPIO_ResetOutput(GPIOE,LCD_RSTPIN); \
-  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
-  DelayMilli(30) 
+ 
 
 void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
   uint32_t FMC_DataSetup, uint32_t FMC_AddSetup);
 
-void LCD_InitLCD(void);
-void LCD_SetWindow(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+#define LCD_Reset(void) \
+do \
+{ \
+  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
+  GPIO_ResetOutput(GPIOE,LCD_RSTPIN); \
+  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
+  DelayMilli(30); \
+} while(0)
+
 
 
 

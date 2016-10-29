@@ -22,7 +22,7 @@
 
 
 */
-void FMC_EnableSubBank(uint8_t FMC_SubBank)
+/*void FMC_EnableSubBank(uint8_t FMC_SubBank)
 {
   FMC_Bank1->BTCR[FMC_SubBank << 1] |= FMC_BCR1_MBKEN;
 }
@@ -31,7 +31,6 @@ void FMC_DisableSubBank(uint8_t FMC_SubBank)
 {
   FMC_Bank1->BTCR[FMC_SubBank << 1] &= (~FMC_BCR1_MBKEN);
 }
-
 void FMC_EnableSRAM(uint8_t FMC_SubBank, uint32_t FMC_AsyncWait,
   uint32_t FMC_ExtendedMode, uint32_t FMC_WriteEnable, 
   uint32_t FMC_WaitPolarity, uint32_t FMC_BusWidth)
@@ -42,13 +41,14 @@ void FMC_EnableSRAM(uint8_t FMC_SubBank, uint32_t FMC_AsyncWait,
     //MemType is enable as SRAM
 }
 
+
 void FMC_SetTimingSRAM(uint8_t FMC_SubBank, uint32_t FMC_AccessMode,
   uint32_t FMC_BusTurn, uint32_t FMC_DataSetup, uint32_t FMC_AddSetup)
 {
   FMC_Bank1->BTCR[(FMC_SubBank << 1) + 1] = (FMC_AccessMode |
     (FMC_BusTurn << 16) | (FMC_DataSetup << 8) | FMC_AddSetup);
 }
-
+*/
 
 
 
