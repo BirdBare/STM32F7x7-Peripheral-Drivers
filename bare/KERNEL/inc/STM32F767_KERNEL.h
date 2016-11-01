@@ -20,10 +20,11 @@
 
 #define SVCall(void) __asm("svc 0")
 #define PENDSV(void) SCB->ICSR = 0b1 << 28
-#define SYSTICK(void) SCB->ICSR = 0b1 << 26
+#define SYSTICK_Interrupt(void) SCB->ICSR = 0b1 << 26
 
 #define PENDSV_PENDING(void) SCB->ICSR = 0b1 << 28
 #define SYSTICK_PENDING(void) SCB->ICSR = 0b1 << 26
+
 
 
 
@@ -98,7 +99,16 @@ struct NEW_SCHEDULER
 
 } extern volatile SCHEDULER;
 
+#define SCHEDULER_SetHold(void) SCHEDULER.flags |= SCHEDULER_HOLD;
+#define SCHEDULER_ResetHold(void) SCHEDULER.flags &= ~SCHEDULER_HOLD;
 
+#define SCHEDULER_CallScheduler(void) \
+do \
+{ \
+  SCHEDULER.flags |= SCHEDULER_SWH; \
+  SYSTICK_Interrupt(); \
+  asm volatile("nop"); \
+} while(0)
 
 // THE THREAD SWITCH FUNCTION.
   void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,

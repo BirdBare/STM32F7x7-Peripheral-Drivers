@@ -92,11 +92,11 @@
 /* 
     GPIO functions to change the mode of the pin
 */
-extern void GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
+static void GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
   const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
   const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
-  const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION);
-/*{
+  const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION)
+{
   for(uint8_t count = 0; count < 16; count++)
   {
     if(GPIO_PIN & ((uint32_t)0b1 << count)) //!= 0)
@@ -148,7 +148,7 @@ extern void GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
     }
   }
 }
-*/
+
 extern void GPIO_SetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
 
 extern void GPIO_ResetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
