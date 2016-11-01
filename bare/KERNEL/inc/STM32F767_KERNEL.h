@@ -51,11 +51,14 @@ Choose next thread to execute regaurdless of thread order
 
 */
 
-/*    FLAGS
 
-    [31] = SCHEDULER HOLD BIT
 
-*/
+
+
+
+
+
+
 
 
 
@@ -80,6 +83,21 @@ struct NEW_THREAD
   uint32_t flags;
 } extern volatile MAIN;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* SCHEDULER FLAGS 
 
 
@@ -103,12 +121,34 @@ struct NEW_SCHEDULER
 #define SCHEDULER_ResetHold(void) SCHEDULER.flags &= ~SCHEDULER_HOLD;
 
 #define SCHEDULER_CallScheduler(void) \
-do \
-{ \
-  SCHEDULER.flags |= SCHEDULER_SWH; \
-  SYSTICK_Interrupt(); \
-  asm volatile("nop"); \
-} while(0)
+  do \
+  { \
+    SCHEDULER.flags |= SCHEDULER_SWH; \
+    SYSTICK_Interrupt(); \
+    asm volatile(""); \
+  } while(0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // THE THREAD SWITCH FUNCTION.
   void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,
