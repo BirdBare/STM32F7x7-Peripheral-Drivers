@@ -11,6 +11,24 @@
 
 #include "BARE_STM32F767.h"
 
+#define RCC_EnableClockAHB1(AHB1_CLOCK_x) \
+  RCC_SetBitsAHB1ENR(RCC,AHB1_CLOCK_x)
+#define RCC_EnableClockAHB2(AHB2_CLOCK_x) \
+  RCC_SetBitsAHB2ENR(RCC,AHB2_CLOCK_x)
+#define RCC_EnableClockAPB1(APB1_CLOCK_x) \
+  RCC_SetBitsAPB1ENR(RCC,APB1_CLOCK_x)
+#define RCC_EnableClockAPB2(APB2_CLOCK_x) \
+  RCC_SetBitsAPB2ENR(RCC,APB2_CLOCK_x)
+
+#define RCC_DisableClockAHB1(AHB1_CLOCK_x) \
+  RCC_SetBitsAHB1RSTR(RCC,AHB1_CLOCK_x)
+#define RCC_DisableClockAHB2(AHB2_CLOCK_x) \
+  RCC_SetBitsAHB2RSTR(RCC,AHB2_CLOCK_x)
+#define RCC_DisableClockAPB1(APB1_CLOCK_x) \
+  RCC_SetBitsAPB1RSTR(RCC,APB1_CLOCK_x)
+#define RCC_DisableClockAPB2(APB2_CLOCK_x) \
+  RCC_SetBitsAPB2RSTR(RCC,APB2_CLOCK_x)
+
 
 
 //  RCCx->CR functions
