@@ -17,7 +17,7 @@ DelayMilli:
 
   ldr r2, [r1] //get ref
 
-  Loop:
+  DelayMilli_Loop:
 
     mov r3, #1 << 26
 
@@ -29,7 +29,7 @@ DelayMilli:
 
     cmp r0, r3  //check if millisec is less than milli r0
 
-  bhi Loop
+  bhi DelayMilli_Loop
 
 bx lr
 
