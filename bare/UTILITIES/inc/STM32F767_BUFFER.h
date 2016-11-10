@@ -29,7 +29,7 @@ struct BUFFER8
 
 uint32_t BUFFER8_Write(struct BUFFER8 *buffer, uint32_t data)
 {
-  uint32_t next = (buffer->write + 1) % buffer->buffersize;
+  uint32_t next = (buffer->write + 1) & buffer->buffersize;
 
   if(next != buffer->read)
   {
@@ -52,7 +52,7 @@ uint32_t BUFFER8_Read(struct BUFFER8 *buffer, uint8_t *data)
                         
     readpos++;
                                     
-    buffer->read = readpos % buffer->buffersize; 
+    buffer->read = readpos & buffer->buffersize; 
                                                     
     return 1;
   }
