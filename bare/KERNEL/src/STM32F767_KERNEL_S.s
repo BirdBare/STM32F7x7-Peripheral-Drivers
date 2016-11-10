@@ -45,55 +45,15 @@ cbz r0, _NoSpace //if balloc did not return zero then space available
 
 ands r2, #1 //and compare to see if before bit is set
 
-ldr r5, =SCHEDULER //load NSCHEDULER address
-
-mov r10, r3 //move function address into pc spot 
-
 and r2, #~1 //Turn off Thread pause bit incase it is set
-
-ldr r3, [r5] //get address of current running thread
 
 str r2, [r0, #12] //store flags into flag variable
 
-
-ldr r6, [r3, #0] //get current->next address
-
-ldr r7, [r3, #4] //get current->prev address
-
-
-// ADD BEFORE 
-beq _After
-
-str r6, [r0, #0] //store address of current->next into new next 
-
-str r3, [r0, #4] //store address of current thread in new->prev 
-
-str r0, [r6, #4] //store address of new thread in current->next->prev
-
-str r0, [r3, #0] //store address of new thread in current->next
-
-bne _Before //if flags is 1 then branch
-
-_After:
-
-  // ADD AFTER 
-  str r3, [r0, #0] //store address of current thread in new->next 
-
-  str r7, [r0, #4] //store address of current->prev into new prev 
-
-  str r0, [r7, #0] //store address of newthread in current->prev->next
-
-  str r0, [r3, #4] //store address of new thread in current->prev
-
-
-_Before:
+mov r10, r3 //move function address into pc spot 
 
 mov r8, #0            //set r12 to zero for new function
 
-mov r7, r0            //store thread address into callee save variable so it is not
-                        //deleted
-
-mov r11, #0x1000000   //setting PSR value 
+mov r11, #0x1000000   //set PSR Reset value 
 
 ldr r9, =KERNEL_ThreadReturn  //set link register to thread return
 
@@ -110,8 +70,33 @@ stmdb r1!, {r11 - r12}
 //sets link register from expection return to start this task
 //Use thread mode, PSP, FPU value doesnt matter because task just started
 
-
 str r1, [r0, #8] //store stack pointer in sp of new thread
+
+ldr r5, =SCHEDULER //load NSCHEDULER address
+
+mov r7, r0            //store thread address into callee save variable so it is not deleted
+
+ldr r1, [r5] //get address of current running thread
+
+
+
+// ADD BEFORE 
+beq _After
+
+ldr r2, =DLL_AddNodeBefore
+blx r2
+
+bne _Before //if flags is 1 then branch
+
+_After:
+
+  // ADD AFTER 
+ldr r2, =DLL_AddNodeAfter
+blx r2
+
+_Before:
+
+
 
 _NoSpace:
 
