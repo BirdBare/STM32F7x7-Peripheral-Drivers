@@ -31,7 +31,7 @@ struct DLL_Node
 
 
 //CREATE NODE FUNCTION
-ALWAYS_INLINE struct DLL_Node* DLL_CreateNode(void *DataAddress)
+static struct DLL_Node* DLL_CreateNode(void *DataAddress)
 {
   struct DLL_Node *NewNode = balloc(sizeof(struct DLL_Node));
 
@@ -62,7 +62,7 @@ ALWAYS_INLINE struct DLL_Node* _DLL_MakeNodeLinear(
 */
 
 //ADD NODE FUNCTIONS
-ALWAYS_INLINE void DLL_AddNodeBefore(void *ListNodeAddress, 
+static void DLL_AddNodeBefore(void *ListNodeAddress, 
   void *NewNodeAddress)
 {
   ((struct DLL_Node*)NewNodeAddress)->next = ListNodeAddress;
@@ -76,7 +76,7 @@ ALWAYS_INLINE void DLL_AddNodeBefore(void *ListNodeAddress,
 }
 
 
-ALWAYS_INLINE void DLL_AddNodeAfter(void *ListNodeAddress, 
+static void DLL_AddNodeAfter(void *ListNodeAddress, 
   void *NewNodeAddress)
 {
   ((struct DLL_Node*)NewNodeAddress)->prev = ListNodeAddress;
@@ -90,7 +90,7 @@ ALWAYS_INLINE void DLL_AddNodeAfter(void *ListNodeAddress,
 }
 //END ADD FUNCTIONS
 
-ALWAYS_INLINE void* DLL_RemoveNode(struct DLL_Node *NodeAddress)
+static void* DLL_RemoveNode(struct DLL_Node *NodeAddress)
 {
   struct DLL_Node *next = NodeAddress->next; 
   struct DLL_Node *prev = NodeAddress->prev; 

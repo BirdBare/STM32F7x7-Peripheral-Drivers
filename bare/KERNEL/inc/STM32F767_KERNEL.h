@@ -157,6 +157,10 @@ struct NEW_SCHEDULER
 
 struct NEW_THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
 
+
+void * CreateTaskStack(void *memorystart, uint32_t flags, 
+  void (*func)(void*args), void *args);
+
 /*
 
       TODO LIST

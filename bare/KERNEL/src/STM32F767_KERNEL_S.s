@@ -1,9 +1,6 @@
 
 
 .syntax unified
-.cpu cortex-m7
-.fpu fpv5-d16
-.thumb
 
       .section ._ITCM.SCHEDULING
 
@@ -44,10 +41,7 @@ push {r0-r12,lr} //push our registers and callee save registers onto stack
 bl balloc
 pop {r1-r4}
 
-cbnz r0, _SpaceAvailable //if balloc did not return zero then space available 
-b _NoSpace
-
-_SpaceAvailable:
+cbz r0, _NoSpace //if balloc did not return zero then space available 
 
 ands r2, #1 //and compare to see if before bit is set
 
@@ -99,13 +93,11 @@ mov r8, #0            //set r12 to zero for new function
 mov r7, r0            //store thread address into callee save variable so it is not
                         //deleted
 
-mov r11, #0b100001   //start setting PSR value 
+mov r11, #0x1000000   //setting PSR value 
 
 ldr r9, =KERNEL_ThreadReturn  //set link register to thread return
 
 add r1, r0 //set start location of task sp
-
-mov r11, r11, lsl #24 //set PSR to default value 
 
 stmdb r1!, {r4-r11} // push vital peices to new stack 
 stmdb r1!, {r4-r11} // push rest of dont care registers to fill stack 
