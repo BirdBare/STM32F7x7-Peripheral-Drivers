@@ -69,19 +69,38 @@ Choose next thread to execute regaurdless of thread order
   [3:1] - THREAD LABEL BITS - USER CREATED
 
 */
-#define THREAD_PAUSE ((uint32_t)1)
-#define THREAD_LABEL ((uint32_t)0b111 << 1)
+enum THREAD_FLAGS
+{
+  THREAD_HOLD = 1 << 31
+  
+};
 
-struct NEW_THREAD
+struct THREAD
 {
 
-  struct NEW_THREAD volatile *next; //next thread to be executed after this thread
-  struct NEW_THREAD volatile *prev; //prev thread that was just executed
+  struct THREAD volatile *next; //next thread to be executed after this thread
+  struct THREAD volatile *prev; //prev thread that was just executed
   
   void *sp; //current location of stack pointer 
 
+  uint32_t idlequit; //time thread is idle until in systick ticks
   uint32_t flags;
+
 } extern volatile MAIN;
+
+ALWAYS_INLINE void THREAD_SetHold(volatile struct THREAD *thread)
+{
+  thread->flags |= THREAD_HOLD;
+}
+ALWAYS_INLINE void THREAD_ResetHold(volatile struct THREAD *thread)
+{
+  thread->flags |= THREAD_HOLD;
+}
+ALWAYS_INLINE void THREAD_SetIdleQuit(volatile struct THREAD *thread,
+  uint32_t QuitTime)
+{
+  thread->idlequit = QuitTime;
+}
 
 
 
@@ -106,26 +125,38 @@ struct NEW_THREAD
   [31] - SCHEDULER HOLD BIT - PREVENTS SCHEDULER FROM SWITCHING TASK
 
 */
-#define SCHEDULER_SWH ((uint32_t)1 << 30)
-#define SCHEDULER_HOLD ((uint32_t)1 << 31)
-
-struct NEW_SCHEDULER
+enum SCHEDULER_FLAGS
 {
-  struct NEW_THREAD volatile *thread; //points to current running thread.
-  uint32_t flags;
+  SCHEDULER_HOLD = 1 << 31,
+  SCHEDULER_SWHOLD = 1 << 30
+};
 
+struct SCHEDULER
+{
+  struct THREAD volatile *thread; //points to current running thread.
+  uint32_t flags;
 
 } extern volatile SCHEDULER;
 
-#define SCHEDULER_SetHold(void) SCHEDULER.flags |= SCHEDULER_HOLD;
-#define SCHEDULER_ResetHold(void) SCHEDULER.flags &= ~SCHEDULER_HOLD;
+ALWAYS_INLINE void SCHEDULER_SetHOLD(volatile struct SCHEDULER *SCHEDULER) 
+{
+  SCHEDULER->flags |= SCHEDULER_HOLD;
+}
+ALWAYS_INLINE void SCHEDULER_ResetHOLD(volatile struct SCHEDULER *SCHEDULER)
+{
+SCHEDULER->flags &= ~SCHEDULER_HOLD;
+}
+ALWAYS_INLINE void SCHEDULER_SetSWHOLD(volatile struct SCHEDULER *SCHEDULER) 
+{
+  SCHEDULER->flags |= SCHEDULER_SWHOLD;
+}
 
 #define SCHEDULER_CallScheduler(void) \
   do \
   { \
-    SCHEDULER.flags |= SCHEDULER_SWH; \
+    SCHEDULER_SetSWHOLD(&SCHEDULER); \
     SYSTICK_Interrupt(); \
-    asm volatile(""); \
+    ASM(""); \
   } while(0)
 
 
@@ -151,11 +182,11 @@ struct NEW_SCHEDULER
 
 
 // THE THREAD SWITCH FUNCTION.
-  void* KERNEL_Switch(volatile struct NEW_SCHEDULER *sched,
-    volatile struct NEW_THREAD *current, uint32_t currentthreadflags, 
-    volatile struct NEW_THREAD *next);
+  void* KERNEL_Switch(volatile struct SCHEDULER *sched,
+    volatile struct THREAD *current, uint32_t currentthreadflags, 
+    volatile struct THREAD *next);
 
-struct NEW_THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
+struct THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
 
 
 void * CreateTaskStack(void *memorystart, uint32_t flags, 
