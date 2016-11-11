@@ -23,7 +23,7 @@ struct DLL_Node
 
 
 
-//#define DLL_CreateListLinear(ListPointer, FirstNodeAddress) \
+//#define DLL_CreateListLinear(ListPointer, FirstNodeAddress) 
 //  struct DLL_Node *ListPointer = _DLL_MakeNodeLinear(FirstNodeAddress)
 
 #define DLL_CreateList(ListPointer, FirstNodeAddress) \
@@ -49,5 +49,9 @@ ALWAYS_INLINE struct DLL_Node* _DLL_MakeNodeLinear(
 //END PRIVATE FUNCTIONS
 */
 
+struct DLL_Node* DLL_CreateNode(void *DataAddress);
+void* DLL_AddNodeBefore(void *NewNodeAddress, void *ListNodeAddress);
+void* DLL_AddNodeAfter(void *NewNodeAddress, void *ListNodeAddress);
+void* DLL_RemoveNode(struct DLL_Node *NodeAddress);
 
 #endif

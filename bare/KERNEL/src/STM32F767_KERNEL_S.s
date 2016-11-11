@@ -33,73 +33,45 @@ bx lr
 
 
 
-  .type  CreateT, %function
-  .global CreateT
-CreateT:
+  .type  KERNEL_CreateTask, %function
+  .global KERNEL_CreateTask
+KERNEL_CreateTask:
  
-push {r0-r12,lr} //push our registers and callee save registers onto stack
+push {r0-r8,lr} //push our registers and callee save registers onto stack
 bl balloc
 pop {r1-r4}
 
 cbz r0, _NoSpace //if balloc did not return zero then space available 
 
-ands r2, #1 //and compare to see if before bit is set
+add r12, r1, r0 //set start location of task sp
 
-and r2, #~1 //Turn off Thread pause bit incase it is set
+mov r1, r4 //mov void *args to "r0"
 
-str r2, [r0, #12] //store flags into flag variable
+mov r7, r3 //move function address into pc spot 
 
-mov r10, r3 //move function address into pc spot 
+mov r5, #0            //set r12 to zero for new function
 
-mov r8, #0            //set r12 to zero for new function
+mov r8, #0x1000000   //set PSR Reset value 
 
-mov r11, #0x1000000   //set PSR Reset value 
+ldr r6, =KERNEL_ThreadReturn  //set link register to thread return
 
-ldr r9, =KERNEL_ThreadReturn  //set link register to thread return
 
-add r1, r0 //set start location of task sp
+stmdb r12!, {r1-r8} // push vital peices to new stack 
+stmdb r12!, {r1-r8} // push rest of dont care registers to fill stack 
 
-stmdb r1!, {r4-r11} // push vital peices to new stack 
-stmdb r1!, {r4-r11} // push rest of dont care registers to fill stack 
+ldr r6, =0xfffffffD  //Generic Exception return. Would be used by starting task
 
-ldr r12, =0xfffffffD  //Generic Exception return. Would be used by starting task
+vstmdb r12!, {d0-d15} //push FPU registers to stack
 
-vstmdb r1!, {d0-d15} //push FPU registers to stack
-
-stmdb r1!, {r11 - r12}
+stmdb r12!, {r5 - r6}
 //sets link register from expection return to start this task
 //Use thread mode, PSP, FPU value doesnt matter because task just started
 
-str r1, [r0, #8] //store stack pointer in sp of new thread
-
-ldr r5, =SCHEDULER //load NSCHEDULER address
-
-
-
-
-ldr r1, [r5] //get address of current running thread
-
-// ADD BEFORE 
-beq _After
-
-ldr r2, =DLL_AddNodeBefore
-blx r2
-
-bne _Before //if flags is 1 then branch
-
-_After:
-
-  // ADD AFTER 
-ldr r2, =DLL_AddNodeAfter
-blx r2
-
-_Before:
-
-
+str r12, [r0, #8] //store stack pointer in sp of new thread
 
 _NoSpace:
 
-pop {r4-r12, lr}
+pop {r4-r8, lr}
     bx lr
 
   .type  KERNEL_ThreadReturn, %function

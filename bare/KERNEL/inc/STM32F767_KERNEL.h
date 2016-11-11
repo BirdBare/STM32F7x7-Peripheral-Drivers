@@ -15,6 +15,7 @@
 #include "stm32f7xx.h"
 #include "STM32F767_SYSTICK.h"
 #include "STM32F767_BALLOC.h"
+#include "STM32F767_DLL.h"
 
 
 
@@ -83,8 +84,8 @@ struct THREAD
   
   void *sp; //current location of stack pointer 
 
-  uint32_t idlequit; //time thread is idle until in systick ticks
   uint32_t flags;
+  uint32_t idlequit; //time thread is idle until in systick ticks
 
 } extern volatile MAIN;
 
@@ -150,6 +151,13 @@ ALWAYS_INLINE void SCHEDULER_SetSwitchHold(volatile struct SCHEDULER *SCHEDULER)
 {
   SCHEDULER->flags |= SCHEDULER_SWHOLD;
 }
+ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *SCHEDULER)
+{
+  struct THREAD* ret;
+  ASM("ldr %0, [%1]" : "=r" (ret) : "r" (SCHEDULER));
+  return ret;
+
+}
 
 #define SCHEDULER_CallScheduler(void) \
   do \
@@ -186,12 +194,18 @@ ALWAYS_INLINE void SCHEDULER_SetSwitchHold(volatile struct SCHEDULER *SCHEDULER)
     volatile struct THREAD *current, uint32_t currentthreadflags, 
     volatile struct THREAD *next);
 
-struct THREAD* CreateT(uint32_t stacksize, uint32_t flags, void *func, void *args);
+struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func, void *args);
 
-
-void * CreateTaskStack(void *memorystart, uint32_t flags, 
-  void (*func)(void*args), void *args);
-
+#define CreateT(stacksize,ThreadFlags,func,args) \
+  do \
+  { \
+    struct THREAD* newthread = \
+      KERNEL_CreateTask(stacksize,ThreadFlags,func,args); \
+    newthread->flags = ThreadFlags; \
+    newthread->idlequit = 0; \
+    DLL_AddNodeAfter(newthread, \
+      (void *)(SCHEDULER_CurrentThread(&SCHEDULER))); \
+  } while(0);
 /*
 
       TODO LIST
