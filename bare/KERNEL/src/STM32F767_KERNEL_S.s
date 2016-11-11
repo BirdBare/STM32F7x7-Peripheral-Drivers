@@ -128,13 +128,13 @@ SysTick_Handler:
   
   ldr r2, =0xE000E010 //load address of systick control register
 
-  ldr r0, =SCHEDULER //gets address of NSCHEDULER 
+  ldr r1, =SCHEDULER //gets address of NSCHEDULER 
 
   ldr r2, [r2] //load systick control register value
 
   ldr r3, =SysTick_MilliSec //gets address of SysTick_MilliSec variable 
 
-  ldr r1, [r0] //load thread address to check if only one thread
+  ldr r0, [r1] //load thread address to check if only one thread
   
   ands r2, #1 << 16 //test if countflag is set. The countflag gets set everytime  //the counter counts to zero. So we can make sure it was a
                     //counter interrupt or a program interrupt. That way we only
@@ -142,7 +142,7 @@ SysTick_Handler:
  
   ldr r2, [r3] //load value of SysTick_MilliSec
 
-  ldr r12, [r0, #4] //load flags variable value
+  ldr r12, [r1, #4] //load flags variable value
    
   add r2, #1 //increment systick_MilliSec by 1 
   
@@ -156,7 +156,7 @@ SysTick_Handler:
     and r3, r12, #1 << 30 //scheduler switch hold flag test. if set then we dont schedule for one round. so we also clear the bit
     
     and r2, r12, #~(1 << 30) //clear switch hold bit.
-    str r2, [r0, #4]      //str new flag value.
+    str r2, [r1, #4]      //str new flag value.
 
     cbnz r3,  __EXIT
     
@@ -164,23 +164,22 @@ SysTick_Handler:
 
   and r3, r12, #1 << 31 //scheduler hold flag test. if set then we dont schedule
   
-  ldr r2, [r1, #0] //load next thread to see if same
+  ldr r2, [r0, #0] //load next thread to see if same
 
   cbnz r3, __EXIT
 
-  cmp r2, r1 //compare to see if addresses are the same
+  cmp r2, r0 //compare to see if addresses are the same
 
   beq __EXIT //if thread and next thread are equal we don't need to do anything
 
   // START INLINE KERNEL_Scheduler function 
-    ldr r3, [r1, #8] //load current thread stack pointer address
+    ldr r3, [r0, #8] //load current thread stack pointer address
 
-    ldr r12, [r1, #4]          // load current->prev for possible delete  
+    ldr r12, [r0, #4]          // load current->prev for possible delete  
 
     cbnz r3, _KNoDel //if sp is not zero then dont delete the thread and thread to run
    
-      str r12, [r2, #4] //set current->next->prev=current->prev
-      str r2, [r12, #0] //set current->prev->next=current->next
+      bl KERNEL_DeleteHandler
     
     b _KDeleted
     
@@ -195,18 +194,14 @@ SysTick_Handler:
 
       stmdb r12!, {r2, lr}    //store fpscr and current lr value for task
 
-      str r12, [r1, #8]            // save the address of the stack pointer to the sp variable
+      str r12, [r0, #8]            // save the address of the stack pointer to the sp variable
   
     _KDeleted:  
 
     //branch to kernel switch 
     //assumes the new sp is in r0 
-   
-    ldr r2, [r1, #12] //get current thread flags for function call
 
-
-
-    bl KERNEL_Switch  //loads new thread values of threads stack
+    bl KERNEL_SwitchHandler  //loads new thread values of threads stack
 
 
 
