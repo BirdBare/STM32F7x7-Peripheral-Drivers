@@ -138,15 +138,15 @@ struct SCHEDULER
 
 } extern volatile SCHEDULER;
 
-ALWAYS_INLINE void SCHEDULER_SetHOLD(volatile struct SCHEDULER *SCHEDULER) 
+ALWAYS_INLINE void SCHEDULER_SetHold(volatile struct SCHEDULER *SCHEDULER) 
 {
   SCHEDULER->flags |= SCHEDULER_HOLD;
 }
-ALWAYS_INLINE void SCHEDULER_ResetHOLD(volatile struct SCHEDULER *SCHEDULER)
+ALWAYS_INLINE void SCHEDULER_ResetHold(volatile struct SCHEDULER *SCHEDULER)
 {
 SCHEDULER->flags &= ~SCHEDULER_HOLD;
 }
-ALWAYS_INLINE void SCHEDULER_SetSWHOLD(volatile struct SCHEDULER *SCHEDULER) 
+ALWAYS_INLINE void SCHEDULER_SetSwitchHold(volatile struct SCHEDULER *SCHEDULER) 
 {
   SCHEDULER->flags |= SCHEDULER_SWHOLD;
 }
@@ -154,7 +154,7 @@ ALWAYS_INLINE void SCHEDULER_SetSWHOLD(volatile struct SCHEDULER *SCHEDULER)
 #define SCHEDULER_CallScheduler(void) \
   do \
   { \
-    SCHEDULER_SetSWHOLD(&SCHEDULER); \
+    SCHEDULER_SetSwitchHold(&SCHEDULER); \
     SYSTICK_Interrupt(); \
     ASM(""); \
   } while(0)

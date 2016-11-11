@@ -74,11 +74,10 @@ str r1, [r0, #8] //store stack pointer in sp of new thread
 
 ldr r5, =SCHEDULER //load NSCHEDULER address
 
-mov r7, r0            //store thread address into callee save variable so it is not deleted
+
+
 
 ldr r1, [r5] //get address of current running thread
-
-
 
 // ADD BEFORE 
 beq _After
@@ -110,7 +109,11 @@ KERNEL_ThreadReturn:
 
 ldr r4, =0xE000ED04 //Load ICSR address
 
+ldr r7, =SCHEDULER
+
 mov r5, #0 //mov zero for setting the sp to zero
+
+ldr r7, [r7]
 
 ldr r6, [r4] //get ICSR value
 
