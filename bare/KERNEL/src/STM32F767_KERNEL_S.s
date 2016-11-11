@@ -175,8 +175,6 @@ SysTick_Handler:
   // START INLINE KERNEL_Scheduler function 
     ldr r3, [r0, #8] //load current thread stack pointer address
 
-    ldr r12, [r0, #4]          // load current->prev for possible delete  
-
     cbnz r3, _KNoDel //if sp is not zero then dont delete the thread and thread to run
    
       bl KERNEL_DeleteHandler
