@@ -192,7 +192,7 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 // THE THREAD SWITCH FUNCTION.
   void* KERNEL_SwitchHandler(volatile struct THREAD *current);
 
-  void* KERNEL_DeleteHandler(volatile struct THREAD *current);
+  void KERNEL_DeleteHandler(volatile struct THREAD *current);
 
 struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func, void *args);
 

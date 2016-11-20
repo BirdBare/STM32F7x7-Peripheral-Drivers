@@ -18,7 +18,18 @@ volatile struct SCHEDULER SCHEDULER = {&MAIN,SCHEDULER_HOLD};
 __attribute__((section("._ITCM.SCHEDULING")))
   void* KERNEL_SwitchHandler(volatile struct THREAD *current)
 {
+  do
+  {
+    if(current->sp == 0)
+    {
+      KERNEL_DeleteHandler(current);
+    }
+
   current = current->next;
+  } while(current->sp == 0);
+
+
+
   SCHEDULER.thread = current;
   SCB_InvalidateICache();
   
@@ -26,15 +37,9 @@ __attribute__((section("._ITCM.SCHEDULING")))
 }
 
 __attribute__((section("._ITCM.SCHEDULING")))
-  void* KERNEL_DeleteHandler(volatile struct THREAD *thread)
+  void KERNEL_DeleteHandler(volatile struct THREAD *thread)
 {
-  do
-  {
     DLL_RemoveNode((void *)thread);
     bree((void *)thread);
-    thread = thread->next;
-  } while(thread->sp == 0);
-
-  return (void *)thread->prev;
 }
 
