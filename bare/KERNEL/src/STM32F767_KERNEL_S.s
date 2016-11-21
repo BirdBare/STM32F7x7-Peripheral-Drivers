@@ -8,41 +8,44 @@
   .global KERNEL_CreateTask
 KERNEL_CreateTask:
  
-push {r0-r8,lr} //push our registers and callee save registers onto stack
+push {r0-r4,lr} //push our registers and callee save registers onto stack
 bl balloc
 pop {r1-r4}
 
 cbz r0, _NoSpace //if balloc did not return zero then space available 
 
-add r12, r1, r0 //set start location of task sp
+mov r12, r4 //mov void *args to "r0"
 
-mov r1, r4 //mov void *args to "r0"
+add lr, r1, r0 //set start location of task sp
 
-mov r7, r3 //move function address into pc spot 
+mov r1, #0            //set r12 to zero for new function
 
-mov r5, #0            //set r12 to zero for new function
+ldr r2, =KERNEL_ThreadReturn  //set link register to thread return
 
-mov r8, #0x1000000   //set PSR Reset value 
+//r3 set by pop
 
-ldr r6, =KERNEL_ThreadReturn  //set link register to thread return
+mov r4, #0x1000000   //set PSR Reset value 
 
+stmdb lr!, {r1-r4} // push vital peices to new stack 
 
-stmdb r12!, {r1-r8} // push vital peices to new stack 
-stmdb r12!, {r1-r8} // push rest of dont care registers to fill stack 
+mov r1, r12
 
-ldr r6, =0xfffffffD  //Generic Exception return. Would be used by starting task
+stmdb lr!, {r1-r4} // push vital peices to new stack 
+stmdb lr!, {r1-r8} // push rest of dont care registers to fill stack 
 
-vstmdb r12!, {d0-d15} //push FPU registers to stack
+ldr r4, =0xfffffffD  //Generic Exception return. Would be used by starting task
 
-stmdb r12!, {r5 - r6}
+vstmdb lr!, {d0-d15} //push FPU registers to stack
+
+stmdb lr!, {r3 - r4}
 //sets link register from expection return to start this task
 //Use thread mode, PSP, FPU value doesnt matter because task just started
 
-str r12, [r0, #8] //store stack pointer in sp of new thread
+str lr, [r0, #8] //store stack pointer in sp of new thread
 
 _NoSpace:
 
-pop {r4-r8, lr}
+pop {r4, lr}
     bx lr
 
   .type  KERNEL_ThreadReturn, %function
