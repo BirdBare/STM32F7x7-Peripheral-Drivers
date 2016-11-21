@@ -50,13 +50,18 @@ uint32_t SysTick_MilliSec(void)
 
 void DelayMilli(uint32_t Milli)
 {
-  uint32_t ref = SysTick_MilliSec();
+  struct THREAD *thread = SCHEDULER_CurrentThread(&SCHEDULER);
 
+  uint32_t ref = thread->temp1 = SysTick_MilliSec();
+
+  thread->temp2 = Milli;
+  
   do
   {
     SCHEDULER_CallScheduler();
   } while((SysTick_MilliSec() - ref) < Milli);
 
+  thread->temp2 = 0;
 }
 
 

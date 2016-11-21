@@ -72,8 +72,7 @@ Choose next thread to execute regaurdless of thread order
 */
 enum THREAD_FLAGS
 {
-  THREAD_HOLD = 1 << 31
-  
+  THREAD_COMPSETRESET = 1 << 15 
 };
 
 struct THREAD
@@ -84,23 +83,27 @@ struct THREAD
   
   void *sp; //current location of stack pointer 
 
-  uint32_t flags;
-  uint32_t idlequit; //time thread is idle until in systick ticks
+  uint16_t flags;
+  uint16_t timeoutcount;
+
+  uint32_t temp1; 
+  uint32_t temp2; 
+  //general use
+  //for DelayMilli: temp1 = Reference Time
+  //                temp2 = Delay time in MilliSec
+  //
+  //for PERIPH_WaitTill: temp1 = status register address
+  //                     temp2 = flag to wait for
 
 } extern volatile MAIN;
 
 ALWAYS_INLINE void THREAD_SetHold(volatile struct THREAD *thread)
 {
-  thread->flags |= THREAD_HOLD;
+  thread->temp2 = ~0; //set to max value so it never stops delay
 }
 ALWAYS_INLINE void THREAD_ResetHold(volatile struct THREAD *thread)
 {
-  thread->flags |= THREAD_HOLD;
-}
-ALWAYS_INLINE void THREAD_SetIdleQuit(volatile struct THREAD *thread,
-  uint32_t QuitTime)
-{
-  thread->idlequit = QuitTime;
+  thread->temp2 = 0; //set to min so it never delays
 }
 
 
@@ -205,7 +208,9 @@ struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func,
     struct THREAD* newthread = \
       KERNEL_CreateTask(stacksize,ThreadFlags,func,args); \
     newthread->flags = ThreadFlags; \
-    newthread->idlequit = 0; \
+    newthread->timeoutcount = 0; \
+    newthread->temp1 = 0; \
+    newthread->temp2 = 0; \
     DLL_AddNodeAfter(newthread, \
       (void *)(SCHEDULER_CurrentThread(&SCHEDULER))); \
   } while(0);
