@@ -4,35 +4,6 @@
 
       .section ._ITCM.SCHEDULING
 
-  .type  DelayMilli, %function
-  .global DelayMilli
-DelayMilli:
-  
-  ldr r1, =SysTick_MilliSec
-
-  ldr r12, =0xE000ED04
-
-  ldr r2, [r1] //get ref
-
-  DelayMilli_Loop:
-
-    mov r3, #1 << 26
-
-    str r3, [r12]  //set systick pending bit
-
-    ldr r3, [r1] //get millisec
-
-    sub r3, r2  //get MilliSec - ref
-
-    cmp r0, r3  //check if millisec is less than milli r0
-
-  bhi DelayMilli_Loop
-
-bx lr
-
-
-
-
   .type  KERNEL_CreateTask, %function
   .global KERNEL_CreateTask
 KERNEL_CreateTask:
@@ -132,7 +103,7 @@ SysTick_Handler:
 
   ldr r2, [r2] //load systick control register value
 
-  ldr r3, =SysTick_MilliSec //gets address of SysTick_MilliSec variable 
+  ldr r3, =SysTick_Ticks //gets address of SysTick_MilliSec variable 
 
   ldr r0, [r1] //load thread address to check if only one thread
   
