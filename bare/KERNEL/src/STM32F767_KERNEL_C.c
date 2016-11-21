@@ -9,10 +9,11 @@
 #include "STM32F767_KERNEL.h"
 #include "STM32F767_SYSTICK.h"
 
-volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0,0,0,0,0};
+volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0,0,~0,0,0};
 
 volatile struct SCHEDULER SCHEDULER = {&MAIN,SCHEDULER_HOLD};
 
+uint32_t timeoutmax = 100;
 
 // THE THREAD SWITCH FUNCTION.
 __attribute__((section("._ITCM.SCHEDULING")))
@@ -37,7 +38,7 @@ __attribute__((section("._ITCM.SCHEDULING")))
 
   } while(current->sp == 0  ||
 
-          (timeoutcount != 0 && 
+          ((timeoutcount & ~THREAD_COMPSETRESET) < timeoutmax && 
             !!(*(uint32_t *)temp1 & temp2) != 
             !!(timeoutcount & THREAD_COMPSETRESET)) ||
 
