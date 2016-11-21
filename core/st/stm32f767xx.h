@@ -1323,7 +1323,7 @@ typedef struct
 #define FLASH_END              0x081FFFFFU /*!< FLASH end address */
 
 /* Legacy define */
-#define FLASH_BASE     FLASHAXI_BASE
+#define FLASH_BASE     FLASHITCM_BASE
 
 /*!< Peripheral memory map */
 #define APB1PERIPH_BASE        PERIPH_BASE
