@@ -11,7 +11,7 @@
 
 #include "stm32f7xx.h"
 
-#define SysTick_EnableTimer(void) SysTick_Enable(_FCPU / 1000 - 1) 
+#define SysTick_EnableTimer(void) SysTick_Enable(_FCPU / 1000) 
 
 void SysTick_Enable(uint32_t TicksPerInterrupt);
 

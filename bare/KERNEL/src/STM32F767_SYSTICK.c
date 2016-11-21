@@ -15,6 +15,20 @@
 volatile uint32_t SysTick_Ticks = 0;
 volatile uint32_t SysTick_TicksPerMilli = 1;
 
+void SysTick_Handler(void)
+{
+  SysTick_Ticks++;
+  //increment
+
+  if((SCHEDULER.flags & (SCHEDULER_HOLD | SCHEDULER_SWHOLD)) == 0)
+  {
+    SCHEDULER_CallScheduler();
+  }
+  //only call if neither flag is set
+
+  SCHEDULER.flags &= ~SCHEDULER_SWHOLD;
+  //turn off scheduler switch hold. only on once so we will always disable.
+}
 
 
 void SysTick_Enable(uint32_t TicksPerInterrupt) 

@@ -19,9 +19,9 @@
 
 
 
-#define SVCall(void) __asm("svc 0")
-#define PENDSV(void) SCB->ICSR = 0b1 << 28
-#define SYSTICK_Interrupt(void) SCB->ICSR = 0b1 << 26
+#define SVCall_Interrupt(void) __asm("svc 0")
+#define PendSV_Interrupt(void) SCB->ICSR = 0b1 << 28
+#define SysTick_Interrupt(void) SCB->ICSR = 0b1 << 26
 
 #define PENDSV_PENDING(void) SCB->ICSR = 0b1 << 28
 #define SYSTICK_PENDING(void) SCB->ICSR = 0b1 << 26
@@ -163,7 +163,7 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
   do \
   { \
     SCHEDULER_SetSwitchHold(&SCHEDULER); \
-    SYSTICK_Interrupt(); \
+    PendSV_Interrupt(); \
     ASM(""); \
   } while(0)
 

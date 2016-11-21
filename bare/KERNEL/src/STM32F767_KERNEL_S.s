@@ -50,22 +50,29 @@ KERNEL_ThreadReturn:
 
 //  NONE OF THE REGISTERS MATTER BECAUSE WE WILL DELETE THREAD AT SCHEDULE SWITCH
 
-ldr r4, =0xE000ED04 //Load ICSR address
+ldr r12, =0xE000ED04 //Load ICSR address
 
-ldr r7, =SCHEDULER
+ldr r0, =SCHEDULER
 
-mov r5, #0 //mov zero for setting the sp to zero
+mov r2, #0 //mov zero for setting the sp to zero
 
-ldr r7, [r7]
+ldr r8, [r0, #4] //load scheduler flags
 
-ldr r6, [r4] //get ICSR value
+ldr r1, [r0] //load current thread address
 
-str r5, [r7, #8] //set thread sp zero
+and r8, #~(0b1 << 31) //disable hold
+orr r8, #(0b1 << 30) //set switch hold
 
-orr r6, #1 << 26       //Set SystickInterrupt bit. in callee save so it will be
+ldr lr, [r12] //get ICSR value
+
+str r8, [r0, #4] //store scheduler flags
+
+str r2, [r1, #8] //set thread sp zero
+
+orr lr, #1 << 28       //Set Interrupt bit. in callee save so it will be
                       //here after calling bree so we can officially load it.
 
-str r6, [r4] //officially Call Scheduler for the switch and delete
+str lr, [r12] //officially Call Scheduler for the switch and delete
 
 lop: //never end because we need to kill it with the SCHEDULER
 b lop
@@ -93,46 +100,17 @@ END OF THREAD MEMORY (Higher Mem Address)
 START OF THREAD MEMORY (Lower Mem Address)
 */
 
-  .type  SysTick_Handler, %function
-  .global SysTick_Handler
-SysTick_Handler:
+  .type  PendSV_Handler, %function
+  .global PendSV_Handler
+PendSV_Handler:
   
-  ldr r2, =0xE000E010 //load address of systick control register
 
   ldr r1, =SCHEDULER //gets address of NSCHEDULER 
 
-  ldr r2, [r2] //load systick control register value
-
-  ldr r3, =SysTick_Ticks //gets address of SysTick_MilliSec variable 
-
   ldr r0, [r1] //load thread address to check if only one thread
   
-  ands r2, #1 << 16 //test if countflag is set. The countflag gets set everytime  //the counter counts to zero. So we can make sure it was a
-                    //counter interrupt or a program interrupt. That way we only
-                    //need to write one interrupt handler for the scheduler.
- 
-  ldr r2, [r3] //load value of SysTick_MilliSec
-
   ldr r12, [r1, #4] //load flags variable value
    
-  add r2, #1 //increment systick_MilliSec by 1 
-  
-// ONLY RUNS IF SYSTICK IS CALLED BY REACHING ZERO
-  beq _NotCalled //if systick call bit is not equal to zero (not set) then we skip the below code. We
-                 //do not need to increment the clock this time.
-  
-    str r2, [r3] //store new SysTick_MilliSec value
-  
-
-    and r3, r12, #1 << 30 //scheduler switch hold flag test. if set then we dont schedule for one round. so we also clear the bit
-    
-    and r2, r12, #~(1 << 30) //clear switch hold bit.
-    str r2, [r1, #4]      //str new flag value.
-
-    cbnz r3,  __EXIT
-    
-  _NotCalled:
-
   and r3, r12, #1 << 31 //scheduler hold flag test. if set then we dont schedule
   
   ldr r2, [r0, #0] //load next thread to see if same
