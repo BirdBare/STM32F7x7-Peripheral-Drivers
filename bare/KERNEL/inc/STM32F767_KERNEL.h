@@ -189,7 +189,10 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 
 
 
-// THE THREAD SWITCH FUNCTION.
+  // KERNEL FUNCTIONS
+
+  void PendSV_Handler(void);
+
   void* KERNEL_SwitchHandler(volatile struct THREAD *current);
 
   void KERNEL_DeleteHandler(volatile struct THREAD *current);

@@ -19,7 +19,7 @@ uint32_t SysTick_MilliSec(void);
 
 void DelayMilli(uint32_t Milli);
 
-
+void SysTick_Handler(void);
 
 
 

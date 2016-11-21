@@ -69,13 +69,12 @@ str r8, [r0, #4] //store scheduler flags
 
 str r2, [r1, #8] //set thread sp zero
 
-orr lr, #1 << 28       //Set Interrupt bit. in callee save so it will be
-                      //here after calling bree so we can officially load it.
+orr lr, #1 << 28       //Set Interrupt bit.
 
 str lr, [r12] //officially Call Scheduler for the switch and delete
 
-lop: //never end because we need to kill it with the SCHEDULER
-b lop
+1: //never end because we need to kill it with the SCHEDULER
+b 1b
 
 
 /*  MEMORY USAGE STRUCTURE
@@ -104,28 +103,26 @@ START OF THREAD MEMORY (Lower Mem Address)
   .global PendSV_Handler
 PendSV_Handler:
   
-
   ldr r1, =SCHEDULER //gets address of NSCHEDULER 
 
   ldr r0, [r1] //load thread address to check if only one thread
   
   ldr r12, [r1, #4] //load flags variable value
-   
-  and r3, r12, #1 << 31 //scheduler hold flag test. if set then we dont schedule
-  
-  ldr r2, [r0, #0] //load next thread to see if same
 
-  cbnz r3, __EXIT
+  ldr r2, [r0, #0] //load next thread to see if same
+   
+  ands r3, r12, #1 << 31 //scheduler hold flag. if set then dont schedule
+  
+  bne __EXIT
 
   cmp r2, r0 //compare to see if addresses are the same
 
+  ldr r3, [r0, #8] //load current thread stack pointer address
+
   beq __EXIT //if thread and next thread are equal we don't need to do anything
 
-  // START INLINE KERNEL_Scheduler function 
-    ldr r3, [r0, #8] //load current thread stack pointer address
+    cbz r3, _KDeleted //if sp is zero then dont save the thread
 
-    cbz r3, _KDeleted //if sp is not zero then dont delete the thread and thread to run
-   
       mrs r12, psp //get current thread sp memory address
 
       vmrs r2, FPSCR          //get FPSCR
@@ -155,8 +152,6 @@ PendSV_Handler:
     ldmia r0!, {r4-r11} // load thread values
  
     msr psp, r0 //store new stack pointer address into process stack pointer
-
-  // END INLINE 
 
   __EXIT:
 
