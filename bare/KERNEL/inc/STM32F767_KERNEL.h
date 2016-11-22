@@ -208,7 +208,7 @@ struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func,
     struct THREAD* newthread = \
       KERNEL_CreateTask(stacksize,ThreadFlags,func,args); \
     newthread->flags = ThreadFlags; \
-    newthread->timeoutcount = ~0; \
+    newthread->timeoutcount = 0; \
     newthread->temp1 = 0; \
     newthread->temp2 = 0; \
     DLL_AddNodeAfter(newthread, \

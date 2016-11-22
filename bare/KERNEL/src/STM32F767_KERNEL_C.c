@@ -5,11 +5,15 @@
 //
 
 
+//special KERNEL function that deals with timeout tasks.
+//task has flag that tells the kernel what to do to it on timeout
+//kernel can reset or kill then notify the pipe.
+
 
 #include "STM32F767_KERNEL.h"
 #include "STM32F767_SYSTICK.h"
 
-volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0,0,~0,0,0};
+volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0};
 
 volatile struct SCHEDULER SCHEDULER = {&MAIN,SCHEDULER_HOLD};
 
@@ -36,13 +40,13 @@ __attribute__((section("._ITCM.SCHEDULING")))
     temp2 = current->temp2;
     timeoutcount = current->timeoutcount;
 
-  } while(current->sp == 0  ||
-
-          ((timeoutcount & ~THREAD_COMPSETRESET) < timeoutmax && 
+  } while((timeoutcount != 0 && 
             !!(*(uint32_t *)temp1 & temp2) != 
             !!(timeoutcount & THREAD_COMPSETRESET)) ||
 
           (SysTick_MilliSec() - temp1) < temp2 ||
+            
+          current->sp == 0  ||
 
           0 );
 
@@ -58,5 +62,13 @@ __attribute__((section("._ITCM.SCHEDULING")))
 {
     DLL_RemoveNode((void *)thread);
     bree((void *)thread);
+}
+
+__attribute__((section("._ITCM.SCHEDULING")))
+  void KERNEL_TimeoutHandler(volatile struct THREAD *thread)
+{
+  
+
+
 }
 

@@ -15,7 +15,7 @@ void PERIPH_WaitTillReset(volatile void *RegisterAddress, uint32_t flag)
   thread->temp1 = (uint32_t)RegisterAddress;
   thread->temp2 = flag;
 
-  thread->timeoutcount = 0;
+  thread->timeoutcount = 1;
 
   while((*(uint32_t *)RegisterAddress & flag) != 0)
   {
@@ -23,7 +23,7 @@ void PERIPH_WaitTillReset(volatile void *RegisterAddress, uint32_t flag)
   }
 
   thread->temp2 = 0;
-  thread->timeoutcount = ~0;
+  thread->timeoutcount = 0;
 }
 void PERIPH_WaitTillSet(volatile void *RegisterAddress, uint32_t flag)
 {
@@ -32,7 +32,7 @@ void PERIPH_WaitTillSet(volatile void *RegisterAddress, uint32_t flag)
   thread->temp1 = (uint32_t)RegisterAddress;
   thread->temp2 = flag;
 
-  thread->timeoutcount = THREAD_COMPSETRESET;
+  thread->timeoutcount = 1 | THREAD_COMPSETRESET;
 
   while((*(uint32_t *)RegisterAddress & flag) == 0)
   {
@@ -40,7 +40,7 @@ void PERIPH_WaitTillSet(volatile void *RegisterAddress, uint32_t flag)
   }
 
   thread->temp2 = 0;
-  thread->timeoutcount = ~0;
+  thread->timeoutcount = 0;
 }
 
 
