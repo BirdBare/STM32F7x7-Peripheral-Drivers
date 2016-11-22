@@ -197,9 +197,9 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 
   void PendSV_Handler(void);
 
-  void* KERNEL_SwitchHandler(volatile struct THREAD *current);
+  void* KERNEL_SwitchHandler(struct THREAD *current);
 
-  struct THREAD* KERNEL_DeleteHandler(volatile struct THREAD *current);
+  struct THREAD* KERNEL_DeleteHandler(struct THREAD *current);
 
 struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func, void *args);
 

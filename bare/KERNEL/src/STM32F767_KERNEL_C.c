@@ -21,7 +21,7 @@ uint32_t timeoutmax = 100;
 
 // THE THREAD SWITCH FUNCTION.
 __attribute__((section("._ITCM.SCHEDULING")))
-  void* KERNEL_SwitchHandler(volatile struct THREAD *current)
+  void* KERNEL_SwitchHandler(struct THREAD *current)
 {
   uint32_t temp1;
   uint32_t temp2;
@@ -39,7 +39,7 @@ __attribute__((section("._ITCM.SCHEDULING")))
       KERNEL_DeleteHandler(current);
     }
 
-    current = current->next;
+    current = (void *)current->next;
 
     temp1 = current->temp1;
     temp2 = current->temp2;
@@ -65,7 +65,7 @@ __attribute__((section("._ITCM.SCHEDULING")))
 }
 
 __attribute__((section("._ITCM.SCHEDULING")))
-  struct THREAD* KERNEL_DeleteHandler(volatile struct THREAD *thread)
+  struct THREAD* KERNEL_DeleteHandler(struct THREAD *thread)
 {
     DLL_RemoveNode((void *)thread);
     bree((void *)thread);
@@ -73,7 +73,7 @@ __attribute__((section("._ITCM.SCHEDULING")))
 }
 
 __attribute__((section("._ITCM.SCHEDULING")))
-  struct THREAD* KERNEL_TimeoutHandler(volatile struct THREAD *thread)
+  struct THREAD* KERNEL_TimeoutHandler(struct THREAD *thread)
 {
  
  while(10)
