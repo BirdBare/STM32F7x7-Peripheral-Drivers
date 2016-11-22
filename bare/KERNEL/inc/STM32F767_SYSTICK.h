@@ -13,6 +13,9 @@
 
 #define SysTick_EnableTimer(void) SysTick_Enable(_FCPU / 1000) 
 
+
+extern volatile uint32_t SysTick_Ticks;
+
 void SysTick_Enable(uint32_t TicksPerInterrupt);
 
 uint32_t SysTick_MilliSec(void);

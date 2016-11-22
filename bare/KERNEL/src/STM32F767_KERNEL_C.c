@@ -25,10 +25,15 @@ __attribute__((section("._ITCM.SCHEDULING")))
 {
   uint32_t temp1;
   uint32_t temp2;
-  uint32_t timeoutcount;
+  uint32_t timeoutcount = current->timeoutcount;
 
-  do
+ do
   {
+    //if(0 && (timeoutcount & ~THREAD_COMPSETRESET) > timeoutmax)
+    //{
+      //KERNEL_TimeoutHandler(current);
+    //}
+    //else 
     if(current->sp == 0)
     {
       KERNEL_DeleteHandler(current);
@@ -42,13 +47,15 @@ __attribute__((section("._ITCM.SCHEDULING")))
 
   } while((timeoutcount != 0 && 
             !!(*(uint32_t *)temp1 & temp2) != 
-            !!(timeoutcount & THREAD_COMPSETRESET)) ||
+            !!(current->flags & THREAD_COMPSETRESET)) ||
 
           (SysTick_MilliSec() - temp1) < temp2 ||
             
           current->sp == 0  ||
 
           0 );
+
+
 
   SCHEDULER.thread = current;
 
@@ -58,16 +65,21 @@ __attribute__((section("._ITCM.SCHEDULING")))
 }
 
 __attribute__((section("._ITCM.SCHEDULING")))
-  void KERNEL_DeleteHandler(volatile struct THREAD *thread)
+  struct THREAD* KERNEL_DeleteHandler(volatile struct THREAD *thread)
 {
     DLL_RemoveNode((void *)thread);
     bree((void *)thread);
+    return thread;
 }
 
 __attribute__((section("._ITCM.SCHEDULING")))
-  void KERNEL_TimeoutHandler(volatile struct THREAD *thread)
+  struct THREAD* KERNEL_TimeoutHandler(volatile struct THREAD *thread)
 {
-  
+ 
+ while(10)
+ asm("");
+
+ return thread;
 
 
 }

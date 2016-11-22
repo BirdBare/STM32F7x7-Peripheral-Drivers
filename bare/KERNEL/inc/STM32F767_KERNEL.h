@@ -72,7 +72,8 @@ Choose next thread to execute regaurdless of thread order
 */
 enum THREAD_FLAGS
 {
-  THREAD_COMPSETRESET = 1 << 15 
+  THREAD_COMPSETRESET = 1 << 4, 
+  THREAD_TIMEOUTMAX = 0b1111 << 0 
 };
 
 struct THREAD
@@ -83,8 +84,8 @@ struct THREAD
   
   void *sp; //current location of stack pointer 
 
-  uint16_t flags;
-  uint16_t timeoutcount;
+  uint32_t flags;
+  uint32_t timeoutcount;
 
   uint32_t temp1; 
   uint32_t temp2; 
@@ -198,7 +199,7 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 
   void* KERNEL_SwitchHandler(volatile struct THREAD *current);
 
-  void KERNEL_DeleteHandler(volatile struct THREAD *current);
+  struct THREAD* KERNEL_DeleteHandler(volatile struct THREAD *current);
 
 struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func, void *args);
 

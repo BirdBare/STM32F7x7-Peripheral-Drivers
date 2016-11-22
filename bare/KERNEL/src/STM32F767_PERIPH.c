@@ -6,16 +6,18 @@
 
 
 #include "STM32F767_PERIPH.h"
+#include "STM32F767_SYSTICK.h"
 #include "STM32F767_KERNEL.h"
 
 void PERIPH_WaitTillReset(volatile void *RegisterAddress, uint32_t flag)
 {
   struct THREAD *thread = SCHEDULER_CurrentThread(&SCHEDULER);
 
+  thread->flags &= ~THREAD_COMPSETRESET;
   thread->temp1 = (uint32_t)RegisterAddress;
   thread->temp2 = flag;
 
-  thread->timeoutcount = 1;
+  thread->timeoutcount = SysTick_Ticks; 
 
   while((*(uint32_t *)RegisterAddress & flag) != 0)
   {
@@ -29,10 +31,11 @@ void PERIPH_WaitTillSet(volatile void *RegisterAddress, uint32_t flag)
 {
   struct THREAD *thread = SCHEDULER_CurrentThread(&SCHEDULER);
 
+  thread->flags |= THREAD_COMPSETRESET;
   thread->temp1 = (uint32_t)RegisterAddress;
   thread->temp2 = flag;
 
-  thread->timeoutcount = 1 | THREAD_COMPSETRESET;
+  thread->timeoutcount = SysTick_Ticks;
 
   while((*(uint32_t *)RegisterAddress & flag) == 0)
   {

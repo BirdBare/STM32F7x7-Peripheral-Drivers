@@ -142,9 +142,95 @@ PendSV_Handler:
     //branch to kernel switch 
     //assumes the new sp is in r0 
 
-    bl KERNEL_SwitchHandler  //loads new thread values of threads stack
+//    bl KERNEL_SwitchHandler  //loads new thread values of threads stack
+
+/* ********** SWITCH HANDLER ************** */
+
+  ldr r4, =SCHEDULER
+
+  1:
+//DELETE
+    ldr r1, [r0, #8] //load sp address
+    
+    cmp r1, #0
+
+    it eq
+      bleq KERNEL_DeleteHandler
+
+    ldr r0, [r0] //current->next
+
+  beq 1b
+//END DELETE
+
+//TIMEOUT
+  ldr r5, [r0, #16] //get timeoutcount
+
+  ldr r8, =SysTick_Ticks
+
+  ldr r9, =SysTick_TicksPerMilli
+  
+  ldr r6, [r0, #20] //get temp1
+
+  ldr r7, [r0, #24] //get temp2
+
+  ldr r8, [r8] //get SysTick_Ticks value
+
+  ldr r9, [r9] //get TIcksPerMilli Value
+
+  cbz r5, 2f //if timeoutcount is 0 then skip this
+
+    ldr r10, [r0, #12] //load flags
+
+    ldr r1, [r6] //load flag check register value
+
+    ubfx r2, r10,  #4, #1 //move bit to zero position
+
+    tst r1, r7 //*temp1 & temp2
+   
+    ite ne
+    movne r1, #1
+    moveq r1, #0
+
+    cmp r1, r2
+
+    bne 1b
+
+    sub r5, r8, r5 //SysTick_Ticks - timeoutcount(ref)
+
+    and r1, r10, #0xf //0b1111 //get timeoutmax bits
+
+    mov r2, #50
+
+    lsl r1, r2, r1 //get timeoutmax 
+
+    cmp r5, r1
+
+    it hi
+      blhi KERNEL_TimeoutHandler //branch if timeout(r5) is greater than timeoutmax(r1)
+    
+  2: 
+
+//END TIMEOUT
 
 
+//DELAY
+  udiv r8, r9 //get SYsTick_MilliSec
+
+  sub r8, r6 //get SysTick - ref
+
+  cmp r8, r7 
+
+  blo 1b  //if SysTick_MilliSec is greater than Milli
+
+//END DELAY
+
+
+    str r0, [r4] //store new current thread
+
+    ldr r0, [r0, #8] //load current thread stack pointer
+
+
+/* ********** SWITCH HANDLER ************** */
 
     ldmia r0!, {r2, lr}  //load FPSCR and link register for task
 
@@ -160,7 +246,7 @@ PendSV_Handler:
 
 bx lr
 
-
+KDH:
 
 
 
