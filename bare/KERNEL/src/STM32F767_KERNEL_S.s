@@ -152,6 +152,8 @@ PendSV_Handler:
 //DELETE
     ldr r1, [r0, #8] //load sp address
     
+    ldr r8, =SysTick_Ticks
+
     cmp r1, #0
 
     it eq
@@ -164,8 +166,6 @@ PendSV_Handler:
 
 //TIMEOUT
   ldr r5, [r0, #16] //get timeoutcount
-
-  ldr r8, =SysTick_Ticks
 
   ldr r9, =SysTick_TicksPerMilli
   

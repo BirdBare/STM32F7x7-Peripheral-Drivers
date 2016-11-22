@@ -17,8 +17,7 @@ volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0};
 
 volatile struct SCHEDULER SCHEDULER = {&MAIN,SCHEDULER_HOLD};
 
-uint32_t timeoutmax = 100;
-
+/*
 // THE THREAD SWITCH FUNCTION.
 __attribute__((section("._ITCM.SCHEDULING")))
   void* KERNEL_SwitchHandler(struct THREAD *current)
@@ -63,6 +62,7 @@ __attribute__((section("._ITCM.SCHEDULING")))
   
   return SCHEDULER.thread->sp;
 }
+*/
 
 __attribute__((section("._ITCM.SCHEDULING")))
   struct THREAD* KERNEL_DeleteHandler(struct THREAD *thread)
