@@ -246,8 +246,6 @@ PendSV_Handler:
 
 bx lr
 
-KDH:
-
 
 
 
