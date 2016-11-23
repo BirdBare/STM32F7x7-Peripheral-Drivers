@@ -164,6 +164,9 @@ PendSV_Handler:
   beq 1b
 //END DELETE
 
+// ADDITIONAL FUNCTIONS SHOULD BE PLACED HERE
+// END ADDITIONAL FUNCTIONS
+
 //TIMEOUT
   ldr r5, [r0, #16] //get timeoutcount
 

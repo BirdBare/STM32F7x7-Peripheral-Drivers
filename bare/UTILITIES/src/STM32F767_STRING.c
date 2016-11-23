@@ -6,15 +6,10 @@
 
 
 
-#ifndef STM32F767_STRING_H
-#define STM32F767_STRING_H
+#include "STM32F767_STRING.h"
 
-#include "stm32f7xx.h"
-#include "BARE_STM32F767.h"
-//#include "STM32F767_xxx.h"
-
-void String_IntToString(uint32_t intnumber, uint8_t chararray[]);
-/*{
+void String_IntToString(uint32_t intnumber, uint8_t chararray[])
+{
   uint32_t charspot = 0;
 
   uint8_t charholder[10];
@@ -38,7 +33,7 @@ void String_IntToString(uint32_t intnumber, uint8_t chararray[]);
   } while(charspot != 0);
 
   chararray[spot] = '\n';
-}*/
+}
 
 
 
@@ -46,4 +41,3 @@ void String_IntToString(uint32_t intnumber, uint8_t chararray[]);
 
 
 
-#endif
