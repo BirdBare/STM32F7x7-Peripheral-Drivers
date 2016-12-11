@@ -12,20 +12,14 @@
 #include "stm32f7xx.h"
 #include "STM32F767_BUFFER.h"
 
+#define STREAM_HASHSIZE 100
+
 /* this is for communication between peripherals like SPI and I2C, UART, and
  * other high transfer speed peripherals.
  */
 
+extern int8_t rowoff[STREAM_HASHSIZE];
 
-
-
-//Put pipe into hash table. Tasks need to know exactly what pipe they will be
-//accessing. If the pipe doesn't exist then the task to handle to pipe doesn't
-//exist and it needs to be created.
-
-
-//example
-#define PIPE_UART1 (uint32_t)UART1 //use this base register value to hash into a table?
 
 
 struct PIPE
