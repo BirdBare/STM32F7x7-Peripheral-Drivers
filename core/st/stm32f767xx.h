@@ -203,7 +203,7 @@ typedef enum
 #include "core_cm7.h"                     /*!< Cortex-M7 processor and core peripherals      */
   
   
-#include "system_stm32f7xx.h"
+#include "STM32F767_SYSTEM.h"
 #include <stdint.h>
 
 /** @addtogroup Peripheral_registers_structures
