@@ -32,15 +32,17 @@ void SysTick_Handler(void)
 
 
 void SysTick_Enable(uint32_t TicksPerInterrupt) 
-{
-
-  SysTick->LOAD = TicksPerInterrupt; /*Sets reload value*/ 
+{	
+	if((SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) == 0)
+	{
+		SysTick->LOAD = TicksPerInterrupt; /*Sets reload value*/ 
   
-  SysTick_TicksPerMilli = (_FCPU / 1000) / TicksPerInterrupt;
+		SysTick_TicksPerMilli = (_FCPU / 1000) / TicksPerInterrupt;
 
-  SysTick->CTRL |= (SysTick_CTRL_CLKSOURCE_Msk | 
+		SysTick->CTRL |= (SysTick_CTRL_CLKSOURCE_Msk | 
                     SysTick_CTRL_TICKINT_Msk |
                     SysTick_CTRL_ENABLE_Msk); 
+	}
 }
 
 uint32_t SysTick_MilliSec(void)
