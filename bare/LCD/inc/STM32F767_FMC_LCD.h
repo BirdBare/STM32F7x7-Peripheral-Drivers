@@ -76,6 +76,7 @@ NWE = PD5
 \
   GPIO_SetPins(GPIOE, LCD_RSTPIN, GPIO_MODE_OUTPUT, GPIO_OUTTYPE_PUSHPULL,\
     GPIO_OUTSPEED_VHIGH, GPIO_PUPD_OFF, GPIO_NO_USE); \
+  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
 }
 
  
@@ -83,14 +84,6 @@ NWE = PD5
 void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
   uint32_t FMC_DataSetup, uint32_t FMC_AddSetup);
 
-#define LCD_Reset(void) \
-do \
-{ \
-  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
-  GPIO_ResetOutput(GPIOE,LCD_RSTPIN); \
-  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
-  DelayMilli(30); \
-} while(0)
 
 
 

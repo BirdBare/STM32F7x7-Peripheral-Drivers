@@ -17,6 +17,16 @@
 #define LCD_WIDTH 240
 #define LCD_HEIGHT 320
 
+#define LCD_Reset(void) \
+do \
+{ \
+  GPIO_ResetOutput(GPIOE,LCD_RSTPIN); \
+	DelayMilli(1); \
+  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
+  DelayMilli(150); \
+} while(0)
+
+
 
 static void LCD_SetWindow(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
 {
