@@ -78,8 +78,9 @@ void SystemInit(void)
 	extern void *theap asm("_DTCMend");
 	KERNEL_ThreadHeap =  (struct HEAP_TABLE *)&theap;
 	InitHeap(KERNEL_ThreadHeap, 30*1024);
-	KERNEL_FastHeap = KERNEL_ThreadHeap + 30*1024 + sizeof(struct HEAP_TABLE);
-	InitHeap(KERNEL_FastHeap, 0x20020000 - (uint32_t)_edata - 30*1024 -
+	KERNEL_FastHeap = (uint32_t)KERNEL_ThreadHeap + 30*1024 + 
+		sizeof(struct HEAP_TABLE);
+	InitHeap(KERNEL_FastHeap, 0x20020000 - (uint32_t)KERNEL_FastHeap - 30*1024 -
 		sizeof(struct HEAP_TABLE));
 
 	//Init FIL FILE System
