@@ -30,39 +30,6 @@
 
 
 
-/* DESIGN OF THREAD STACK 
-
-8 Thread example adding thread
-
-     <-Thread execution moves this way
-     ^
-<-|  |  |  |  |  |  |<-wrap around
-    ^
-    new thread addred here if high priority
-
-     <-Thread execution moves this way
-     ^
-<-|  |  |  |  |  |  |<-wrap
-      ^
-      new thread added here if low priority
-
-Can also:
-Place next to certain thread if required.
-Choose next thread to execute regaurdless of thread order
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
 /* THREAD FLAGS 
 
   [0] - THREAD create placement. 1 - before, 0 - after. AND Thread Pause Bit
@@ -188,7 +155,9 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 
 
 
-
+	//KERNEL VARIABLES
+	
+	extern struct HEAP_TABLE *KERNEL_ProcessHeap, *KERNEL_ThreadHeap;
 
 
 

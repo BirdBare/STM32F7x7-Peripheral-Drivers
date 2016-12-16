@@ -9,6 +9,8 @@
 
 #include "stm32f7xx.h"
 #include "STM32F767_SYSTICK.h"
+#include "STM32F767_KERNEL.h"
+#include "STM32F767_BALLOC.h"
 
   #define HSI_VALUE    ((uint32_t)16000000) /*!< Value of the Internal oscillator in Hz*/
 
@@ -60,9 +62,21 @@ void SystemInit(void)
 	//enable FPU
 	SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  
 	
+	//Start System Timer
   SysTick_EnableTimer();
 
+	//init heap
+	extern void *_edata asm("_edata");
+	extern void *_eSRAM asm("_eSRAM");
+	_edata = &_edata;
+	_eSRAM = &_eSRAM;
 
+	extern void *pheap asm("_SRAMend");
+	KERNEL_ProcessHeap = (struct HEAP_TABLE *)&pheap;
+	InitHeap(KERNEL_ProcessHeap, 0x20080000 - (uint32_t)_eSRAM);
+	extern void *theap asm("_DTCMend");
+	KERNEL_ThreadHeap =  (struct HEAP_TABLE *)&theap;
+	InitHeap(KERNEL_ThreadHeap, 0x20020000 - (uint32_t)_edata);
 }
 
 void SetSysClock(void)

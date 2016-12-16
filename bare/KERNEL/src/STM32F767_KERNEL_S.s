@@ -8,8 +8,10 @@
   .global KERNEL_CreateTask
 KERNEL_CreateTask:
  
+ldr r1, =KERNEL_ThreadHeap
 push {r0-r4,lr} //push our registers and callee save registers onto stack
-bl balloc
+ldr r1, [r1]
+bl kballoc
 pop {r1-r4}
 
 cbz r0, _NoSpace //if balloc did not return zero then space available 

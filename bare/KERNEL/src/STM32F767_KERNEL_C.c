@@ -13,6 +13,9 @@
 #include "STM32F767_KERNEL.h"
 #include "STM32F767_SYSTICK.h"
 
+	struct HEAP_TABLE *KERNEL_ProcessHeap = 0;
+	struct HEAP_TABLE *KERNEL_ThreadHeap = 0;
+
 volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0};
 
 volatile struct SCHEDULER SCHEDULER = {&MAIN,SCHEDULER_HOLD};
