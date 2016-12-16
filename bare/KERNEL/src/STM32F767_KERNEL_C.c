@@ -15,6 +15,7 @@
 
 	struct HEAP_TABLE *KERNEL_ProcessHeap = 0;
 	struct HEAP_TABLE *KERNEL_ThreadHeap = 0;
+	struct HEAP_TABLE *KERNEL_FastHeap = 0;
 
 volatile struct THREAD MAIN = {&MAIN,&MAIN,(uint32_t *)!0};
 

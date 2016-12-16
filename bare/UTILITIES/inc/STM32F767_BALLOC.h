@@ -39,7 +39,6 @@ struct ALLOC_TABLE
 
 void InitHeap(void *start, uint32_t size);
 
-#define balloc(size) kballoc(size,KERNEL_ProcessHeap)
 void* kballoc(uint32_t size, struct HEAP_TABLE *MemArea);
 
 void bree(void *blockaddress);

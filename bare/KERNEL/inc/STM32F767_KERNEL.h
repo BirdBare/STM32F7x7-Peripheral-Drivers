@@ -157,13 +157,16 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 
 	//KERNEL VARIABLES
 	
-	extern struct HEAP_TABLE *KERNEL_ProcessHeap, *KERNEL_ThreadHeap;
+	extern struct HEAP_TABLE *KERNEL_ProcessHeap, *KERNEL_ThreadHeap,
+		*KERNEL_FastHeap;
 
 
 
+	// DYNAMIC ALLOCATION	
+		#define balloc(size) kballoc(size,KERNEL_ProcessHeap)
+		#define fastballoc(size) kballoc(size,KERNEL_FastHeap)
 
   // KERNEL FUNCTIONS
-
   void PendSV_Handler(void);
 
   void* KERNEL_SwitchHandler(struct THREAD *current);
@@ -176,7 +179,7 @@ struct THREAD* KERNEL_CreateTask(uint32_t stacksize, uint32_t flags, void *func,
   do \
   { \
     struct THREAD* newthread = \
-      KERNEL_CreateTask(stacksize,ThreadFlags,func,args); \
+      KERNEL_CreateTask(stacksize + 224,ThreadFlags,func,args); \
 		if(newthread != 0) \
 		{ \
 			newthread->flags = ThreadFlags; \
