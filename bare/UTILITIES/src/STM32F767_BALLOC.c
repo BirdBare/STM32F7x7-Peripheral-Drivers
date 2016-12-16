@@ -16,7 +16,7 @@ void *FIRSTSPACEFREEHEAP = 0;
 
 __attribute__((section("._ITCM.balloc"))) void InitHeap(void)
 {
-  extern void *start asm("_end"); //start of heap section of memory
+  extern void *start asm("_DTCMend"); //start of heap section of memory
     FIRSTSPACEFREEHEAP = start = (uint8_t *)&start + 4; 
     //four bytes after the end symbol is into heap memory and is aligned
 

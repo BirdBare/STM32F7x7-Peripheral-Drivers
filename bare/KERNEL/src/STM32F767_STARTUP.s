@@ -73,55 +73,59 @@ defined in linker script */
  * @retval : None
 */
 
+CopyDataInit:
+  ldr  r3, [r2], #4
+  str  r3, [r0], #4
+    
+LoopCopyDataInit:
+  cmp  r0, r1
+  bcc  CopyDataInit
+  mov pc, lr
+ 
 
     .section  .text.Reset_Handler
   .weak  Reset_Handler
   .type  Reset_Handler, %function
 Reset_Handler:  
-  ldr   sp, =_estack      /* set Master stack pointer */
+
+	//FILL bss zero
+
+	ldr  r0, =_sbss
+  ldr  r1, = _ebss
+  movs  r2, #0
+
+  b  LoopFillZerobss
+
+	FillZerobss:
+		str  r2, [r0], #4
+    
+	LoopFillZerobss:
+		cmp  r0, r1
+		bcc  FillZerobss
+
 
 /* Copy the data segment initializers from flash to SRAM */  
   
-  mov  r1, #0
-  ldr r4, =_sdata
-  ldr r5, =_edata
-  ldr r6, =_sidata
+  ldr r0, =_sdata
+  ldr r1, =_edata
+  ldr r2, =_sidata
   bl  LoopCopyDataInit
-  mov  r1, #0
-  ldr r4, =_sITCM
-  ldr r5, =_eITCM
-  ldr r6, =_siITCM
-  bl  LoopCopyDataInit
-  b Bss
-
-CopyDataInit:
-  mov  r3, r6
-  ldr  r3, [r3, r1]
-  str  r3, [r0, r1]
-  adds  r1, r1, #4
-    
-LoopCopyDataInit:
-  mov  r0, r4
-  mov  r3, r5
-  adds  r2, r0, r1
-  cmp  r2, r3
-  bcc  CopyDataInit
-  mov pc, lr
   
-  Bss:
-  ldr  r2, =_sbss
-  b  LoopFillZerobss
-/* Zero fill the bss segment. */  
-FillZerobss:
-  movs  r3, #0
-  str  r3, [r2], #4
-    
-LoopFillZerobss:
-  ldr  r3, = _ebss
-  cmp  r2, r3
-  bcc  FillZerobss
+	ldr r0, =_sITCM
+  ldr r1, =_eITCM
+  ldr r2, =_siITCM
+  bl  LoopCopyDataInit
 
-/* Call the clock system initialization function.*/
+	ldr r0, =_sSRAM
+  ldr r1, =_eSRAM
+  ldr r2, =_siSRAM
+  bl  LoopCopyDataInit
+
+	//FINISHED COPYING DATA INTO RAM
+
+  ldr   sp, =_estack      /* set Master stack pointer */
+
+  /* Call the clock system initialization function.*/
   bl  SystemInit   
 
 /* Set Stack pointer for non interrupt processes */
