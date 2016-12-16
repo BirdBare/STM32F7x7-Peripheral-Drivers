@@ -11,6 +11,7 @@
 #include "STM32F767_SYSTICK.h"
 #include "STM32F767_KERNEL.h"
 #include "STM32F767_BALLOC.h"
+#include "STM32F767_FIL.h"
 
   #define HSI_VALUE    ((uint32_t)16000000) /*!< Value of the Internal oscillator in Hz*/
 
@@ -80,6 +81,9 @@ void SystemInit(void)
 	KERNEL_FastHeap = KERNEL_ThreadHeap + 30*1024 + sizeof(struct HEAP_TABLE);
 	InitHeap(KERNEL_FastHeap, 0x20020000 - (uint32_t)_edata - 30*1024 -
 		sizeof(struct HEAP_TABLE));
+
+	//Init FIL FILE System
+	FIL_Init(10);
 }
 
 void SetSysClock(void)

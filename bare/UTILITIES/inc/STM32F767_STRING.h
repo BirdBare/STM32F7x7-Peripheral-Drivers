@@ -13,6 +13,8 @@
 #include "BARE_STM32F767.h"
 //#include "STM32F767_xxx.h"
 
+void String_SetString(uint8_t setstring[], uint8_t string[], uint32_t size);
+
 void String_IntToString(uint32_t intnumber, uint8_t chararray[]);
 /*{
   uint32_t charspot = 0;

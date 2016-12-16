@@ -8,6 +8,17 @@
 
 #include "STM32F767_STRING.h"
 
+void String_SetString(uint8_t setstring[], uint8_t string[], uint32_t size)
+{
+	uint32_t count = 0;
+
+	while(count < size)
+	{
+		setstring[count] = string[count];
+		count++;
+	}
+}
+
 void String_IntToString(uint32_t intnumber, uint8_t chararray[])
 {
   uint32_t charspot = 0;
