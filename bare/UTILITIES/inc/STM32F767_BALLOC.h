@@ -21,8 +21,8 @@ struct HEAP_TABLE
 
 struct ALLOC_TABLE
 {
-	void *heap;
-  uint32_t size; //bit [31] is the free flag. 0 == in use, 1 == free
+	void *heap; // 0 == free, !0 == heap variable resides in
+  uint32_t size; 
   struct ALLOC_TABLE *next;
 };
 

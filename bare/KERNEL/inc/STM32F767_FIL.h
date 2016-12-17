@@ -15,7 +15,7 @@
 #define FIL_MOUNTFATWIDTH 10
 #define FIL_FATWIDTHINC 10
 
-extern struct FIL **FIL_FAT;
+extern struct FIL *FIL_FAT;
 
 struct FIL
 {
@@ -39,7 +39,7 @@ struct FIL
 #define FIL_FAT_SIZE(FATWidth) (sizeof(struct FIL) * FATWidth + \
 	sizeof(struct HEAP_TABLE))
 
-void FIL_Init(uint32_t size);
+uint32_t FIL_Init(uint32_t size);
 
 #endif
 

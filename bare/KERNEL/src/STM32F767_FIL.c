@@ -12,7 +12,7 @@
 #include "STM32F767_KERNEL.h"
 //#include "STM32F767_.h"
 
-struct FIL **FIL_FAT = 0; //FIL File Allocation Table. Size set in Header file
+struct FIL *FIL_FAT = 0; //FIL File Allocation Table. Size set in Header file
 /*
 
 struct FIL
@@ -39,40 +39,47 @@ struct FIL
 //size 24 bytes
 */
 
-void FIL_Init(uint32_t size)
+#define FIL_ERROR_MKFAT 1 //error creating FAT table
+
+uint32_t FIL_Init(uint32_t size)
 {
-	FIL_FAT = fastballoc(FIL_FAT_SIZE(size));
-	//get memory space for FIL_FATE
 	
-	((uint32_t *)FIL_FAT)[0] = size;
-	((uint32_t *)FIL_FAT)[1] = (uint32_t)FIL_FAT + 12;
+	if(!(FIL_FAT = fastballoc(FIL_FAT_SIZE(size))))
+		return FIL_ERROR_MKFAT;
+	//get memory space for FIL_FATE. return if no ram available.
+	
+	
+	((struct HEAP_TABLE *)FIL_FAT)->freeheap = 
+		(void *)((uint32_t)FIL_FAT + 8 + sizeof(struct FIL));
+	((struct HEAP_TABLE *)FIL_FAT)->size = size;
 	//set size and start of first space free fat
 
-	FIL_FAT = (void *)((uint32_t *)FIL_FAT + 2);
-	//Increment over size and first space
+	struct FIL *FIL = (void *)((uint32_t)FIL_FAT + sizeof(struct HEAP_TABLE));
 
 	do
 	{
-		FIL_FAT[--size]->name[0] = '\0';
+		FIL[--size].name[0] = '\0';
 	} while(size != 0);
 	//set all names zero
 	
 
 	//CREATE ROOT DIRECTORY
 
-	String_SetString(FIL_FAT[0]->name,(uint8_t *)"root\0\0\0\0\0\0\0",11);
+	String_SetString(FIL[0].name,(uint8_t *)"/\0\0\0\0\0\0\0\0\0\0",11);
 	///set name zero filled
 
-	FIL_FAT[0]->attributes = 1;
+	FIL[0].attributes = 1;
 	//set attributes
 
 	//SET date and time
 
-	FIL_FAT[0]->memory = balloc(512);
+	FIL[0].memory = balloc(512);
 	//get and set memory
 
-	FIL_FAT[0]->size = 0;
+	FIL[0].size = 0;
 	//initial size always zero. 
+
+	return 0;
 }
 
 
