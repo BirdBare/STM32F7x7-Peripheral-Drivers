@@ -15,7 +15,7 @@
 #define FIL_MOUNTFATWIDTH 10
 #define FIL_FATWIDTHINC 10
 
-extern struct FIL *FIL_FAT;
+extern void *FIL_FAT;
 
 struct FIL
 {

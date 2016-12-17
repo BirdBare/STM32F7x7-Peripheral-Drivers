@@ -12,7 +12,7 @@
 #include "STM32F767_KERNEL.h"
 //#include "STM32F767_.h"
 
-struct FIL *FIL_FAT = 0; //FIL File Allocation Table. Size set in Header file
+void *FIL_FAT = 0; //FIL File Allocation Table. Size set in Header file
 /*
 
 struct FIL
@@ -38,6 +38,7 @@ struct FIL
 };
 //size 24 bytes
 */
+uint32_t FIL_CreateFile(); 
 
 #define FIL_ERROR_MKFAT 1 //error creating FAT table
 
@@ -48,40 +49,89 @@ uint32_t FIL_Init(uint32_t size)
 		return FIL_ERROR_MKFAT;
 	//get memory space for FIL_FATE. return if no ram available.
 	
+	struct FIL *FIL = (void *)((uint32_t)FIL_FAT + sizeof(struct HEAP_TABLE));
+	//set FIL pointer for emptying each file space
 	
-	((struct HEAP_TABLE *)FIL_FAT)->freeheap = 
-		(void *)((uint32_t)FIL_FAT + 8 + sizeof(struct FIL));
+	((struct HEAP_TABLE *)FIL_FAT)->freeheap = (void *)FIL + sizeof(struct FIL);
 	((struct HEAP_TABLE *)FIL_FAT)->size = size;
 	//set size and start of first space free fat
 
-	struct FIL *FIL = (void *)((uint32_t)FIL_FAT + sizeof(struct HEAP_TABLE));
-
+	uint32_t count = 1;	
 	do
 	{
-		FIL[--size].name[0] = '\0';
-	} while(size != 0);
-	//set all names zero
-	
+		*(uint32_t *)(&FIL[count]) = (uint32_t)&FIL[count + 1];
+		//set empty flag and next empty space address
+		
+		count = count + 1;
+	} while(count < size);
+	//Set next empty space in chain
+
+	*((uint32_t *)(&FIL[count - 1])) = 0;
+	//set last empty space in chain
+
 
 	//CREATE ROOT DIRECTORY
 
-	String_SetString(FIL[0].name,(uint8_t *)"/\0\0\0\0\0\0\0\0\0\0",11);
-	///set name zero filled
+	String_SetString(FIL->name,(uint8_t *)"/",2);
+	//copy 11 chars. will copy whole
 
-	FIL[0].attributes = 1;
-	//set attributes
+	FIL->attributes = 1;
 
-	//SET date and time
+	//date and time
 
-	FIL[0].memory = balloc(512);
-	//get and set memory
+	FIL->memory = balloc(512);
 
-	FIL[0].size = 0;
-	//initial size always zero. 
+	FIL->size = 0;
+	//root directory always starts as zero size
 
 	return 0;
 }
 
+uint32_t FIL_CreateFile(uint8_t *path, uint32_t attributes, 
+	uint32_t size)
+{
+	//CHECK HERE
+	struct FIL *FIL = (void *)(uint32_t)FIL_FAT + sizeof(struct HEAP_TABLE);
+		
+	
+	
+	//check if path is valid to new file
+
+
+
+	if(!(FIL = ((struct HEAP_TABLE *)FIL_FAT)->freeheap))
+		return 1;
+	//get first free space. return error if no space available.
+	//soon resize.
+
+	((struct HEAP_TABLE *)FIL_FAT)->freeheap = (void *)*(uint32_t *)FIL;
+	//set next free heap
+
+	//Set New File into Fil Structure
+	String_SetString(FIL->name,path,11);
+		//copy 11 chars. will copy whole
+
+	FIL->attributes = attributes;
+
+	//date and time
+
+	FIL->memory = balloc(512);
+
+	FIL->size = size;
+
+	return 0;
+}
+
+uint32_t FIL_DeleteFile(uint8_t *path)
+{
+
+
+	return 0;
+}
+
+
+
+uint32_t FIL_DIRECTORY_WRITE(void memeory,dd
 
 
 
