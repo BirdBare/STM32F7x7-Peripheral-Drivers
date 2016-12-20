@@ -89,20 +89,37 @@
 #define GPIO_ALTFUNCTION_14 ((uint32_t)0x0E)
 #define GPIO_ALTFUNCTION_15 ((uint32_t)0x0F)
 
+
+extern uint16_t GPIO_PINS [11];
+
+#define GPIO_INDEX(GPIOx) \
+	(((uint32_t)(GPIOx) & 0b111111111111111111) / 1024 - 128)
+
+#define GPIO_UsedPins(GPIOx) GPIO_PINS[GPIO_INDEX(GPIOx)]
+
+#define GPIO_Init(GPIOx) GPIO_UsedPins(GPIOx) = 0;
+
 /* 
     GPIO functions to change the mode of the pin
 */
-static void GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
+uint32_t GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
   const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
   const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
-  const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION)
-{
+  const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION);
+/*{
+
+	uint32_t index = GPIO_INDEX(GPIO_PORT), respins = ~GPIO_PINS[index],
+		setpins = 0;
+
   for(uint8_t count = 0; count < 16; count++)
   {
-    if(GPIO_PIN & ((uint32_t)0b1 << count)) //!= 0)
+    if((GPIO_PIN & ((uint32_t)0b1 << count) & respins) != 0)
     {
       uint32_t count2 = count << 1;
       uint32_t count2reset = (uint32_t)0b11 << count2;
+
+			//indicates used or reserved pins. will be stored and returned.
+			setpins |= ((uint32_t)0b1 << count);
 
       //Sets Pin Mode
       GPIO_PORT->MODER &= ~((uint32_t)(count2reset)); 
@@ -147,8 +164,28 @@ static void GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
       //Sets Pin Alternate Function
     }
   }
-}
+	GPIO_PINS[index] |= setpins;
 
+	return setpins;
+}
+*/
+#define GPIO_ResetPins(GPIOx, GPIO_PINS) GPIO_UsedPins(GPIOx) &= ~GPIO_PINS
+
+#define GPIO_SetOutput(GPIOx, GPIO_PIN) (GPIOx)->BSRR = (GPIO_PIN)
+
+#define GPIO_ResetOutput(GPIOx, GPIO_PIN) \
+	(GPIOx)->BSRR = ((GPIO_PIN) << 16)
+
+#define GPIO_ChangeOutput(GPIOx, setGPIO_PIN, resetGPIO_PIN)  \
+	(GPIOx)->BSRR = (setGPIO_PIN) | ((resetGPIO_PIN) << 16)
+
+#define GPIO_ToggleOutput(GPIOx, GPIO_PIN) (GPIOx)->ODR ^= (GPIO_PIN)
+
+#define GPIO_GetInState(GPIOx) GPIOx->IDR
+
+#define GPIO_GetOutState(GPIOx) GPIOx->ODR
+
+/*
 extern void GPIO_SetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
 
 extern void GPIO_ResetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
@@ -160,5 +197,6 @@ extern void GPIO_ToggleOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
 extern uint32_t GPIO_GetInState(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
 
 extern uint32_t GPIO_GetOutState(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN); 
+*/
 
 #endif
