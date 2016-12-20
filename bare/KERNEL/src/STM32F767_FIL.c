@@ -131,7 +131,7 @@ uint32_t FIL_DeleteFile(uint8_t *path)
 
 
 
-uint32_t FIL_DIRECTORY_WRITE(void memeory,dd
+//uint32_t FIL_DIRECTORY_WRITE(void memeory,dd
 
 
 

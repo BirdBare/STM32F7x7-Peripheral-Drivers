@@ -12,6 +12,15 @@
 #include "STM32F767_KERNEL.h"
 #include "STM32F767_BALLOC.h"
 #include "STM32F767_FIL.h"
+#include "stm32f7xx_it.h"
+
+__attribute__((section("._isr.VECTOR")))
+void *ISR_VECTORS[0];
+
+
+
+
+
 
   #define HSI_VALUE    ((uint32_t)16000000) /*!< Value of the Internal oscillator in Hz*/
 
@@ -44,14 +53,15 @@
 /* DSI = VCO / PLL_R */
 #define PLL_R 7
 
+void Reset_Handler(void);
+void SysTick_Handler(void);
+void PendSV_Handler(void);
+
 
 void SystemInit(void)
 {
 	//disable Interrupts
   RCC->CIR = 0x00000000;
-
-	// Vector Table Relocation in Internal FLASH
-  SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; 
   
 	//set sys clock 192mhz
 	SetSysClock();
@@ -59,6 +69,13 @@ void SystemInit(void)
 	//enable ITCM AND DTCM
   SCB->ITCMCR = 1;
   SCB->DTCMCR = 1;
+
+	
+	ISR_VECTORS_STRUCT->SysTick_Handler = SysTick_Handler;
+	ISR_VECTORS_STRUCT->PendSV_Handler = PendSV_Handler;
+	ISR_VECTORS_STRUCT->HardFault_Handler = HardFault_Handler;
+
+	SCB->VTOR = (uint32_t)&ISR_VECTORS[-16];
 
 	//enable FPU
 	SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  
@@ -78,8 +95,8 @@ void SystemInit(void)
 	extern void *theap asm("_DTCMend");
 	KERNEL_ThreadHeap =  (struct HEAP_TABLE *)&theap;
 	InitHeap(KERNEL_ThreadHeap, 30*1024);
-	KERNEL_FastHeap = (uint32_t)KERNEL_ThreadHeap + 30*1024 + 
-		sizeof(struct HEAP_TABLE);
+	KERNEL_FastHeap = (void *)((uint32_t)KERNEL_ThreadHeap + 30*1024 + 
+		sizeof(struct HEAP_TABLE));
 	InitHeap(KERNEL_FastHeap, 0x20020000 - (uint32_t)KERNEL_FastHeap - 30*1024 -
 		sizeof(struct HEAP_TABLE));
 
