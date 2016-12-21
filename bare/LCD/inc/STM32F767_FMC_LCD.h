@@ -65,8 +65,8 @@ NWE = PD5
 
 #define LCD_EnableGeneralPins(void) \
 { \
-	RCC_EnableClock((struct RCCo *)&GPIODo); \
-	RCC_EnableClock((struct RCCo *)&GPIOEo); \
+	RCC_EnableClock((struct RCCxo *)&GPIODo); \
+	RCC_EnableClock((struct RCCxo *)&GPIOEo); \
   \
   LCD_EnablePins(&GPIODo, GPIO_PIN_5 | GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | \
     GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_14 | \

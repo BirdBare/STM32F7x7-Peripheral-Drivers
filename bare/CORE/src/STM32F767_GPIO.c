@@ -19,10 +19,17 @@ struct GPIOxo
 	GPIOJo = {&RCC->AHB1ENR,9,0,0,GPIOJ},
 	GPIOKo = {&RCC->AHB1ENR,10,0,0,GPIOK};
 
-uint32_t GPIO_Config(struct GPIOxo *GPIOo,
-  const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
-  const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
-  const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION)
+//******************************************************************************
+//	
+//									GPIO_ConFig
+//		return: 0		- Success
+//						!0	- Fail -- Pins not set returned
+//	
+//******************************************************************************
+uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
+	const uint32_t GPIO_MODE, const uint32_t GPIO_OUTTYPE, 
+	const uint32_t GPIO_OUTSPEED, const uint32_t GPIO_PUPD,
+	const uint32_t GPIO_ALTFUNCTION)
 {
 
 	volatile GPIO_TypeDef * const GPIOx = GPIOo->GPIOx;

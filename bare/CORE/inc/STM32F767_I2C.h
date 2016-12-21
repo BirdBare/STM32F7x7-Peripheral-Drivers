@@ -13,6 +13,21 @@
 #include "STM32F767_PERIPH.h"
 #include "STM32F767_RCC.h"
 
+struct I2Cxo
+{
+	volatile uint32_t * const clockreg;
+	const uint8_t clockregoffset;
+	uint8_t unused1;
+	uint8_t unused2;
+	uint8_t unused3;
+
+	volatile USART_TypeDef * const I2Cx;
+};
+
+
+
+
+
 //  PROTOTYPES FOR SIMPLE REGISTER FUNCTIONS
 //  ALL FORCED INLINE SO THEY DO NOT USE FLASH SPACE
 ALWAYS_INLINE void I2C_SetCR1(I2C_TypeDef *I2Cx, uint32_t Data);

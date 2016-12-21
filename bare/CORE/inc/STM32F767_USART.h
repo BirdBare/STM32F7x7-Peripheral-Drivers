@@ -1,8 +1,3 @@
-//
-//
-//
-//
-//
 
 
 
@@ -20,10 +15,10 @@ struct USARTxo
 {
 	volatile uint32_t  * const clockreg;
 	const uint8_t clockregoffset;
-	uint8_t unused1;
-	uint8_t unused2;
-	uint8_t unused3;
+	uint8_t afr;
+	uint16_t pins;
 
+	volatile struct GPIOxo * GPIOo;
 	volatile USART_TypeDef * const USARTx;
 };
 
@@ -47,38 +42,62 @@ extern struct USARTxo
 	UART8o;
 
 
-ALWAYS_INLINE uint32_t USART_Config(struct USARTxo *USARTo, uint32_t CR1, 
-	uint32_t CR2, uint32_t CR3, uint32_t BRR)
+#define USART_CONFIG_ENABLED 1
+#define USART_ENABLE_ENABLED 1
+#define USART_ENABLE_PINS_USED 2
+#define USART_ENABLE_PINS_UNSET 3
+#define USART_ENABLE_
+
+
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+uint32_t USART_Config(struct USARTxo *USARTo, uint32_t CR1, uint32_t CR2, 
+	uint32_t CR3, uint32_t BRR, uint32_t GTPR, uint32_t RTOR);
+
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+uint32_t USART_ResetConfig(struct USARTxo *USARTo);
+
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+uint32_t USART_Enable(struct USARTxo *USARTo);
+
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+uint32_t USART_Disable(struct USARTxo *USARTo);
+
+
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+ALWAYS_INLINE uint32_t USART_Get8(struct USARTxo *USARTo)
 {
-	volatile USART_TypeDef * const USARTx = USARTo->USARTx;
-
-	uint32_t prevstate = USARTx->CR1 & USART_CR1_UE;
-
-	USARTx->CR2 = CR2;
-	USARTx->CR3 = CR3;
-	USARTx->BRR = BRR;
-	USARTx->CR1 = CR1;
-
-	return prevstate;
+	uint32_t ret;
+	ASM(" ldrb %0, [%1, #0x24]" :"=r" (ret) : "r" (USARTo->USARTx));
+	return ret;
 }
 
-
-ALWAYS_INLINE uint32_t USART_ResetConfig(struct USARTxo *USARTo)
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+ALWAYS_INLINE void USART_Put8(struct USARTxo *USARTo, uint32_t Data)
 {
-	uint32_t prevstate = USARTo->USARTx->CR1 & USART_CR1_UE;
-
-	RCC_DisableClock((struct RCCo *)USARTo);
-	RCC_EnableClock((struct RCCo *)USARTo);
-
-	return prevstate;
+	ASM(" strb %1, [%0, #0x28]" ::"r" (USARTo->USARTx), "r" (Data));
 }
-
-
-
-
-
-
-
-
-
 #endif

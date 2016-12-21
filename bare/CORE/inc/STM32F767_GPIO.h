@@ -94,18 +94,18 @@ extern struct GPIOxo
 #define GPIO_ALTFUNCTION_14 ((uint32_t)0x0E)
 #define GPIO_ALTFUNCTION_15 ((uint32_t)0x0F)
 
-uint32_t GPIO_Config(struct GPIOxo *GPIOo,
-  const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
-  const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
-  const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION);
+uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
+	const uint32_t GPIO_MODE, const uint32_t GPIO_OUTTYPE,
+	const uint32_t GPIO_OUTSPEED, const uint32_t GPIO_PUPD,
+	const uint32_t GPIO_ALTFUNCTION);
 
 
-ALWAYS_INLINE uint32_t GPIO_ResetConfig(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
+ALWAYS_INLINE uint32_t GPIO_ResetConfig(volatile struct GPIOxo * const GPIOo, 
+	uint32_t GPIO_PIN) 
 {
 	GPIOo->setpins &= ~GPIO_PIN;
-	return GPIO_PIN;
+	return 0;
 }
-
 
 ALWAYS_INLINE void GPIO_SetOutput(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
 {

@@ -13,7 +13,7 @@
 void HTU21D_EnableGeneral(uint32_t ClockFreqHz)
 {
   SysTick_EnableTimer();
-  RCC_EnableClock((struct RCCo *)&GPIOBo);
+  RCC_EnableClock((struct RCCxo *)&GPIOBo);
   GPIO_Config(&GPIOBo, GPIO_PIN_6 | GPIO_PIN_7,GPIO_MODE_ALTERNATE,
     GPIO_OUTTYPE_OPENDRAIN,GPIO_OUTSPEED_VHIGH,
     GPIO_PUPD_PU,GPIO_ALTFUNCTION_4);

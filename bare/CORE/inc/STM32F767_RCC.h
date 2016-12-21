@@ -17,7 +17,7 @@
 // a clock must contain this in the structure first. This will allow us to
 // enable the clock from the object.
 
-struct RCCo
+struct RCCxo
 {
 	volatile uint32_t * const clockreg;			//register where clock enable bit is.
 	const uint8_t clockregoffset; //offset to the clock enable bit.
@@ -26,8 +26,19 @@ struct RCCo
 	uint8_t unused3;
 };
 
-uint32_t RCC_EnableClock(struct RCCo *RCCo);
-uint32_t RCC_DisableClock(struct RCCo *RCCo);
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+uint32_t RCC_EnableClock(struct RCCxo *RCCo);
+
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+uint32_t RCC_DisableClock(struct RCCxo *RCCo);
 
 #define RCC_EnableClockAHB1(AHB1_CLOCK_x) \
 	RCC->AHB1ENR |= AHB1_CLOCK_x
