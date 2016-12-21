@@ -19,7 +19,7 @@ struct GPIOxo
 	GPIOJo = {&RCC->AHB1ENR,9,0,0,GPIOJ},
 	GPIOKo = {&RCC->AHB1ENR,10,0,0,GPIOK};
 
-uint32_t GPIO_SetPins(struct GPIOxo *GPIOo,
+uint32_t GPIO_Config(struct GPIOxo *GPIOo,
   const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
   const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
   const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION)
@@ -33,7 +33,7 @@ uint32_t GPIO_SetPins(struct GPIOxo *GPIOo,
 	GPIOo->setpins |= GPIO_PIN;
 	//update usedpins
 
-	uint32_t MODE = 0, TYPE = 0, SPEED = 0, PUPD = 0;
+	uint32_t MODE = 0, TYPE = 0, SPEED = 0, PUPD = 0, AFR[2] = {0,0};
 
   for(uint8_t count = 0; count < 16; count++)
   {
@@ -55,10 +55,7 @@ uint32_t GPIO_SetPins(struct GPIOxo *GPIOo,
       
       count2 = (count & 0b111) << 2;
 			//
-      GPIOx->AFR[count >> 3] &= ~((uint32_t)0b1111 << ((count2))); 
-      //Sets Pin Alternate Function to reset GPIO
-      
-      GPIOx->AFR[count >> 3] |= (GPIO_ALTFUNCTION << ((count2)));
+      AFR[count >> 3] |= (GPIO_ALTFUNCTION << ((count2)));
       //Sets Pin Alternate Function
     }
   }
@@ -66,26 +63,18 @@ uint32_t GPIO_SetPins(struct GPIOxo *GPIOo,
 	GPIOx->OTYPER &= ~TYPE;
 	GPIOx->OSPEEDR &= ~SPEED;
 	GPIOx->PUPDR &= ~PUPD;
+	GPIOx->AFR[0] &= ~AFR[0];
+	GPIOx->AFR[1] &= ~AFR[1];
 
 	GPIOx->MODER |= MODE;
 	GPIOx->OTYPER |= TYPE;
 	GPIOx->OSPEEDR |= SPEED;
 	GPIOx->PUPDR |= PUPD;
+	GPIOx->AFR[0] |= AFR[0];
+	GPIOx->AFR[1] |= AFR[1];
 
 
 	return setpins;
 }
 
-/*
-extern void GPIO_SetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
 
-extern void GPIO_ResetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
-
-extern void GPIO_ChangeOutput(GPIO_TypeDef *GPIOx,uint32_t setGPIO_PIN,uint32_t resetGPIO_PIN);
-
-extern void GPIO_ToggleOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
-
-extern uint32_t GPIO_GetInState(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
-
-extern uint32_t GPIO_GetOutState(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN); 
-*/

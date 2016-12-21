@@ -94,48 +94,48 @@ extern struct GPIOxo
 #define GPIO_ALTFUNCTION_14 ((uint32_t)0x0E)
 #define GPIO_ALTFUNCTION_15 ((uint32_t)0x0F)
 
-uint32_t GPIO_SetPins(struct GPIOxo *GPIOo,
+uint32_t GPIO_Config(struct GPIOxo *GPIOo,
   const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
   const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
   const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION);
 
 
-/*ALWAYS_INLINE uint32_t GPIO_ResetPins(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
+ALWAYS_INLINE uint32_t GPIO_ResetConfig(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
 {
-	GPIO_UsedPins(GPIOx) &= ~GPIO_PIN;
+	GPIOo->setpins &= ~GPIO_PIN;
 	return GPIO_PIN;
-}*/
-
-
-ALWAYS_INLINE void GPIO_SetOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
-{
-	(GPIOx)->BSRR = (GPIO_PIN);
 }
 
-ALWAYS_INLINE void GPIO_ResetOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
+
+ALWAYS_INLINE void GPIO_SetOutput(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
 {
-	(GPIOx)->BSRR = ((GPIO_PIN) << 16);
+	GPIOo->GPIOx->BSRR = (GPIO_PIN);
 }
 
-ALWAYS_INLINE void GPIO_ChangeOutput(GPIO_TypeDef *GPIOx, 
+ALWAYS_INLINE void GPIO_ResetOutput(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
+{
+	GPIOo->GPIOx->BSRR = ((GPIO_PIN) << 16);
+}
+
+ALWAYS_INLINE void GPIO_ChangeOutput(struct GPIOxo *GPIOo, 
 	uint32_t setGPIO_PIN, uint32_t resetGPIO_PIN) 
 {
-	(GPIOx)->BSRR = (setGPIO_PIN) | ((resetGPIO_PIN) << 16);
+	GPIOo->GPIOx->BSRR = (setGPIO_PIN) | ((resetGPIO_PIN) << 16);
 }
 
-ALWAYS_INLINE void GPIO_ToggleOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN){
-	GPIOx->ODR ^= GPIO_PIN;
+ALWAYS_INLINE void GPIO_ToggleOutput(struct GPIOxo *GPIOo, uint32_t GPIO_PIN){
+	GPIOo->GPIOx->ODR ^= GPIO_PIN;
 }
 
-ALWAYS_INLINE uint32_t GPIO_GetInState(GPIO_TypeDef *GPIOx) 
+ALWAYS_INLINE uint32_t GPIO_GetInState(struct GPIOxo *GPIOo) 
 {
-	return (uint16_t)GPIOx->IDR;
+	return (uint16_t)GPIOo->GPIOx->IDR;
 }
 
 
-ALWAYS_INLINE uint32_t GPIO_GetOutState(GPIO_TypeDef *GPIOx)
+ALWAYS_INLINE uint32_t GPIO_GetOutState(struct GPIOxo *GPIOo)
 {
-	return (uint16_t)GPIOx->ODR;
+	return (uint16_t)GPIOo->GPIOx->ODR;
 }
 
 

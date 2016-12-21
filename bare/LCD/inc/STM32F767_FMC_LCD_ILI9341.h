@@ -20,9 +20,9 @@
 #define LCD_Reset(void) \
 do \
 { \
-  GPIO_ResetOutput(GPIOE,LCD_RSTPIN); \
+  GPIO_ResetOutput(&GPIOEo,LCD_RSTPIN); \
 	DelayMilli(1); \
-  GPIO_SetOutput(GPIOE,LCD_RSTPIN); \
+  GPIO_SetOutput(&GPIOEo,LCD_RSTPIN); \
   DelayMilli(150); \
 } while(0)
 

@@ -19,37 +19,5 @@ struct USARTxo
 	UART7o = {&RCC->APB1ENR,UART7_CLOCK_OFFSET,0,0,0,UART7},
 	UART8o = {&RCC->APB1ENR,UART8_CLOCK_OFFSET,0,0,0,UART8};
 
-uint32_t USART_EnableClock(uint32_t USART_CLOCK)
-{
-	uint32_t *RCCx = 0;
-
-	switch((uint32_t)USART_CLOCK)
-	{
-		case (uint32_t)USART_CLOCK_USART1:
-		case (uint32_t)USART_CLOCK_USART6:
-			RCCx = &RCC->APB2ENR;
-		break;
-
-		case (uint32_t)USART_CLOCK_USART2:
-		case (uint32_t)USART_CLOCK_USART3:
-		case (uint32_t)USART_CLOCK_UART4:
-		case (uint32_t)USART_CLOCK_UART5:
-		case (uint32_t)USART_CLOCK_UART7:
-		case (uint32_t)USART_CLOCK_UART8:
-			RCCx = &RCC->APB1ENR;
-		break;
-	};
-	//get correct register to set
-
-	uint32_t rccreg = *RCCx;
-	//get reg value to check if clock is already set
-
-	if((rccreg & USART_CLOCK) == 0)
-	{
-		*RCCx = rccreg | USART_CLOCK;
-		return 0;
-	}
-	return USART_CLOCK_ENABLED; 
-}
 
 

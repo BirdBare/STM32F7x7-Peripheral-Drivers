@@ -45,50 +45,34 @@ extern struct USARTxo
 	UART8o;
 
 
-
-#define USART_CLOCK_USART1 RCC_APB2ENR_USART1EN
-#define USART_CLOCK_USART6 RCC_APB2ENR_USART6EN
-
-#define USART_CLOCK_USART2 RCC_APB1ENR_USART2EN
-#define USART_CLOCK_USART3 RCC_APB1ENR_USART3EN
-#define USART_CLOCK_UART4 RCC_APB1ENR_UART4EN
-#define USART_CLOCK_UART5 RCC_APB1ENR_UART5EN
-#define USART_CLOCK_UART7 RCC_APB1ENR_UART7EN
-#define USART_CLOCK_UART8 RCC_APB1ENR_UART8EN
-
-extern uint32_t USART_EnableClock(uint32_t USART_CLOCK);
-/*
+STATIC INLINE uint32_t USART_Config(struct USARTxo *USARTo, uint32_t CR1, 
+	uint32_t CR2, uint32_t CR3, uint32_t BRR)
 {
-	uint32_t *RCCx = 0;
+	USART_TypeDef *USARTx = USARTo->USARTx;
 
-	switch((uint32_t)USART_CLOCK)
-	{
-		case (uint32_t)USART_CLOCK_USART1:
-		case (uint32_t)USART_CLOCK_USART6:
-			RCCx = &RCC->APB2ENR;
-		break;
+	uint32_t prevstate = USARTx->CR1 & USART_CR1_UE;
 
-		case (uint32_t)USART_CLOCK_USART2:
-		case (uint32_t)USART_CLOCK_USART3:
-		case (uint32_t)USART_CLOCK_UART4:
-		case (uint32_t)USART_CLOCK_UART5:
-		case (uint32_t)USART_CLOCK_UART7:
-		case (uint32_t)USART_CLOCK_UART8:
-			RCCx = &RCC->APB1ENR;
-		break;
-	};
-	//get correct register to set
+	USARTx->CR2 = CR2;
+	USARTx->CR3 = CR3;
+	USARTx->BRR = BRR;
+	USARTx->CR1 = CR1;
 
-	uint32_t rccreg = *RCCx;
-	//get reg value to check if clock is already set
+	return prevstate;
+}
 
-	if((rccreg & USART_CLOCK) == 0)
-	{
-		*RCCx = rccreg | USART_CLOCK;
-		return 0;
-	}
-	return USART_CLOCK_ENABLED; 
-}*/
+
+STATIC INLINE uint32_t USART_ResetConfig(struct USARTxo *USARTo)
+{
+	uint32_t prevstate = USARTo->USARTx->CR1 & USART_CR1_UE;
+
+	RCC_ResetClock(USARTo);
+	RCC_SetClock(USARTo);
+
+	return prevstate;
+}
+
+
+
 
 
 
