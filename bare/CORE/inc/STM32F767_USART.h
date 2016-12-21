@@ -34,7 +34,7 @@ struct USARTxo
 #define UART7_CLOCK_OFFSET 30
 #define UART8_CLOCK_OFFSET 31
 
-extern const struct USARTxo
+extern struct USARTxo
 	USART1o, 
 	USART2o,
 	USART3o,
