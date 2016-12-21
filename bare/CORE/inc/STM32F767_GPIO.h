@@ -12,32 +12,29 @@
 #include "stm32f7xx.h"
 #include "BARE_DEFINES.h"
 
+struct GPIOxo
+{
+	volatile uint32_t * const clockreg;			//register where clock enable bit is.
+	const uint8_t clockregoffset; //offset to the clock enable bit.
 
-#define GPIO_INDEX(GPIOx) \
-	(((uint32_t)(GPIOx) & 0b111111111111111111) / 1024 - 128)
+	uint8_t unused1;
+	uint16_t setpins;
 
-extern uint16_t GPIO_PINS [11];
+	volatile GPIO_TypeDef * const GPIOx;
+};
 
-//*****  RESET AND CLOCK CONTROL  **********
-
-/*
-   Reset and Clock control functions to enable and disable GPIO clocks
-*/
-#define GPIO_CLOCK_GPIOA RCC_AHB1ENR_GPIOAEN
-#define GPIO_CLOCK_GPIOB RCC_AHB1ENR_GPIOBEN
-#define GPIO_CLOCK_GPIOC RCC_AHB1ENR_GPIOCEN
-#define GPIO_CLOCK_GPIOD RCC_AHB1ENR_GPIODEN
-#define GPIO_CLOCK_GPIOE RCC_AHB1ENR_GPIOEEN
-#define GPIO_CLOCK_GPIOF RCC_AHB1ENR_GPIOFEN
-#define GPIO_CLOCK_GPIOG RCC_AHB1ENR_GPIOGEN
-#define GPIO_CLOCK_GPIOH RCC_AHB1ENR_GPIOHEN
-#define GPIO_CLOCK_GPIOI RCC_AHB1ENR_GPIOIEN
-
-#define GPIO_ERROR_CLOCK_ENABELD 1
-uint32_t GPIO_EnableClock(uint32_t GPIO_CLOCK);
-
-#define GPIO_ERROR_CLOCK_PINS (1 << 1)
-uint32_t GPIO_DisabeClock(uint32_t GPIO_CLOCK); 
+extern struct GPIOxo
+	GPIOAo,
+	GPIOBo,
+	GPIOCo,
+	GPIODo,
+	GPIOEo,
+	GPIOFo,
+	GPIOGo,
+	GPIOHo,
+	GPIOIo,
+	GPIOJo,
+	GPIOKo;
 
 
 //****** GPIO ********
@@ -97,88 +94,17 @@ uint32_t GPIO_DisabeClock(uint32_t GPIO_CLOCK);
 #define GPIO_ALTFUNCTION_14 ((uint32_t)0x0E)
 #define GPIO_ALTFUNCTION_15 ((uint32_t)0x0F)
 
-
-
-
-#define GPIO_UsedPins(GPIOx) GPIO_PINS[GPIO_INDEX(GPIOx)]
-
-#define GPIO_Init(GPIOx) GPIO_UsedPins(GPIOx) = 0;
-
-/* 
-    GPIO functions to change the mode of the pin
-*/
-uint32_t GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
+uint32_t GPIO_SetPins(struct GPIOxo *GPIOo,
   const uint32_t GPIO_PIN,const uint32_t GPIO_MODE, 
   const uint32_t GPIO_OUTTYPE, const uint32_t GPIO_OUTSPEED, 
   const uint32_t GPIO_PUPD,const uint32_t GPIO_ALTFUNCTION);
-/*{
 
-	uint32_t index = GPIO_INDEX(GPIO_PORT), respins = ~GPIO_PINS[index],
-		setpins = 0;
 
-  for(uint8_t count = 0; count < 16; count++)
-  {
-    if((GPIO_PIN & ((uint32_t)0b1 << count) & respins) != 0)
-    {
-      uint32_t count2 = count << 1;
-      uint32_t count2reset = (uint32_t)0b11 << count2;
-
-			//indicates used or reserved pins. will be stored and returned.
-			setpins |= ((uint32_t)0b1 << count);
-
-      //Sets Pin Mode
-      GPIO_PORT->MODER &= ~((uint32_t)(count2reset)); 
-      //Sets Pin mode to reset state 
-    
-      GPIO_PORT->MODER |= (GPIO_MODE << (count2)); 
-      //Bitshift left by 1 to multiply by two
-      //
-      
-      //Sets Pin Output Type
-      GPIO_PORT->OTYPER &= ~((uint32_t)0b1 << count); 
-      //Sets Pin type to reset state
-      
-      GPIO_PORT->OTYPER |= (GPIO_OUTTYPE << count);
-      //Does not need to multiply by 2. Check register.
-      //
-      
-      //Sets Pin Speed
-      GPIO_PORT->OSPEEDR &= ~((uint32_t)(count2reset)); 
-      //Sets Pin speed to reset state
-      
-      GPIO_PORT->OSPEEDR |= (GPIO_OUTSPEED << (count2)); 
-      //Bitshift left by 1 to multiply by two
-      //
-
-      //Sets Pin Pullup or Pulldown
-      GPIO_PORT->PUPDR &= ~((uint32_t)(count2reset)); 
-      //Sets Pin resistor to reset state
-      
-      GPIO_PORT->PUPDR |= (GPIO_PUPD << (count2)); 
-      //Bitshift left by 1 to multiply by two
-      //  
-      
-      count2 = (count & 0b111) << 2;
-
-      GPIO_PORT->AFR[count >> 3] &= ~((uint32_t)0b1111 << 
-        ((count2))); 
-      //Sets Pin Alternate Function to reset GPIO
-      
-         GPIO_PORT->AFR[count >> 3] |= (GPIO_ALTFUNCTION << 
-           ((count2)));
-      //Sets Pin Alternate Function
-    }
-  }
-	GPIO_PINS[index] |= setpins;
-
-	return setpins;
-}
-*/
-ALWAYS_INLINE uint32_t GPIO_ResetPins(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
+/*ALWAYS_INLINE uint32_t GPIO_ResetPins(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
 {
 	GPIO_UsedPins(GPIOx) &= ~GPIO_PIN;
 	return GPIO_PIN;
-}
+}*/
 
 
 ALWAYS_INLINE void GPIO_SetOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 

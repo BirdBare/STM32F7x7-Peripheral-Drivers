@@ -11,6 +11,23 @@
 
 #include "BARE_STM32F767.h"
 
+#define RCC_CLOCK_ENABLED 1
+
+//Object struct of the Reset and clock control. Every object who contains
+// a clock must contain this in the structure first. This will allow us to
+// enable the clock from the object.
+
+struct RCCo
+{
+	volatile uint32_t * const clockreg;			//register where clock enable bit is.
+	const uint8_t clockregoffset; //offset to the clock enable bit.
+	uint8_t unused1;
+	uint8_t unused2;
+	uint8_t unused3;
+};
+
+uint32_t RCC_EnableClock(struct RCCo *RCCo);
+uint32_t RCC_DisableClock(struct RCCo *RCCo);
 
 #define RCC_EnableClockAHB1(AHB1_CLOCK_x) \
 	RCC->AHB1ENR |= AHB1_CLOCK_x
