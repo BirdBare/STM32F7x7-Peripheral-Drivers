@@ -64,11 +64,10 @@ ALWAYS_INLINE uint32_t I2C_GetRXDR(I2C_TypeDef *I2Cx);
 #define I2C_CLOCK_I2C4 RCC_APB1ENR_I2C4EN
 
 #define I2C_EnableClock(I2C_CLOCK) \
-  RCC_SetBitsAPB1ENR(RCC,I2C_CLOCK)
-
+	RCC_EnableClockAPB1(I2C_CLOCK)
   
 #define I2C_DisableClock(I2C_CLOCK) \
-  RCC_SetBitsAPB1RSTR(RCC,I2C_CLOCK)
+	RCC_DisableClockAPB1(I2C_CLOCK)
 
 
 #define I2C_Disable(I2Cx) \

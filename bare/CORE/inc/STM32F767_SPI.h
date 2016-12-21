@@ -80,16 +80,16 @@ ALWAYS_INLINE void SPI_ResetBitsI2SPR(SPI_TypeDef *SPIx, uint32_t Data);
 /* APB1 */
 
 #define SPI_EnableClockAPB2(SPI_CLOCK) \
-  RCC_SetBitsAPB2ENR(RCC, SPI_CLOCK)
+  RCC_EnableClockAPB2(SPI_CLOCK)
 
 #define SPI_EnableClockAPB1(SPI_CLOCK) \
-  RCC_SetBitsAPB1ENR(RCC, SPI_CLOCK)
+  RCC_EnableClockAPB1(SPI_CLOCK)
   
 #define SPI_DisableClockAPB2(SPI_CLOCK) \
-  RCC_SetBitsAPB2RSTR(RCC, SPI_CLOCK)
+  RCC_DisableClockAPB2(SPI_CLOCK)
     
 #define SPI_DisableClockAPB1(SPI_CLOCK) \
-  RCC_SetBitsAPB1RSTR(RCC, SPI_CLOCK)
+  RCC_DisableClockAPB1(SPI_CLOCK)
 
 
 /* SPI CR1 OPTIONS 

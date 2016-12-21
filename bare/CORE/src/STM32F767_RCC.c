@@ -5,12 +5,7 @@
 //
 
 
-
-#ifndef STM32F767_RCC_H
-#define STM32F767_RCC_H
-
-#include "BARE_STM32F767.h"
-
+#include "STM32F767_RCC.h"
 
 #define RCC_EnableClockAHB1(AHB1_CLOCK_x) \
 	RCC->AHB1ENR |= AHB1_CLOCK_x
@@ -30,6 +25,3 @@
 #define RCC_DisableClockAPB2(APB2_CLOCK_x) \
 	RCC->APB2RSTR &= ~APB2_CLOCK_x
 
-
-
-#endif

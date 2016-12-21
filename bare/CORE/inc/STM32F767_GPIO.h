@@ -10,6 +10,13 @@
 #define STM32F767_GPIO_H
 
 #include "stm32f7xx.h"
+#include "BARE_DEFINES.h"
+
+
+#define GPIO_INDEX(GPIOx) \
+	(((uint32_t)(GPIOx) & 0b111111111111111111) / 1024 - 128)
+
+extern uint16_t GPIO_PINS [11];
 
 //*****  RESET AND CLOCK CONTROL  **********
 
@@ -26,11 +33,12 @@
 #define GPIO_CLOCK_GPIOH RCC_AHB1ENR_GPIOHEN
 #define GPIO_CLOCK_GPIOI RCC_AHB1ENR_GPIOIEN
 
-#define GPIO_EnableClock(GPIO_CLOCK) \
-  RCC->AHB1ENR |= (GPIO_CLOCK)
+#define GPIO_ERROR_CLOCK_ENABELD 1
+uint32_t GPIO_EnableClock(uint32_t GPIO_CLOCK);
 
-#define GPIO_DisableClock(GPIO_CLOCK) \
-  RCC->AHB1RSTR |= (GPIO_CLOCK)
+#define GPIO_ERROR_CLOCK_PINS (1 << 1)
+uint32_t GPIO_DisabeClock(uint32_t GPIO_CLOCK); 
+
 
 //****** GPIO ********
 
@@ -90,10 +98,7 @@
 #define GPIO_ALTFUNCTION_15 ((uint32_t)0x0F)
 
 
-extern uint16_t GPIO_PINS [11];
 
-#define GPIO_INDEX(GPIOx) \
-	(((uint32_t)(GPIOx) & 0b111111111111111111) / 1024 - 128)
 
 #define GPIO_UsedPins(GPIOx) GPIO_PINS[GPIO_INDEX(GPIOx)]
 
@@ -169,34 +174,43 @@ uint32_t GPIO_SetPins(GPIO_TypeDef *GPIO_PORT,
 	return setpins;
 }
 */
-#define GPIO_ResetPins(GPIOx, GPIO_PINS) GPIO_UsedPins(GPIOx) &= ~GPIO_PINS
+ALWAYS_INLINE uint32_t GPIO_ResetPins(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
+{
+	GPIO_UsedPins(GPIOx) &= ~GPIO_PIN;
+	return GPIO_PIN;
+}
 
-#define GPIO_SetOutput(GPIOx, GPIO_PIN) (GPIOx)->BSRR = (GPIO_PIN)
 
-#define GPIO_ResetOutput(GPIOx, GPIO_PIN) \
-	(GPIOx)->BSRR = ((GPIO_PIN) << 16)
+ALWAYS_INLINE void GPIO_SetOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
+{
+	(GPIOx)->BSRR = (GPIO_PIN);
+}
 
-#define GPIO_ChangeOutput(GPIOx, setGPIO_PIN, resetGPIO_PIN)  \
-	(GPIOx)->BSRR = (setGPIO_PIN) | ((resetGPIO_PIN) << 16)
+ALWAYS_INLINE void GPIO_ResetOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN) 
+{
+	(GPIOx)->BSRR = ((GPIO_PIN) << 16);
+}
 
-#define GPIO_ToggleOutput(GPIOx, GPIO_PIN) (GPIOx)->ODR ^= (GPIO_PIN)
+ALWAYS_INLINE void GPIO_ChangeOutput(GPIO_TypeDef *GPIOx, 
+	uint32_t setGPIO_PIN, uint32_t resetGPIO_PIN) 
+{
+	(GPIOx)->BSRR = (setGPIO_PIN) | ((resetGPIO_PIN) << 16);
+}
 
-#define GPIO_GetInState(GPIOx) GPIOx->IDR
+ALWAYS_INLINE void GPIO_ToggleOutput(GPIO_TypeDef *GPIOx, uint32_t GPIO_PIN){
+	GPIOx->ODR ^= GPIO_PIN;
+}
 
-#define GPIO_GetOutState(GPIOx) GPIOx->ODR
+ALWAYS_INLINE uint32_t GPIO_GetInState(GPIO_TypeDef *GPIOx) 
+{
+	return (uint16_t)GPIOx->IDR;
+}
 
-/*
-extern void GPIO_SetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
 
-extern void GPIO_ResetOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
+ALWAYS_INLINE uint32_t GPIO_GetOutState(GPIO_TypeDef *GPIOx)
+{
+	return (uint16_t)GPIOx->ODR;
+}
 
-extern void GPIO_ChangeOutput(GPIO_TypeDef *GPIOx,uint32_t setGPIO_PIN,uint32_t resetGPIO_PIN);
-
-extern void GPIO_ToggleOutput(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
-
-extern uint32_t GPIO_GetInState(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN);
-
-extern uint32_t GPIO_GetOutState(GPIO_TypeDef *GPIO_PORT,uint32_t GPIO_PIN); 
-*/
 
 #endif

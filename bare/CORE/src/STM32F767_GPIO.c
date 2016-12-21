@@ -6,6 +6,24 @@
 
 #include "STM32F767_GPIO.h"
 
+uint32_t GPIO_EnableClock(uint32_t GPIO_CLOCK)
+{
+	uint32_t prevstate = !!(RCC->AHB1ENR & GPIO_CLOCK);
+	RCC->AHB1ENR |= (GPIO_CLOCK);
+	return prevstate;
+}
+
+uint32_t GPIO_DisabeClock(uint32_t GPIO_CLOCK) 
+{
+	if(GPIO_PINS[GPIO_CLOCK] == 0)
+	{
+		RCC->AHB1RSTR |= (GPIO_CLOCK);
+		return 0;
+	}
+	return GPIO_ERROR_CLOCK_PINS;
+}
+
+
 
 uint16_t GPIO_PINS [11] = {0};
 
