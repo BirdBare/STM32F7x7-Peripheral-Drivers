@@ -10,6 +10,8 @@
 #define STM32F767_USART_H
 
 #include "stm32f7xx.h"
+#include "BARE_DEFINES.h"
+#include "STM32F767_RCC.h"
 //#include "STM32F767_xxx.h"
 
 #define USART_CLOCK_ENABLED 1
@@ -45,10 +47,10 @@ extern struct USARTxo
 	UART8o;
 
 
-STATIC INLINE uint32_t USART_Config(struct USARTxo *USARTo, uint32_t CR1, 
+ALWAYS_INLINE uint32_t USART_Config(struct USARTxo *USARTo, uint32_t CR1, 
 	uint32_t CR2, uint32_t CR3, uint32_t BRR)
 {
-	USART_TypeDef *USARTx = USARTo->USARTx;
+	volatile USART_TypeDef * const USARTx = USARTo->USARTx;
 
 	uint32_t prevstate = USARTx->CR1 & USART_CR1_UE;
 
@@ -61,12 +63,12 @@ STATIC INLINE uint32_t USART_Config(struct USARTxo *USARTo, uint32_t CR1,
 }
 
 
-STATIC INLINE uint32_t USART_ResetConfig(struct USARTxo *USARTo)
+ALWAYS_INLINE uint32_t USART_ResetConfig(struct USARTxo *USARTo)
 {
 	uint32_t prevstate = USARTo->USARTx->CR1 & USART_CR1_UE;
 
-	RCC_ResetClock(USARTo);
-	RCC_SetClock(USARTo);
+	RCC_DisableClock((struct RCCo *)USARTo);
+	RCC_EnableClock((struct RCCo *)USARTo);
 
 	return prevstate;
 }
