@@ -15,10 +15,10 @@
 struct GPIOxo
 {
 	volatile uint32_t * const clockreg;			//register where clock enable bit is.
-	const uint8_t clockregoffset; //offset to the clock enable bit.
+	const uint8_t clockbitoffset; //offset to the clock enable bit.
 
 	uint8_t unused1;
-	uint16_t setpins;
+	uint16_t used;
 
 	volatile GPIO_TypeDef * const GPIOx;
 };
@@ -103,7 +103,7 @@ uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
 ALWAYS_INLINE uint32_t GPIO_ResetConfig(volatile struct GPIOxo * const GPIOo, 
 	uint32_t GPIO_PIN) 
 {
-	GPIOo->setpins &= ~GPIO_PIN;
+	GPIOo->used &= ~GPIO_PIN;
 	return 0;
 }
 

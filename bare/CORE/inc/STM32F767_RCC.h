@@ -20,10 +20,10 @@
 struct RCCxo
 {
 	volatile uint32_t * const clockreg;			//register where clock enable bit is.
-	const uint8_t clockregoffset; //offset to the clock enable bit.
+
+	const uint8_t clockbitoffset; //offset to the clock enable bit.
 	uint8_t unused1;
-	uint8_t unused2;
-	uint8_t unused3;
+	uint16_t unused2;
 };
 
 //******************************************************************************

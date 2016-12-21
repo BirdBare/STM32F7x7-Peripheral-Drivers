@@ -34,10 +34,10 @@ uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
 
 	volatile GPIO_TypeDef * const GPIOx = GPIOo->GPIOx;
 
-	uint32_t respins = ~GPIOo->setpins, setpins = 0;
+	uint32_t respins = ~GPIOo->used, setpins = 0;
 	//get old usedpins
 
-	GPIOo->setpins |= GPIO_PIN;
+	GPIOo->used |= GPIO_PIN;
 	//update usedpins
 
 	uint32_t MODE = 0, TYPE = 0, SPEED = 0, PUPD = 0, AFR[2] = {0,0};

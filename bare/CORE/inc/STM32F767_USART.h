@@ -6,19 +6,16 @@
 
 #include "stm32f7xx.h"
 #include "BARE_DEFINES.h"
-#include "STM32F767_RCC.h"
 //#include "STM32F767_xxx.h"
-
-#define USART_CLOCK_ENABLED 1
 
 struct USARTxo
 {
 	volatile uint32_t  * const clockreg;
-	const uint8_t clockregoffset;
-	uint8_t afr;
-	uint16_t pins;
+	const uint8_t clockbitoffset;
+	uint8_t unused1;
+	uint8_t unused2;
+	uint8_t unused3;
 
-	volatile struct GPIOxo * GPIOo;
 	volatile USART_TypeDef * const USARTx;
 };
 
@@ -43,10 +40,6 @@ extern struct USARTxo
 
 
 #define USART_CONFIG_ENABLED 1
-#define USART_ENABLE_ENABLED 1
-#define USART_ENABLE_PINS_USED 2
-#define USART_ENABLE_PINS_UNSET 3
-#define USART_ENABLE_
 
 
 //******************************************************************************
