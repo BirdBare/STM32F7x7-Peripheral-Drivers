@@ -55,8 +55,7 @@ uint32_t USART_ResetConfig(struct USARTxo *USARTo)
 {
 	if((USARTo->USARTx->CR1 & USART_CR1_UE) == 0)
 	{
-		RCC_DisableClock((struct RCCxo *)USARTo);
-		RCC_EnableClock((struct RCCxo *)USARTo);
+		RCC_Reset((struct RCCxo *)USARTo);
 		return 0;
 	}
 	return USART_CONFIG_ENABLED;
@@ -80,10 +79,16 @@ uint32_t USART_Enable(struct USARTxo *USARTo)
 //	
 //******************************************************************************
 uint32_t USART_Disable(struct USARTxo *USARTo)
-{
-	USARTo->USARTx->CR1 &= ~USART_CR1_UE;
+{	
+	volatile USART_TypeDef * const USARTx = USARTo->USARTx;
+	
+	if((USARTx->ISR & USART_ISR_TC) != 0)
+	{
+		USARTo->USARTx->CR1 &= ~USART_CR1_UE;
 		
-	return 0;
+		return 0;
+	}
+	return USART_DISABLE_TRANSFER;
 }
 
 

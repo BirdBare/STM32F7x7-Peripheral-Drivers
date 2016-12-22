@@ -40,6 +40,13 @@ uint32_t RCC_EnableClock(struct RCCxo *RCCo);
 //******************************************************************************
 uint32_t RCC_DisableClock(struct RCCxo *RCCo);
 
+//******************************************************************************
+//	
+//										 
+//	
+//******************************************************************************
+void RCC_Reset(struct RCCxo *RCCo);
+
 #define RCC_EnableClockAHB1(AHB1_CLOCK_x) \
 	RCC->AHB1ENR |= AHB1_CLOCK_x
 #define RCC_EnableClockAHB2(AHB2_CLOCK_x) \

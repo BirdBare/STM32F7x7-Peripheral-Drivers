@@ -10,6 +10,25 @@
 //#include "STM32F767_.h"
 
 
+struct DMAx_Streamxo
+	DMA1_Stream0o = {&RCC->AHB1ENR,21,0,0,0,DMA1_Stream0},
+	DMA1_Stream1o = {&RCC->AHB1ENR,21,0,6,0,DMA1_Stream1},
+	DMA1_Stream2o = {&RCC->AHB1ENR,21,0,16,0,DMA1_Stream2},
+	DMA1_Stream3o = {&RCC->AHB1ENR,21,0,22,0,DMA1_Stream3},
+	DMA1_Stream4o = {&RCC->AHB1ENR,21,4,0,0,DMA1_Stream4},
+	DMA1_Stream5o = {&RCC->AHB1ENR,21,4,6,0,DMA1_Stream5},
+	DMA1_Stream6o = {&RCC->AHB1ENR,21,4,16,0,DMA1_Stream6},
+	DMA1_Stream7o = {&RCC->AHB1ENR,21,4,22,0,DMA1_Stream7},
+
+	DMA2_Stream0o = {&RCC->AHB1ENR,22,0,0,0,DMA2_Stream0},
+	DMA2_Stream1o = {&RCC->AHB1ENR,22,0,6,0,DMA2_Stream1},
+	DMA2_Stream2o = {&RCC->AHB1ENR,22,0,16,0,DMA2_Stream2},
+	DMA2_Stream3o = {&RCC->AHB1ENR,22,0,22,0,DMA2_Stream3},
+	DMA2_Stream4o = {&RCC->AHB1ENR,22,4,0,0,DMA2_Stream4},
+	DMA2_Stream5o = {&RCC->AHB1ENR,22,4,6,0,DMA2_Stream5},
+	DMA2_Stream6o = {&RCC->AHB1ENR,22,4,16,0,DMA2_Stream6},
+	DMA2_Stream7o = {&RCC->AHB1ENR,22,4,22,0,DMA2_Stream7};
+
 
 
 //******************************************************************************

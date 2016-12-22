@@ -21,7 +21,7 @@
 #define HTU21D_RDUSER 0xE7
 #define HTU21D_RST 0xFE
 
-#define HTU21D_I2Cx I2C1
+#define HTU21D_I2Cx I2C1o
 #define HTU21D_ADDRESS 0x80
 
 extern void HTU21D_EnableGeneral(uint32_t ClockFreqHz);

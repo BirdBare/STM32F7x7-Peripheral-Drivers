@@ -11,6 +11,7 @@
 
 #include "stm32f7xx.h"
 #include "BARE_DEFINES.h"
+#include "STM32F767_RCC.h"
 
 struct GPIOxo
 {
@@ -100,11 +101,17 @@ uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
 	const uint32_t GPIO_ALTFUNCTION);
 
 
+#define GPIO_CONFIG_USED 1
+
 ALWAYS_INLINE uint32_t GPIO_ResetConfig(volatile struct GPIOxo * const GPIOo, 
 	uint32_t GPIO_PIN) 
 {
-	GPIOo->used &= ~GPIO_PIN;
-	return 0;
+	if(GPIOo->used == 0)
+	{
+		RCC_Reset((struct RCCxo *)GPIOo);
+		return 0;
+	}
+	return GPIO_CONFIG_USED;
 }
 
 ALWAYS_INLINE void GPIO_SetOutput(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
