@@ -48,7 +48,7 @@ void *ISR_VECTORS[0];
 #define PLL_P 2
 
 /* USB, SDIO, RNG = VCO / PLL_Q */
-#define PLL_Q 8
+#define PLL_Q 4
 
 /* DSI = VCO / PLL_R */
 #define PLL_R 7
@@ -106,6 +106,9 @@ void SystemInit(void)
 
 void SetSysClock(void)
 {
+    /*Enable the Power Controller Clock*/
+    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+
   /* Enable HSI */
   RCC->CR |= ((uint32_t)RCC_CR_HSION);
  
@@ -125,18 +128,28 @@ void SetSysClock(void)
     /* Enable the main PLL */
     RCC->CR |= RCC_CR_PLLON;
 
-    /*Enable the Power Controller Clock*/
-    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
 
-    /* Disable Voltage scaling bit*/
-    PWR->CR1 |= PWR_CR1_VOS;
+    PWR->CR1 |= PWR_CR1_VOS | PWR_CR1_ODEN;
+		//Reset Voltage scaling to highest and enable overdrive mode.
 
-    /* OVERDRIVE MODE NOT NEEDED UNLESS 216Mhz */
+		while((PWR->CSR1 & PWR_CSR1_ODRDY) == 0)
+		{
+			asm volatile("");
+		}
+		//wait for overdrive to be ready
 
-    /* Configure Flash wait state */
+    PWR->CR1 |= PWR_CR1_ODSWEN;
+		//switch to overdrive regulator
+
+		while((PWR->CSR1 & PWR_CSR1_ODSWRDY) == 0)
+		{
+			asm volatile("");
+		}
+		//wait till switch is done
+
+		/* Configure Flash wait state */
     FLASH->ACR |= FLASH_ACR_LATENCY_6WS |  FLASH_ACR_ARTEN | FLASH_ACR_PRFTEN;    
-
-    /* Wait till the main PLL is ready */
+		/* Wait till the main PLL is ready */
     while((RCC->CR & RCC_CR_PLLRDY) == 0)
     { 
       asm("");
