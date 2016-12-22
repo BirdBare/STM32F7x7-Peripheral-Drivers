@@ -8,6 +8,8 @@
 
 
 #include "STM32F767_FMC_LCD.h"
+#include "STM32F767_RCC.h"
+#include "STM32F767_FMC.h"
 
 volatile uint16_t *LCD_Command = (volatile uint16_t *)0x60000000;
 
@@ -57,13 +59,16 @@ void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
   __DSB();
   //Makes Bank1 a device so all commands and data will be sent.  
 
-  FMC_EnableClock();
+  RCC_EnableClock((struct RCCxo *)&NOR_PSRAM1o);
 
-  FMC_EnableSRAM(FMC_SubBank_1, FMC_AsyncWait_OFF | FMC_ExtendedMode_OFF |
-    FMC_WriteEnable_ON | FMC_WaitPolarity_LOW | FMC_BusWidth, 
-    FMC_AccessMode_A | FMC_BusTurn | FMC_DataSetup | FMC_AddSetup);
+	NOR_PSRAM1o.NOR_PSRAMx->BCR = 0;
 
-  FMC_EnableSubBank(FMC_SubBank_1);
+	NOR_PSRAM_Config(&NOR_PSRAM1o, 
+		FMC_AsyncWait_OFF | FMC_ExtendedMode_OFF | FMC_WriteEnable_ON | 
+			FMC_WaitPolarity_LOW | FMC_BusWidth, 
+    FMC_AccessMode_A | FMC_BusTurn | FMC_DataSetup | FMC_AddSetup, 0);
+
+  NOR_PSRAM_Enable(&NOR_PSRAM1o);
 
 }
 

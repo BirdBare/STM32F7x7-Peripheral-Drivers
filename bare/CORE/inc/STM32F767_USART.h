@@ -19,15 +19,6 @@ struct USARTxo
 	volatile USART_TypeDef * const USARTx;
 };
 
-#define USART1_CLOCK_OFFSET 4
-#define USART2_CLOCK_OFFSET 17
-#define USART3_CLOCK_OFFSET 18
-#define UART4_CLOCK_OFFSET 19
-#define UART5_CLOCK_OFFSET 20
-#define USART6_CLOCK_OFFSET 1
-#define UART7_CLOCK_OFFSET 30
-#define UART8_CLOCK_OFFSET 31
-
 extern struct USARTxo
 	USART1o, 
 	USART2o,

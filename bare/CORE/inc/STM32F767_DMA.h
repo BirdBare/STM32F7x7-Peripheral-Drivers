@@ -10,7 +10,6 @@
 #define STM32F767_DMA_H
 
 #include "stm32f767xx.h"
-#include "BARE_DEFINES.h"
 //#include "STM32F767_.h"
 
 

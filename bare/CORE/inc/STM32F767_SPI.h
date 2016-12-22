@@ -25,6 +25,82 @@
 #include "BARE_STM32F767.h"
 #include "STM32F767_RCC.h"
 
+struct SPIxo
+{
+	volatile uint32_t * const clockreg;
+	const uint8_t clockbitoffset;
+	uint8_t unused1;
+	uint16_t unused2;
+
+	volatile SPI_TypeDef * const SPIx;
+};
+
+extern struct SPIxo
+	SPI1o,
+	SPI2o,
+	SPI3o,
+	SPI4o,
+	SPI5o,
+	SPI6o;
+
+#define SPI_CONFIG_ENABLED 1
+
+int SPI_Config(struct SPIxo *SPIo, int CR1, int CR2, int CRCPR);
+
+
+int SPI_ResetConfig(struct SPIxo *SPIo);
+
+
+int SPI_Enable(struct SPIxo *SPIo);
+
+
+
+#define SPI_DISABLE_TRANSFER 2
+
+int SPI_Disable(struct SPIxo *SPIo);
+
+
+ALWAYS_INLINE void SPI_Put8(struct SPIxo *SPIo, int Data)
+{
+	ASM(" strb %1, [%0, #0xc]" : : "r"(SPIo->SPIx), "r" (Data));
+}
+ALWAYS_INLINE void SPI_Put16(struct SPIxo *SPIo, int Data)
+{
+	ASM(" strh %1, [%0, #0xc]" : : "r"(SPIo->SPIx), "r" (Data));
+}
+
+
+ALWAYS_INLINE int SPI_Get8(struct SPIxo *SPIo)
+{
+	uint32_t ret;
+	ASM(" ldrb %0, [%1, #0xc]" : "=r" (ret) : "r" (SPIo->SPIx));
+	return ret;
+}
+ALWAYS_INLINE int SPI_Get16(struct SPIxo *SPIo)
+{
+	uint32_t ret;
+	ASM(" ldrh %0, [%1, #0xc]" : "=r" (ret) : "r" (SPIo->SPIx));
+	return ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //  PROTOTYPES FOR SIMPLE REGISTER FUNCTIONS
 //  ALL FORCED INLINE SO THEY DO NOT USE FLASH SPACE
 ALWAYS_INLINE void SPI_SetCR1(SPI_TypeDef *SPIx, uint32_t Data);
@@ -185,8 +261,6 @@ do \
   SPI_SetCR1(SPIx,SPI_CR1); \
 } while(0)
 
-#define SPI_Disable(SPIx) \
-  SPI_ResetBitsCR1(SPIx,~0b1) 
 
 #define SPI_Send8(SPIx, SPI_DATA) \
 SPI_SetDR8(SPIx, SPI_DATA)
