@@ -17,109 +17,42 @@ extern volatile uint16_t LCD_BUFFER[240*320];
 //Frame Buffer for the LCD
 
 
-  //Register Functions
-ALWAYS_INLINE void DMA2D_SetCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetCR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
+struct DMA2Dxo
+{
+	volatile uint32_t * const clockreg;
+	const uint8_t clockbitoffset;
+	uint8_t unused1;
+	uint16_t unused2;
 
-ALWAYS_INLINE void DMA2D_SetISR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetISR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsISR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsISR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetIFCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetIFCR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsIFCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsIFCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetFGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetFGMAR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsFGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsFGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetFGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetFGOR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsFGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsFGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetBGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetBGMAR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsBGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsBGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetBGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetBGOR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsBGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsBGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetFGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetFGPFCCR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsFGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsFGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetFGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetFGCOLR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsFGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsFGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetBGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetBGPFCCR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsBGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsBGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetBGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetBGCOLR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsBGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsBGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetFGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetFGCMAR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsFGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsFGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetBGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetBGCMAR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsBGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsBGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetOPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetOPFCCR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsOPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsOPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetOCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetOCOLR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsOCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsOCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetOMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetOMAR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsOMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsOMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetOOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetOOR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsOOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsOOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetNLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetNLR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsNLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsNLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetLWR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetLWR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsLWR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsLWR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-
-ALWAYS_INLINE void DMA2D_SetAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE uint32_t DMA2D_GetAMTCR(DMA2D_TypeDef *DMA2Dx);
-ALWAYS_INLINE void DMA2D_SetBitsAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
-ALWAYS_INLINE void DMA2D_ResetBitsAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
+	volatile DMA2D_TypeDef * const DMA2Dx;
+};
 
 
+extern struct DMA2Dxo
+	DMA2Do;
 
+#define DMA2D_CONFIG_ENABLED 1
+
+int DMA2D_Config(struct DMA2Dxo *DMA2Do, int CR, int LWR, int AMTCR);
+
+int DMA2D_ConfigRegToMem(struct DMA2Dxo *DMA2Do, int OPFCCR, int OCOLR, 
+	void *OMAR, int OOR, int NLR);
+
+
+int DMA2D_ConfigMemToMem(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
+	int FGPFCCR, void *OMAR, int OOR, int NLR);
+
+int DMA2D_ConfigMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
+	int FGPCFCR, int OPCFCR, void *OMAR, int OOR, int NLR);
+
+
+int DMA2D_ResetConfig(struct DMA2Dxo *DMA2Do);
+
+
+int DMA2D_Enable(struct DMA2Dxo *DMA2Do);
+
+
+int DMA2D_Disable(struct DMA2Dxo *DMA2Do);
 
 
 
@@ -132,22 +65,9 @@ ALWAYS_INLINE void DMA2D_ResetBitsAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data);
 
 #define LCD_COLORMODE DMA2D_COLORMODE_RGB565
 
-#define DMA2D_EnableClock(void) RCC->AHB1ENR |= RCC_AHB1ENR_DMA2DEN
-#define DMA2D_DisableClock(void) RCC->AHB1ENR &= ~RCC_AHB1ENR_DMA2DEN
-
 #define DMA2D_COLORMODE_RGB565 0b010
 
 #define LCD_XYOOR(x, y) ((x) > 239 || (y) > 319)
-
-#define DMA2D_Start(void) DMA2D->CR |= DMA2D_CR_START
-
-/*
-void DMA2D_DrawVLine(uint32_t x, uint32_t y, uint32_t h, uint32_t color);
-
-void DMA2D_DrawHLine(uint32_t x, uint32_t y, uint32_t w, uint32_t color);
-
-void DMA2D_FillRect(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint32_t color);
-*/
 
 
 void DMA2D_CopyPixelMap(const uint16_t map[], uint32_t x, uint32_t y, uint32_t
@@ -167,12 +87,12 @@ w, uint32_t h);
 #define DMA2D_LoadCLUT(void) \
 do \
 { \
-  DMA2D_SetFGCMAR(DMA2D, (uint32_t)&DMA2D_CLUT[0]); \
-  DMA2D_SetBGCMAR(DMA2D, (uint32_t)&DMA2D_CLUT[0]); \
+  DMA2D->FGCMAR = (uint32_t)&DMA2D_CLUT[0]; \
+  DMA2D->BGCMAR = (uint32_t)&DMA2D_CLUT[0]; \
   DMA2D_WaitTransfer(); \
-  DMA2D_SetFGPFCCR(DMA2D, DMA2D_FGPFCCR_START | (255 << 8)); \
+  DMA2D->FGPFCCR = DMA2D_FGPFCCR_START | (255 << 8); \
   PERIPH_WaitTillReset(&DMA2D->FGPFCCR, DMA2D_FGPFCCR_START); \
-  DMA2D_SetBGPFCCR(DMA2D, DMA2D_BGPFCCR_START | (255 << 8)); \
+  DMA2D->BGPFCCR = DMA2D_BGPFCCR_START | (255 << 8); \
   PERIPH_WaitTillReset(&DMA2D->BGPFCCR, DMA2D_BGPFCCR_START); \
 } while(0)
 
@@ -192,12 +112,8 @@ OOR    LINE OFFSET
 #define DMA2D_Reg2Mem(OMAR, OPFCCR, OCOLR, NLR, OOR) \
 do{ \
   DMA2D_WaitTransfer(); \
-  DMA2D_SetOMAR(DMA2D,OMAR); \
-  DMA2D_SetOPFCCR(DMA2D,OPFCCR); \
-  DMA2D_SetOCOLR(DMA2D,OCOLR); \
-  DMA2D_SetNLR(DMA2D,NLR); \
-  DMA2D_SetOOR(DMA2D,OOR); \
-  DMA2D_SetBitsCR(DMA2D,0b110000000000000001); \
+	DMA2D_ConfigRegToMem(&DMA2Do, OPFCCR, OCOLR, (void *)(OMAR), OOR, NLR); \
+  DMA2D_Enable(&DMA2Do); \
 } while(0)
 
 
@@ -215,14 +131,9 @@ FGOR    LINE OFFSET
 #define DMA2D_Mem2Mem(FGMAR, OMAR, FGPFCCR, NLR, FGOR, OOR) \
 do{ \
   DMA2D_WaitTransfer(); \
-  DMA2D_SetFGMAR(DMA2D,FGMAR); \
-  DMA2D_SetOMAR(DMA2D,OMAR); \
-  DMA2D_SetFGPFCCR(DMA2D,FGPFCCR); \
-  DMA2D_SetNLR(DMA2D,NLR); \
-  DMA2D_SetFGOR(DMA2D,FGOR); \
-  DMA2D_SetOOR(DMA2D,OOR); \
-  DMA2D_ResetBitsCR(DMA2D,~0b110000000000000000); \
-  DMA2D_SetBitsCR(DMA2D,0b1); \
+  DMA2D_ConfigMemToMem(&DMA2Do, (void *)(FGMAR), FGOR, FGPFCCR, (void*)(OMAR), \
+		OOR, NLR); \
+  DMA2D_Enable(&DMA2Do); \
 } while(0)
 
 
@@ -240,15 +151,9 @@ FGOR    LINE OFFSET
 #define DMA2D_Mem2MemPFC(FGMAR, OMAR, FGPFCCR, OPFCCR, NLR, FGOR, OOR) \
 do{ \
   DMA2D_WaitTransfer(); \
-  DMA2D_SetFGMAR(DMA2D,FGMAR); \
-  DMA2D_SetOMAR(DMA2D,OMAR); \
-  DMA2D_SetFGPFCCR(DMA2D,FGPFCCR); \
-  DMA2D_SetOPFCCR(DMA2D,OPFCCR); \
-  DMA2D_SetNLR(DMA2D,NLR); \
-  DMA2D_SetFGOR(DMA2D,FGOR); \
-  DMA2D_SetOOR(DMA2D,OOR); \
-  DMA2D_ResetBitsCR(DMA2D,~0b110000000000000000); \
-  DMA2D_SetBitsCR(DMA2D,0b10000000000000001); \
+	DMA2D_ConfigMemToMemPFC(&DMA2Do, (void *)(FGMAR), FGOR, FGPFCCR, OPFCCR, \
+		(void *)(OMAR), OOR, NLR); \
+  DMA2D_Enable(&DMA2Do); \
 } while(0)
 
 
@@ -268,717 +173,13 @@ do{ \
 
 
 
-
-
-
-
-
-
-
-
-
-  //  DMA2Dx->CR Functions 
-ALWAYS_INLINE void DMA2D_SetCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->CR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetCR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x0]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->CR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->CR &= Data;
-}
-
-
-
-  //  DMA2Dx->ISR Functions 
-ALWAYS_INLINE void DMA2D_SetISR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->ISR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetISR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x4]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsISR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->ISR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsISR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->ISR &= Data;
-}
-
-
-
-  //  DMA2Dx->IFCR Functions 
-ALWAYS_INLINE void DMA2D_SetIFCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->IFCR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetIFCR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x8]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsIFCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->IFCR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsIFCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->IFCR &= Data;
-}
-
-
-
-  //  DMA2Dx->FGMAR Functions 
-ALWAYS_INLINE void DMA2D_SetFGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGMAR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetFGMAR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0xc]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsFGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGMAR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsFGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGMAR &= Data;
-}
-
-
-
-  //  DMA2Dx->FGOR Functions 
-ALWAYS_INLINE void DMA2D_SetFGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGOR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetFGOR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x10]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsFGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGOR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsFGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGOR &= Data;
-}
-
-
-
-  //  DMA2Dx->BGMAR Functions 
-ALWAYS_INLINE void DMA2D_SetBGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGMAR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetBGMAR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x14]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsBGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGMAR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsBGMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGMAR &= Data;
-}
-
-
-
-  //  DMA2Dx->BGOR Functions 
-ALWAYS_INLINE void DMA2D_SetBGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGOR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetBGOR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x18]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsBGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGOR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsBGOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGOR &= Data;
-}
-
-
-
-  //  DMA2Dx->FGPFCCR Functions 
-ALWAYS_INLINE void DMA2D_SetFGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGPFCCR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetFGPFCCR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x1c]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsFGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGPFCCR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsFGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGPFCCR &= Data;
-}
-
-
-
-  //  DMA2Dx->FGCOLR Functions 
-ALWAYS_INLINE void DMA2D_SetFGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGCOLR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetFGCOLR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x20]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsFGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGCOLR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsFGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGCOLR &= Data;
-}
-
-
-
-  //  DMA2Dx->BGPFCCR Functions 
-ALWAYS_INLINE void DMA2D_SetBGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGPFCCR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetBGPFCCR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x24]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsBGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGPFCCR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsBGPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGPFCCR &= Data;
-}
-
-
-
-  //  DMA2Dx->BGCOLR Functions 
-ALWAYS_INLINE void DMA2D_SetBGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGCOLR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetBGCOLR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x28]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsBGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGCOLR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsBGCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGCOLR &= Data;
-}
-
-
-
-  //  DMA2Dx->FGCMAR Functions 
-ALWAYS_INLINE void DMA2D_SetFGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGCMAR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetFGCMAR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x2c]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsFGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGCMAR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsFGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->FGCMAR &= Data;
-}
-
-
-
-  //  DMA2Dx->BGCMAR Functions 
-ALWAYS_INLINE void DMA2D_SetBGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGCMAR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetBGCMAR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x30]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsBGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGCMAR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsBGCMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->BGCMAR &= Data;
-}
-
-
-
-  //  DMA2Dx->OPFCCR Functions 
-ALWAYS_INLINE void DMA2D_SetOPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OPFCCR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetOPFCCR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x34]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsOPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OPFCCR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsOPFCCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OPFCCR &= Data;
-}
-
-
-
-  //  DMA2Dx->OCOLR Functions 
-ALWAYS_INLINE void DMA2D_SetOCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OCOLR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetOCOLR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x38]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsOCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OCOLR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsOCOLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OCOLR &= Data;
-}
-
-
-
-  //  DMA2Dx->OMAR Functions 
-ALWAYS_INLINE void DMA2D_SetOMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OMAR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetOMAR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x3c]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsOMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OMAR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsOMAR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OMAR &= Data;
-}
-
-
-
-  //  DMA2Dx->OOR Functions 
-ALWAYS_INLINE void DMA2D_SetOOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OOR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetOOR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x40]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsOOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OOR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsOOR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->OOR &= Data;
-}
-
-
-
-  //  DMA2Dx->NLR Functions 
-ALWAYS_INLINE void DMA2D_SetNLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->NLR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetNLR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x44]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsNLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->NLR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsNLR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->NLR &= Data;
-}
-
-
-
-  //  DMA2Dx->LWR Functions 
-ALWAYS_INLINE void DMA2D_SetLWR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->LWR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetLWR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x48]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsLWR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->LWR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsLWR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->LWR &= Data;
-}
-
-
-
-  //  DMA2Dx->AMTCR Functions 
-ALWAYS_INLINE void DMA2D_SetAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->AMTCR = Data;
-}
-ALWAYS_INLINE uint32_t DMA2D_GetAMTCR(DMA2D_TypeDef *DMA2Dx)
-{
-  uint32_t ret;
-  ASM(" ldr %0, [%1, #0x4c]" : "=r" (ret) : "r" (DMA2Dx));
-  return ret;
-}
-ALWAYS_INLINE void DMA2D_SetBitsAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->AMTCR |= Data;
-}
-ALWAYS_INLINE void DMA2D_ResetBitsAMTCR(DMA2D_TypeDef *DMA2Dx, uint32_t Data)
-{
-  DMA2Dx->AMTCR &= Data;
-}
-
-
-
-
 // 8 BIT TO 32 BIT COLOR LOOKUP TABLE
-static const uint32_t DMA2D_CLUT [256] =
-{
-4278190080, //  00000000 
-4278190162, //  00000001 
-4278190253, //  00000010 
-4278190335, //  00000011 
-4278199296, //  00000100 
-4278199378, //  00000101 
-4278199469, //  00000110 
-4278199551, //  00000111 
-4278208768, //  00001000 
-4278208850, //  00001001 
-4278208941, //  00001010 
-4278209023, //  00001011 
-4278217984, //  00001100 
-4278218066, //  00001101 
-4278218157, //  00001110 
-4278218239, //  00001111 
-4278227456, //  00010000 
-4278227538, //  00010001 
-4278227629, //  00010010 
-4278227711, //  00010011 
-4278236672, //  00010100 
-4278236754, //  00010101 
-4278236845, //  00010110 
-4278236927, //  00010111 
-4278246144, //  00011000 
-4278246226, //  00011001 
-4278246317, //  00011010 
-4278246399, //  00011011 
-4278255360, //  00011100 
-4278255442, //  00011101 
-4278255533, //  00011110 
-4278255615, //  00011111 
-4280352768, //  00100000 
-4280352850, //  00100001 
-4280352941, //  00100010 
-4280353023, //  00100011 
-4280361984, //  00100100 
-4280362066, //  00100101 
-4280362157, //  00100110 
-4280362239, //  00100111 
-4280371456, //  00101000 
-4280371538, //  00101001 
-4280371629, //  00101010 
-4280371711, //  00101011 
-4280380672, //  00101100 
-4280380754, //  00101101 
-4280380845, //  00101110 
-4280380927, //  00101111 
-4280390144, //  00110000 
-4280390226, //  00110001 
-4280390317, //  00110010 
-4280390399, //  00110011 
-4280399360, //  00110100 
-4280399442, //  00110101 
-4280399533, //  00110110 
-4280399615, //  00110111 
-4280408832, //  00111000 
-4280408914, //  00111001 
-4280409005, //  00111010 
-4280409087, //  00111011 
-4280418048, //  00111100 
-4280418130, //  00111101 
-4280418221, //  00111110 
-4280418303, //  00111111 
-4283039744, //  01000000 
-4283039826, //  01000001 
-4283039917, //  01000010 
-4283039999, //  01000011 
-4283048960, //  01000100 
-4283049042, //  01000101 
-4283049133, //  01000110 
-4283049215, //  01000111 
-4283058432, //  01001000 
-4283058514, //  01001001 
-4283058605, //  01001010 
-4283058687, //  01001011 
-4283067648, //  01001100 
-4283067730, //  01001101 
-4283067821, //  01001110 
-4283067903, //  01001111 
-4283077120, //  01010000 
-4283077202, //  01010001 
-4283077293, //  01010010 
-4283077375, //  01010011 
-4283086336, //  01010100 
-4283086418, //  01010101 
-4283086509, //  01010110 
-4283086591, //  01010111 
-4283095808, //  01011000 
-4283095890, //  01011001 
-4283095981, //  01011010 
-4283096063, //  01011011 
-4283105024, //  01011100 
-4283105106, //  01011101 
-4283105197, //  01011110 
-4283105279, //  01011111 
-4285202432, //  01100000 
-4285202514, //  01100001 
-4285202605, //  01100010 
-4285202687, //  01100011 
-4285211648, //  01100100 
-4285211730, //  01100101 
-4285211821, //  01100110 
-4285211903, //  01100111 
-4285221120, //  01101000 
-4285221202, //  01101001 
-4285221293, //  01101010 
-4285221375, //  01101011 
-4285230336, //  01101100 
-4285230418, //  01101101 
-4285230509, //  01101110 
-4285230591, //  01101111 
-4285239808, //  01110000 
-4285239890, //  01110001 
-4285239981, //  01110010 
-4285240063, //  01110011 
-4285249024, //  01110100 
-4285249106, //  01110101 
-4285249197, //  01110110 
-4285249279, //  01110111 
-4285258496, //  01111000 
-4285258578, //  01111001 
-4285258669, //  01111010 
-4285258751, //  01111011 
-4285267712, //  01111100 
-4285267794, //  01111101 
-4285267885, //  01111110 
-4285267967, //  01111111 
-4287889408, //  10000000 
-4287889490, //  10000001 
-4287889581, //  10000010 
-4287889663, //  10000011 
-4287898624, //  10000100 
-4287898706, //  10000101 
-4287898797, //  10000110 
-4287898879, //  10000111 
-4287908096, //  10001000 
-4287908178, //  10001001 
-4287908269, //  10001010 
-4287908351, //  10001011 
-4287917312, //  10001100 
-4287917394, //  10001101 
-4287917485, //  10001110 
-4287917567, //  10001111 
-4287926784, //  10010000 
-4287926866, //  10010001 
-4287926957, //  10010010 
-4287927039, //  10010011 
-4287936000, //  10010100 
-4287936082, //  10010101 
-4287936173, //  10010110 
-4287936255, //  10010111 
-4287945472, //  10011000 
-4287945554, //  10011001 
-4287945645, //  10011010 
-4287945727, //  10011011 
-4287954688, //  10011100 
-4287954770, //  10011101 
-4287954861, //  10011110 
-4287954943, //  10011111 
-4290052096, //  10100000 
-4290052178, //  10100001 
-4290052269, //  10100010 
-4290052351, //  10100011 
-4290061312, //  10100100 
-4290061394, //  10100101 
-4290061485, //  10100110 
-4290061567, //  10100111 
-4290070784, //  10101000 
-4290070866, //  10101001 
-4290070957, //  10101010 
-4290071039, //  10101011 
-4290080000, //  10101100 
-4290080082, //  10101101 
-4290080173, //  10101110 
-4290080255, //  10101111 
-4290089472, //  10110000 
-4290089554, //  10110001 
-4290089645, //  10110010 
-4290089727, //  10110011 
-4290098688, //  10110100 
-4290098770, //  10110101 
-4290098861, //  10110110 
-4290098943, //  10110111 
-4290108160, //  10111000 
-4290108242, //  10111001 
-4290108333, //  10111010 
-4290108415, //  10111011 
-4290117376, //  10111100 
-4290117458, //  10111101 
-4290117549, //  10111110 
-4290117631, //  10111111 
-4292739072, //  11000000 
-4292739154, //  11000001 
-4292739245, //  11000010 
-4292739327, //  11000011 
-4292748288, //  11000100 
-4292748370, //  11000101 
-4292748461, //  11000110 
-4292748543, //  11000111 
-4292757760, //  11001000 
-4292757842, //  11001001 
-4292757933, //  11001010 
-4292758015, //  11001011 
-4292766976, //  11001100 
-4292767058, //  11001101 
-4292767149, //  11001110 
-4292767231, //  11001111 
-4292776448, //  11010000 
-4292776530, //  11010001 
-4292776621, //  11010010 
-4292776703, //  11010011 
-4292785664, //  11010100 
-4292785746, //  11010101 
-4292785837, //  11010110 
-4292785919, //  11010111 
-4292795136, //  11011000 
-4292795218, //  11011001 
-4292795309, //  11011010 
-4292795391, //  11011011 
-4292804352, //  11011100 
-4292804434, //  11011101 
-4292804525, //  11011110 
-4292804607, //  11011111 
-4294901760, //  11100000 
-4294901842, //  11100001 
-4294901933, //  11100010 
-4294902015, //  11100011 
-4294910976, //  11100100 
-4294911058, //  11100101 
-4294911149, //  11100110 
-4294911231, //  11100111 
-4294920448, //  11101000 
-4294920530, //  11101001 
-4294920621, //  11101010 
-4294920703, //  11101011 
-4294929664, //  11101100 
-4294929746, //  11101101 
-4294929837, //  11101110 
-4294929919, //  11101111 
-4294939136, //  11110000 
-4294939218, //  11110001 
-4294939309, //  11110010 
-4294939391, //  11110011 
-4294948352, //  11110100 
-4294948434, //  11110101 
-4294948525, //  11110110 
-4294948607, //  11110111 
-4294957824, //  11111000 
-4294957906, //  11111001 
-4294957997, //  11111010 
-4294958079, //  11111011 
-4294967040, //  11111100 
-4294967122, //  11111101 
-4294967213, //  11111110 
-4294967295, //  11111111 
-};
-
+extern const uint32_t DMA2D_CLUT [256];
 
 
 #endif
+
+
+
+
+
