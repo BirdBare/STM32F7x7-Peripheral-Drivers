@@ -27,8 +27,23 @@ int DMA2D_Config(struct DMA2Dxo *DMA2Do, int CR, int LWR, int AMTCR)
 	return DMA2D_CONFIG_ENABLED;
 }
 
+int DMA2D_ResetConfig(struct DMA2Dxo *DMA2Do)
+{	
+	volatile DMA2D_TypeDef * const DMA2Dx = DMA2Do->DMA2Dx;
 
-int DMA2D_ConfigRegToMem(struct DMA2Dxo *DMA2Do, int OPFCCR, int OCOLR, 
+	if((DMA2Dx->CR & DMA2D_CR_START) == 0)
+	{
+		DMA2Dx->CR = 0;
+		DMA2Dx->LWR = 0;
+		DMA2Dx->AMTCR = 0;
+
+		return 0;
+	}
+	return DMA2D_CONFIG_ENABLED;
+}
+
+
+int DMA2D_EnableRegToMem(struct DMA2Dxo *DMA2Do, int OPFCCR, int OCOLR, 
 	void *OMAR, int OOR, int NLR)
 {
 volatile DMA2D_TypeDef * const DMA2Dx = DMA2Do->DMA2Dx;
@@ -40,7 +55,7 @@ volatile DMA2D_TypeDef * const DMA2Dx = DMA2Do->DMA2Dx;
 		DMA2Dx->OMAR = (uint32_t)OMAR;
 		DMA2Dx->OOR = OOR;
 		DMA2Dx->NLR = NLR;
-		DMA2Dx->CR |= 0b11 << 16;
+		DMA2Dx->CR |= (0b11 << 16) | 1;
 
 		return 0;
 	}
@@ -48,7 +63,7 @@ volatile DMA2D_TypeDef * const DMA2Dx = DMA2Do->DMA2Dx;
 }
 
 
-int DMA2D_ConfigMemToMem(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
+int DMA2D_EnableMemToMem(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 	int FGPFCCR, void *OMAR, int OOR, int NLR)
 {
 	volatile DMA2D_TypeDef * const DMA2Dx = DMA2Do->DMA2Dx;
@@ -61,14 +76,14 @@ int DMA2D_ConfigMemToMem(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 		DMA2Dx->OMAR = (uint32_t)OMAR;
 		DMA2Dx->OOR = OOR;
 		DMA2Dx->NLR = NLR;
-		DMA2Dx->CR &= ~(0b11 << 16);
+		DMA2Dx->CR = (DMA2Dx->CR & ~(0b11 << 16)) | 1;
 	
 		return 0;
 	}
 	return DMA2D_CONFIG_ENABLED;
 }
 
-int DMA2D_ConfigMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
+int DMA2D_EnableMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 	int FGPFCCR, int OPFCCR, void *OMAR, int OOR, int NLR)
 {
 	volatile DMA2D_TypeDef * const DMA2Dx = DMA2Do->DMA2Dx;
@@ -82,28 +97,11 @@ int DMA2D_ConfigMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 		DMA2Dx->OMAR = (uint32_t)OMAR;
 		DMA2Dx->OOR = OOR;
 		DMA2Dx->NLR = NLR;
-		DMA2Dx->CR = (DMA2Dx->CR & ~(0b11 << 16)) | (0b1 << 16);
+		DMA2Dx->CR = (DMA2Dx->CR & ~(0b11 << 16)) | (0b1 << 16) | 1;
 
 		return 0;
 	}
 	return DMA2D_CONFIG_ENABLED;
-}
-
-int DMA2D_ResetConfig(struct DMA2Dxo *DMA2Do)
-{	
-	if((DMA2Do->DMA2Dx->CR & DMA2D_CR_START) == 0)
-	{
-		RCC_Reset((struct RCCxo *)DMA2Do);
-
-		return 0;
-	}
-	return DMA2D_CONFIG_ENABLED;
-}
-
-int DMA2D_Enable(struct DMA2Dxo *DMA2Do)
-{
-	DMA2Do->DMA2Dx->CR |= DMA2D_CR_START;
-	return 0;
 }
 
 int DMA2D_Disable(struct DMA2Dxo *DMA2Do)

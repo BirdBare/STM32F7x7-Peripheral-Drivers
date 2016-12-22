@@ -35,21 +35,17 @@ extern struct DMA2Dxo
 
 int DMA2D_Config(struct DMA2Dxo *DMA2Do, int CR, int LWR, int AMTCR);
 
-int DMA2D_ConfigRegToMem(struct DMA2Dxo *DMA2Do, int OPFCCR, int OCOLR, 
+int DMA2D_ResetConfig(struct DMA2Dxo *DMA2Do);
+
+int DMA2D_EnableRegToMem(struct DMA2Dxo *DMA2Do, int OPFCCR, int OCOLR, 
 	void *OMAR, int OOR, int NLR);
 
 
-int DMA2D_ConfigMemToMem(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
+int DMA2D_EnableMemToMem(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 	int FGPFCCR, void *OMAR, int OOR, int NLR);
 
-int DMA2D_ConfigMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
+int DMA2D_EnableMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 	int FGPCFCR, int OPCFCR, void *OMAR, int OOR, int NLR);
-
-
-int DMA2D_ResetConfig(struct DMA2Dxo *DMA2Do);
-
-
-int DMA2D_Enable(struct DMA2Dxo *DMA2Do);
 
 
 int DMA2D_Disable(struct DMA2Dxo *DMA2Do);
@@ -112,8 +108,7 @@ OOR    LINE OFFSET
 #define DMA2D_Reg2Mem(OMAR, OPFCCR, OCOLR, NLR, OOR) \
 do{ \
   DMA2D_WaitTransfer(); \
-	DMA2D_ConfigRegToMem(&DMA2Do, OPFCCR, OCOLR, (void *)(OMAR), OOR, NLR); \
-  DMA2D_Enable(&DMA2Do); \
+	DMA2D_EnableRegToMem(&DMA2Do, OPFCCR, OCOLR, (void *)(OMAR), OOR, NLR); \
 } while(0)
 
 
@@ -131,9 +126,8 @@ FGOR    LINE OFFSET
 #define DMA2D_Mem2Mem(FGMAR, OMAR, FGPFCCR, NLR, FGOR, OOR) \
 do{ \
   DMA2D_WaitTransfer(); \
-  DMA2D_ConfigMemToMem(&DMA2Do, (void *)(FGMAR), FGOR, FGPFCCR, (void*)(OMAR), \
+  DMA2D_EnableMemToMem(&DMA2Do, (void *)(FGMAR), FGOR, FGPFCCR, (void*)(OMAR), \
 		OOR, NLR); \
-  DMA2D_Enable(&DMA2Do); \
 } while(0)
 
 
@@ -151,9 +145,8 @@ FGOR    LINE OFFSET
 #define DMA2D_Mem2MemPFC(FGMAR, OMAR, FGPFCCR, OPFCCR, NLR, FGOR, OOR) \
 do{ \
   DMA2D_WaitTransfer(); \
-	DMA2D_ConfigMemToMemPFC(&DMA2Do, (void *)(FGMAR), FGOR, FGPFCCR, OPFCCR, \
+	DMA2D_EnableMemToMemPFC(&DMA2Do, (void *)(FGMAR), FGOR, FGPFCCR, OPFCCR, \
 		(void *)(OMAR), OOR, NLR); \
-  DMA2D_Enable(&DMA2Do); \
 } while(0)
 
 
