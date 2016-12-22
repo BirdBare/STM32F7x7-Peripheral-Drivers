@@ -126,38 +126,24 @@ int ADC_StartInjected(struct ADCxo *ADCo)
 	return ADC_START_ADON;
 }
 
-int ADC_Get16(struct ADCxo *ADCo)
+
+int ADC_Get16_Regular(struct ADCxo *ADCo)
 {
 	uint32_t ret;
 	ASM(" ldrh %0, [%1, #0x4c]" : "=r" (ret) : "r" (ADCo->ADCx));
 	return ret;
 }
-int ADC_Get16_1(struct ADCxo *ADCo)
-{
-	uint32_t ret;
-	ASM(" ldrh %0, [%1, #0x3c]" : "=r" (ret) : "r" (ADCo->ADCx));
-	return ret;
-}
-int ADC_Get16_2(struct ADCxo *ADCo)
-{
-	uint32_t ret;
-	ASM(" ldrh %0, [%1, #0x40]" : "=r" (ret) : "r" (ADCo->ADCx));
-	return ret;
-}
-int ADC_Get16_3(struct ADCxo *ADCo)
-{
-	uint32_t ret;
-	ASM(" ldrh %0, [%1, #0x44]" : "=r" (ret) : "r" (ADCo->ADCx));
-	return ret;
-}
-int ADC_Get16_4(struct ADCxo *ADCo)
-{
-	uint32_t ret;
-	ASM(" ldrh %0, [%1, #0x48]" : "=r" (ret) : "r" (ADCo->ADCx));
-	return ret;
-}
 
 
+void ADC_Get16_Injected(struct ADCxo *ADCo, int DataArray[4])
+{
+	volatile ADC_TypeDef * const ADCx = ADCo->ADCx;
+
+	DataArray[0] = ADCx->JDR1;
+	DataArray[1] = ADCx->JDR2;
+	DataArray[2] = ADCx->JDR3;
+	DataArray[3] = ADCx->JDR4;
+}
 
 
 

@@ -52,15 +52,10 @@ int ADC_StartRegular(struct ADCxo *ADCo);
 
 int ADC_StartInjected(struct ADCxo *ADCo);
 
-int ADC_Get16(struct ADCxo *ADCo);
+int ADC_Get16_Regular(struct ADCxo *ADCo);
 
-int ADC_Get16_1(struct ADCxo *ADCo);
+void ADC_Get16_Injected(struct ADCxo *ADCo, int DataArray[4]);
 
-int ADC_Get16_2(struct ADCxo *ADCo);
-
-int ADC_Get16_3(struct ADCxo *ADCo);
-
-int ADC_Get16_4(struct ADCxo *ADCo);
 
 
 
