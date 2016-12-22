@@ -32,10 +32,11 @@ extern struct ADCxo
 
 #define ADC_CONFIG_ENABLED 1
 
-int ADC_Config(struct ADCxo *ADCo, int CR1, int CR2, int HTR, int LTR);
+int ADC_Config(struct ADCxo *ADCo, int CR1, int CR2, int HTR, int LTR,
+	int SampHigh, int SampLow);
 
 int ADC_ConfigRegular(struct ADCxo *ADCo, int SeqHigh, int SeqMid, 
-	int SeqLow, int SampHigh, int SampLow);
+	int SeqLow);
 
 int ADC_ConfigInjected(struct ADCxo *ADCo, int JSQR, int JOFR1, 
 	int JOFR2, int JOFR3, int JOFR4);

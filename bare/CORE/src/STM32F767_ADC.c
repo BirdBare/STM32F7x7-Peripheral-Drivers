@@ -15,7 +15,8 @@ struct ADCxo
 	ADC3o = {&RCC->APB2ENR,10,0,0,ADC3};
 
 
-int ADC_Config(struct ADCxo *ADCo, int CR1, int CR2, int HTR, int LTR)
+int ADC_Config(struct ADCxo *ADCo, int CR1, int CR2, int HTR, int LTR,
+	int SampHigh, int SampLow)
 {
 	volatile ADC_TypeDef * const ADCx = ADCo->ADCx;
 
@@ -25,6 +26,8 @@ int ADC_Config(struct ADCxo *ADCo, int CR1, int CR2, int HTR, int LTR)
 		ADCx->HTR = HTR;
 		ADCx->LTR = LTR;
 		ADCx->CR2 = CR2;
+		ADCx->SMPR1 = SampHigh;
+		ADCx->SMPR2 = SampLow;
 
 		return 0;
 	}
@@ -34,7 +37,7 @@ int ADC_Config(struct ADCxo *ADCo, int CR1, int CR2, int HTR, int LTR)
 
 
 int ADC_ConfigRegular(struct ADCxo *ADCo, int SeqHigh, int SeqMid, 
-	int SeqLow, int SampHigh, int SampLow)
+	int SeqLow)
 {
 	volatile ADC_TypeDef * const ADCx = ADCo->ADCx;
 
@@ -43,8 +46,6 @@ int ADC_ConfigRegular(struct ADCxo *ADCo, int SeqHigh, int SeqMid,
 		ADCx->SQR1 = SeqHigh;
 		ADCx->SQR2 = SeqMid;
 		ADCx->SQR3 = SeqLow;
-		ADCx->SMPR1 = SampHigh;
-		ADCx->SMPR2 = SampLow;
 
 		return 0;
 	}
