@@ -10,7 +10,7 @@
 
 
 struct RTCxo
-	RTCo = {&RCC->BDCR,15,0,0,RTC};
+	RTCo = {&RCC->APB1ENR,10,0,0,RTC};
 
 
 void RTC_Unlock(struct RTCxo *RTCo)

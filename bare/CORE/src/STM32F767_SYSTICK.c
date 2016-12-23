@@ -15,23 +15,8 @@
 volatile uint32_t SysTick_Ticks = 0;
 volatile uint32_t SysTick_TicksPerMilli = 1;
 
-void SysTick_Handler(void)
-{
-  SysTick_Ticks++;
-  //increment
 
-  if((SCHEDULER.flags & (SCHEDULER_HOLD | SCHEDULER_SWHOLD)) == 0)
-  {
-    SCHEDULER_CallScheduler();
-  }
-  //only call if neither flag is set
-
-  SCHEDULER.flags &= ~SCHEDULER_SWHOLD;
-  //turn off scheduler switch hold. only on once so we will always disable.
-}
-
-
-void SysTick_Enable(uint32_t TicksPerInterrupt) 
+int SysTick_Config(int CTRL, uint32_t TicksPerInterrupt) 
 {	
 	if((SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) == 0)
 	{
@@ -39,13 +24,38 @@ void SysTick_Enable(uint32_t TicksPerInterrupt)
   
 		SysTick_TicksPerMilli = (_FCPU / 1000) / TicksPerInterrupt;
 
-		SysTick->CTRL |= (SysTick_CTRL_CLKSOURCE_Msk | 
-                    SysTick_CTRL_TICKINT_Msk |
-                    SysTick_CTRL_ENABLE_Msk); 
+		SysTick->CTRL = CTRL; 
+
+		SysTick->VAL = 0;
+
+		return 0;
 	}
+	return SYSTICK_CONFIG_ENABLED;
 }
 
-uint32_t SysTick_MilliSec(void)
+int SysTick_ResetConfig(void)
+{
+	if((SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) == 0)
+	{
+		SysTick->CTRL = 0x4;
+		return 0;
+	}
+	return SYSTICK_CONFIG_ENABLED;
+}
+
+int SysTick_Enable(void)
+{
+	SysTick->CTRL |= 0b1;
+	return 0;
+}
+int SysTick_Disable(void)
+{
+	SysTick->CTRL &= ~0b1;
+	return 0;
+}
+
+
+int SysTick_MilliSec(void)
 {
   return SysTick_Ticks / SysTick_TicksPerMilli;
 }

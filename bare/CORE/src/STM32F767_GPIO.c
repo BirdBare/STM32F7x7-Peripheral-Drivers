@@ -34,13 +34,13 @@ uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
 
 	volatile GPIO_TypeDef * const GPIOx = GPIOo->GPIOx;
 
-	uint32_t respins = ~GPIOo->used, setpins = 0;
+	uint32_t respins = ~GPIOo->used, setpins = 0, setpins2 = 0;
 	//get old usedpins
 
 	GPIOo->used |= GPIO_PIN;
 	//update usedpins
 
-	uint32_t MODE = 0, TYPE = 0, SPEED = 0, PUPD = 0, AFR[2] = {0,0};
+	uint32_t MODE = 0, TYPE = 0, SPEED = 0, PUPD = 0;
 
   for(uint8_t count = 0; count < 16; count++)
   {
@@ -50,6 +50,7 @@ uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
 
 			//indicates used or reserved pins. will be stored and returned.
 			setpins |= ((uint32_t)0b1 << count);
+			setpins2 |= ((uint32_t)0b11 << count2);
     
       MODE |= (GPIO_MODE << (count2)); 
       //
@@ -62,24 +63,20 @@ uint32_t GPIO_Config(volatile struct GPIOxo * const GPIOo, uint32_t GPIO_PIN,
       
       count2 = (count & 0b111) << 2;
 			//
-      AFR[count >> 3] |= (GPIO_ALTFUNCTION << ((count2)));
+      GPIOx->AFR[count >> 3] &= ~(0b1111 << ((count2)));
+      GPIOx->AFR[count >> 3] |= (GPIO_ALTFUNCTION << ((count2)));
       //Sets Pin Alternate Function
     }
   }
-	GPIOx->MODER &= ~MODE;
-	GPIOx->OTYPER &= ~TYPE;
-	GPIOx->OSPEEDR &= ~SPEED;
-	GPIOx->PUPDR &= ~PUPD;
-	GPIOx->AFR[0] &= ~AFR[0];
-	GPIOx->AFR[1] &= ~AFR[1];
+	GPIOx->MODER &= ~setpins2;
+	GPIOx->OTYPER &= ~setpins;
+	GPIOx->OSPEEDR &= ~setpins2;
+	GPIOx->PUPDR &= ~setpins2;
 
 	GPIOx->MODER |= MODE;
 	GPIOx->OTYPER |= TYPE;
 	GPIOx->OSPEEDR |= SPEED;
 	GPIOx->PUPDR |= PUPD;
-	GPIOx->AFR[0] |= AFR[0];
-	GPIOx->AFR[1] |= AFR[1];
-
 
 	return setpins;
 }

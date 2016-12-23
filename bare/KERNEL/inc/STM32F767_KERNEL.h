@@ -18,13 +18,13 @@
 #include "STM32F767_DLL.h"
 
 
-
 #define SVCall_Interrupt(void) __asm("svc 0")
 #define PendSV_Interrupt(void) SCB->ICSR = 0b1 << 28
 #define SysTick_Interrupt(void) SCB->ICSR = 0b1 << 26
 
 #define PENDSV_PENDING(void) SCB->ICSR = 0b1 << 28
 #define SYSTICK_PENDING(void) SCB->ICSR = 0b1 << 26
+
 
 
 
@@ -166,8 +166,6 @@ ALWAYS_INLINE struct THREAD* SCHEDULER_CurrentThread(volatile struct SCHEDULER *
 		#define balloc(size) kballoc(size,KERNEL_ProcessHeap)
 		#define fastballoc(size) kballoc(size,KERNEL_FastHeap)
 
-  // KERNEL FUNCTIONS
-  void PendSV_Handler(void);
 
   void* KERNEL_SwitchHandler(struct THREAD *current);
 
