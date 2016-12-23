@@ -6,7 +6,6 @@
 
 
 
-#include "stm32f7xx.h"
 #include "STM32F767_SYSTICK.h"
 #include "STM32F767_KERNEL.h"
 
@@ -43,15 +42,13 @@ int SysTick_ResetConfig(void)
 	return SYSTICK_CONFIG_ENABLED;
 }
 
-int SysTick_Enable(void)
+void SysTick_Enable(void)
 {
 	SysTick->CTRL |= 0b1;
-	return 0;
 }
-int SysTick_Disable(void)
+void SysTick_Disable(void)
 {
 	SysTick->CTRL &= ~0b1;
-	return 0;
 }
 
 

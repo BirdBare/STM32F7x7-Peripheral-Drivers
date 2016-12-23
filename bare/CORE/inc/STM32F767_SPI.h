@@ -51,7 +51,7 @@ int SPI_Config(struct SPIxo *SPIo, int CR1, int CR2, int CRCPR);
 int SPI_ResetConfig(struct SPIxo *SPIo);
 
 
-int SPI_Enable(struct SPIxo *SPIo);
+void SPI_Enable(struct SPIxo *SPIo);
 
 
 

@@ -46,11 +46,11 @@ int RTC_ConfigCalibration(struct RTCxo *RTCo, int CR, int CALR);
 
 int RTC_ResetConfig(struct RTCxo *RTCo);
 
-int RTC_EnableAlarmA(struct RTCxo *RTCo);
+void RTC_EnableAlarmA(struct RTCxo *RTCo);
 
-int RTC_EnableAlarmB(struct RTCxo *RTCo);
+void RTC_EnableAlarmB(struct RTCxo *RTCo);
 
-int RTC_EnablePeriodicAlarm(struct RTCxo *RTCo);
+void RTC_EnablePeriodicAlarm(struct RTCxo *RTCo);
 
 int RTC_EnableCalibration(struct RTCxo *RTCo);
 

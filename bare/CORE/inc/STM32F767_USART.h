@@ -53,7 +53,7 @@ uint32_t USART_ResetConfig(struct USARTxo *USARTo);
 //										 
 //	
 //******************************************************************************
-uint32_t USART_Enable(struct USARTxo *USARTo);
+void USART_Enable(struct USARTxo *USARTo);
 
 #define USART_DISABLE_TRANSFER 1
 

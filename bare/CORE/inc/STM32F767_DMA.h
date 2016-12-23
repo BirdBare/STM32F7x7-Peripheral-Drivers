@@ -68,14 +68,14 @@ uint32_t DMA_ResetConfig(struct DMAx_Streamxo *DMAx_Streamo);
 //										 
 //	
 //******************************************************************************
-uint32_t DMA_Enable(struct DMAx_Streamxo *DMAx_Streamo);
+void DMA_Enable(struct DMAx_Streamxo *DMAx_Streamo);
 
 //******************************************************************************
 //	
 //										 
 //	
 //******************************************************************************
-uint32_t DMA_Disable(struct DMAx_Streamxo *DMAx_Streamo);
+void DMA_Disable(struct DMAx_Streamxo *DMAx_Streamo);
 
 
 

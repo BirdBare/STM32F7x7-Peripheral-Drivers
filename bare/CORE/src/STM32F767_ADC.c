@@ -88,16 +88,14 @@ int ADC_ResetConfig(struct ADCxo *ADCo)
 	return ADC_CONFIG_ENABLED;
 }
 
-int ADC_Enable(struct ADCxo *ADCo)
+void ADC_Enable(struct ADCxo *ADCo)
 {
 	ADCo->ADCx->CR2 |= ADC_CR2_ADON;
-	return 0;
 }
 
-int ADC_Disable(struct ADCxo *ADCo)
+void ADC_Disable(struct ADCxo *ADCo)
 {	
 	ADCo->ADCx->CR2 &= ~ADC_CR2_ADON;
-	return 0;
 }
 
 int ADC_StartRegular(struct ADCxo *ADCo)

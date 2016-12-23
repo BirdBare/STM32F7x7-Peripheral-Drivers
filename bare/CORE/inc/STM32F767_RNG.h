@@ -29,8 +29,8 @@ extern struct RNGxo
 #define RNG_CONFIG_ENABLED 1
 int RNG_Config(struct RNGxo *RNGo, int CR);
 int RNG_ResetConfig(struct RNGxo *RNGo);
-int RNG_Enable(struct RNGxo *RNGo);
-int RNG_Disable(struct RNGxo *RNGo);
+void RNG_Enable(struct RNGxo *RNGo);
+void RNG_Disable(struct RNGxo *RNGo);
 
 ALWAYS_INLINE int RNG_Get32(struct RNGxo *RNGo)
 {

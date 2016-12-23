@@ -53,7 +53,7 @@ void LCD_EnableFMC(uint32_t FMC_BusWidth, uint32_t FMC_BusTurn,
   uint32_t FMC_DataSetup, uint32_t FMC_AddSetup)
 {
    __DSB();
-  MPU_Enable();
+  MPU_Enable(0b101);
   MPU_SetRegion(7,0x60000000,1,0b11,0b010000,27);
   MPU_EnableRegion(7);
   __DSB();

@@ -104,10 +104,9 @@ int DMA2D_EnableMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 	return DMA2D_CONFIG_ENABLED;
 }
 
-int DMA2D_Disable(struct DMA2Dxo *DMA2Do)
+void DMA2D_Disable(struct DMA2Dxo *DMA2Do)
 {
 	DMA2Do->DMA2Dx->CR |= DMA2D_CR_ABORT;	
-	return 0;
 }
 
 // 8 BIT TO 32 BIT COLOR LOOKUP TABLE

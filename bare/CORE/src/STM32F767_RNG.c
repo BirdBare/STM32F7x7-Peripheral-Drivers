@@ -38,16 +38,14 @@ int RNG_ResetConfig(struct RNGxo *RNGo)
 }
 
 
-int RNG_Enable(struct RNGxo *RNGo)
+void RNG_Enable(struct RNGxo *RNGo)
 {
 	RNGo->RNGx->CR |= RNG_CR_RNGEN;
-	return 0;
 }
 
-int RNG_Disable(struct RNGxo *RNGo)
+void RNG_Disable(struct RNGxo *RNGo)
 {
 	RNGo->RNGx->CR &= ~RNG_CR_RNGEN;
-	return 0;
 }
 
 

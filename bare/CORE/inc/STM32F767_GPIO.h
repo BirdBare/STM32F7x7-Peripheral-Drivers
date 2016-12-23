@@ -114,6 +114,12 @@ ALWAYS_INLINE uint32_t GPIO_ResetConfig(volatile struct GPIOxo * const GPIOo,
 	return GPIO_CONFIG_USED;
 }
 
+ALWAYS_INLINE void GPIO_Disable(volatile struct GPIOxo * const GPIOo, 
+	uint32_t GPIO_PIN) 
+{
+	GPIOo->used &= ~GPIO_PIN;
+}
+
 ALWAYS_INLINE void GPIO_SetOutput(struct GPIOxo *GPIOo, uint32_t GPIO_PIN) 
 {
 	GPIOo->GPIOx->BSRR = (GPIO_PIN);

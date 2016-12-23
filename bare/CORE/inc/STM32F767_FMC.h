@@ -126,8 +126,8 @@ extern struct NOR_PSRAMxo
 #define NOR_PSRAM_CONFIG_ENABLED 1
 int NOR_PSRAM_Config(struct NOR_PSRAMxo *NOR_PSRAMo, int BCR, int BTR, int BWTR);
 int NOR_PSRAM_ResetConfig(struct NOR_PSRAMxo *NOR_PSRAMo);
-int NOR_PSRAM_Enable(struct NOR_PSRAMxo *NOR_PSRAMo);
-int NOR_PSRAM_Disable(struct NOR_PSRAMxo *NOR_PSRAMo);
+void NOR_PSRAM_Enable(struct NOR_PSRAMxo *NOR_PSRAMo);
+void NOR_PSRAM_Disable(struct NOR_PSRAMxo *NOR_PSRAMo);
 
 
 

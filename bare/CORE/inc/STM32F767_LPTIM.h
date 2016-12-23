@@ -32,10 +32,10 @@ int LPTIM_Config(struct LPTIMxo * LPTIMo, int IER, int CFGR);
 int LPTIM_ResetConfig(struct LPTIMxo * LPTIMo);
 
 
-int LPTIM_Enable(struct LPTIMxo * LPTIMo);
+void LPTIM_Enable(struct LPTIMxo * LPTIMo);
 
 
-int LPTIM_Disable(struct LPTIMxo * LPTIMo);
+void LPTIM_Disable(struct LPTIMxo * LPTIMo);
 
 
 void LPTIM_StartSingle(struct LPTIMxo * LPTIMo);

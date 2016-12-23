@@ -43,9 +43,9 @@ int ADC_ConfigInjected(struct ADCxo *ADCo, int JSQR, int JOFR1,
 
 int ADC_ResetConfig(struct ADCxo *ADCo);
 
-int ADC_Enable(struct ADCxo *ADCo);
+void ADC_Enable(struct ADCxo *ADCo);
 
-int ADC_Disable(struct ADCxo *ADCo);
+void ADC_Disable(struct ADCxo *ADCo);
 
 #define ADC_START_ADON 1
 int ADC_StartRegular(struct ADCxo *ADCo);

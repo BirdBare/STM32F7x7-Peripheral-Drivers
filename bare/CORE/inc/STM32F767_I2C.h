@@ -51,7 +51,7 @@ int I2C_ResetConfig(struct I2Cxo *I2Co);
 //										 
 //	
 //******************************************************************************
-int I2C_Enable(struct I2Cxo *I2Co);
+void I2C_Enable(struct I2Cxo *I2Co);
 
 #define I2C_DISABLE_TRANSFER 2
 //******************************************************************************

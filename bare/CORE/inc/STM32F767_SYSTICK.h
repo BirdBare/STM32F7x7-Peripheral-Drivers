@@ -26,8 +26,8 @@ extern volatile uint32_t SysTick_Ticks;
 
 int SysTick_Config(int CTRL, uint32_t TicksPerInterrupt);
 int SysTick_ResetConfig(void);
-int SysTick_Enable(void);
-int SysTick_Disable(void);
+void SysTick_Enable(void);
+void SysTick_Disable(void);
 
 int SysTick_MilliSec(void);
 

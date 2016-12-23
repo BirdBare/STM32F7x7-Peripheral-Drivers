@@ -122,26 +122,23 @@ int RTC_ResetConfig(struct RTCxo *RTCo)
 }
 
 
-int RTC_EnableAlarmA(struct RTCxo *RTCo)
+void RTC_EnableAlarmA(struct RTCxo *RTCo)
 {
 	RTCo->RTCx->CR |= RTC_CR_ALRAE;
-	return 0;
 }
 
 
 
-int RTC_EnableAlarmB(struct RTCxo *RTCo)
+void RTC_EnableAlarmB(struct RTCxo *RTCo)
 {
 	RTCo->RTCx->CR |= RTC_CR_ALRBE;
-	return 0;
 }
 
 
 
-int RTC_EnablePeriodicAlarm(struct RTCxo *RTCo)
+void RTC_EnablePeriodicAlarm(struct RTCxo *RTCo)
 {
 	RTCo->RTCx->CR |= RTC_CR_WUTE;
-	return 0;
 }
 
 

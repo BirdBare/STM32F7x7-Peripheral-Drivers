@@ -6,11 +6,8 @@
 
 
 
-#ifndef STM32F767_EXTI_H
-#define STM32F767_EXTI_H
 
-#include "stm32f767xx.h"
-//#include "STM32F767_.h"
+#include "STM32F767_EXTI.h"
 
 int EXTI_ConfigEnable(int EXTI_BIT, int IMR, int EMR, int RTSR, int FTSR)
 {
@@ -40,5 +37,3 @@ void EXTI_Disable(int EXTI_BIT)
 
 
 
-
-#endif

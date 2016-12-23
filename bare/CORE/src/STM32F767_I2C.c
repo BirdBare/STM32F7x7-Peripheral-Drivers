@@ -61,11 +61,9 @@ int I2C_ResetConfig(struct I2Cxo *I2Co)
 //										 
 //	
 //******************************************************************************
-int I2C_Enable(struct I2Cxo *I2Co)
+void I2C_Enable(struct I2Cxo *I2Co)
 {
 	I2Co->I2Cx->CR1 |= I2C_CR1_PE;
-	
-	return 0;
 }
 
 //******************************************************************************

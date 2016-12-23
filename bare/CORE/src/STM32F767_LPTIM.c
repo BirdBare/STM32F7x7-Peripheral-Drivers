@@ -42,17 +42,15 @@ int LPTIM_ResetConfig(struct LPTIMxo * LPTIMo)
 	return LPTIM_CONFIG_ENABLED;	
 }
 
-int LPTIM_Enable(struct LPTIMxo * LPTIMo)
+void LPTIM_Enable(struct LPTIMxo * LPTIMo)
 {
 	LPTIMo->LPTIMx->CR |= LPTIM_CR_ENABLE;
-	return 0;
 }
 
 
-int LPTIM_Disable(struct LPTIMxo * LPTIMo)
+void LPTIM_Disable(struct LPTIMxo * LPTIMo)
 {
 	LPTIMo->LPTIMx->CR = 0; //set ENABLE to zero by setting whole reg to zero
-	return 0;
 }
 
 void LPTIM_StartSingle(struct LPTIMxo * LPTIMo)

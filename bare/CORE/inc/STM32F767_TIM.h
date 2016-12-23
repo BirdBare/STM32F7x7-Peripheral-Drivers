@@ -47,13 +47,13 @@ int TIM_ConfigChannel(struct TIMxo *TIMo, int Channel, int DIER, int CCMR,
 
 int TIM_ResetConfig(struct TIMxo *TIMo);
 
-int TIM_Enable(struct TIMxo *TIMo);
+void TIM_Enable(struct TIMxo *TIMo);
 
-int TIM_EnableChannel(struct TIMxo *TIMo, int Channel);
+void TIM_EnableChannel(struct TIMxo *TIMo, int Channel);
 
-int TIM_Disable(struct TIMxo *TIMo);
+void TIM_Disable(struct TIMxo *TIMo);
 
-int TIM_DisableChannel(struct TIMxo *TIMo, int Channel);
+void TIM_DisableChannel(struct TIMxo *TIMo, int Channel);
 
 void TIM_Get32(struct TIMxo *TIMo, int DataArray[6]);
 

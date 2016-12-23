@@ -48,7 +48,7 @@ int DMA2D_EnableMemToMemPFC(struct DMA2Dxo *DMA2Do, void *FGMAR, int FGOR,
 	int FGPCFCR, int OPCFCR, void *OMAR, int OOR, int NLR);
 
 
-int DMA2D_Disable(struct DMA2Dxo *DMA2Do);
+void DMA2D_Disable(struct DMA2Dxo *DMA2Do);
 
 
 

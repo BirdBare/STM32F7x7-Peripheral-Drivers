@@ -101,28 +101,24 @@ int TIM_ResetConfig(struct TIMxo *TIMo)
 	return TIM_CONFIG_ENABLED;
 }
 
-int TIM_Enable(struct TIMxo *TIMo)
+void TIM_Enable(struct TIMxo *TIMo)
 {
 	TIMo->TIMx->CR1 |= TIM_CR1_CEN;
-	return 0;
 }
 
-int TIM_EnableChannel(struct TIMxo *TIMo, int Channel)
+void TIM_EnableChannel(struct TIMxo *TIMo, int Channel)
 {
 	TIMo->TIMx->CCER |= TIM_CCER_CC1E << ((Channel - 1) << 2);
-	return 0;
 }
 
-int TIM_Disable(struct TIMxo *TIMo)
+void TIM_Disable(struct TIMxo *TIMo)
 {
 	TIMo->TIMx->CR1 &= ~TIM_CR1_CEN;
-	return 0;	
 }
 
-int TIM_DisableChannel(struct TIMxo *TIMo, int Channel)
+void TIM_DisableChannel(struct TIMxo *TIMo, int Channel)
 {
 	TIMo->TIMx->CCER &= ~(TIM_CCER_CC1E << ((Channel - 1) << 2));
-	return 0;
 }
 
 void TIM_Get32(struct TIMxo *TIMo, int DataArray[6])

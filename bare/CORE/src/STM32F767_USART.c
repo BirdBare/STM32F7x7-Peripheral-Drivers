@@ -66,11 +66,9 @@ uint32_t USART_ResetConfig(struct USARTxo *USARTo)
 //										 
 //	
 //******************************************************************************
-uint32_t USART_Enable(struct USARTxo *USARTo)
+void USART_Enable(struct USARTxo *USARTo)
 {
 	USARTo->USARTx->CR1 |= USART_CR1_UE;
-
-	return 0;
 }
 
 //******************************************************************************

@@ -68,16 +68,14 @@ int NOR_PSRAM_ResetConfig(struct NOR_PSRAMxo *NOR_PSRAMo)
 	return NOR_PSRAM_CONFIG_ENABLED;
 }
 
-int NOR_PSRAM_Enable(struct NOR_PSRAMxo *NOR_PSRAMo)
+void NOR_PSRAM_Enable(struct NOR_PSRAMxo *NOR_PSRAMo)
 {
 	NOR_PSRAMo->NOR_PSRAMx->BCR |= FMC_BCR1_MBKEN;
-	return 0;
 }
 
-int NOR_PSRAM_Disable(struct NOR_PSRAMxo *NOR_PSRAMo)
+void NOR_PSRAM_Disable(struct NOR_PSRAMxo *NOR_PSRAMo)
 {
 	NOR_PSRAMo->NOR_PSRAMx->BCR &= ~FMC_BCR1_MBKEN;
-	return 0;
 }
 
 

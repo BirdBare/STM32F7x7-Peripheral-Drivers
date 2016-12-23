@@ -41,11 +41,9 @@ int SPI_ResetConfig(struct SPIxo *SPIo)
 	return SPI_CONFIG_ENABLED;
 }
 
-int SPI_Enable(struct SPIxo *SPIo)
+void SPI_Enable(struct SPIxo *SPIo)
 {
 	SPIo->SPIx->CR1 |= SPI_CR1_SPE;
-
-	return 0;
 }
 
 int SPI_Disable(struct SPIxo *SPIo)
