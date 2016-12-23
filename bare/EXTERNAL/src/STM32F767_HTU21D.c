@@ -25,7 +25,6 @@ void HTU21D_EnableGeneral(uint32_t ClockFreqHz)
   
 	I2C_Config(&HTU21D_I2Cx,I2C_CR1_ANFOFF,0,0,I2C_CalculateTimingReg(ClockFreqHz),0);
 	I2C_Enable(&HTU21D_I2Cx);
-  DelayMilli(15);
 }
 
 void HTU21D_Reset(void)
